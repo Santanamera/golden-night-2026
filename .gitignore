@@ -1,0 +1,29 @@
+# ============================================
+# Golden Night 2026 — .gitignore
+# ============================================
+
+# Uploaded files (payment proofs, candidate photos)
+assets/uploads/tickets/*
+assets/uploads/candidates/*
+
+# Keep the folder structure but not the files
+!assets/uploads/tickets/.gitkeep
+!assets/uploads/candidates/.gitkeep
+!assets/uploads/.htaccess
+
+# Password reset utility — delete after use
+reset_password.php
+
+# XAMPP / local config
+*.log
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# PHP environment
+.env
+config.local.php
+
+# Node (if ever used)
+node_modules/

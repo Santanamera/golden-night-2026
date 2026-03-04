@@ -1,0 +1,518 @@
+/* ============================================
+   GOLDEN NIGHT 2026 — Global Stylesheet
+   assets/css/style.css
+   ============================================ */
+
+/* Google Fonts loaded here as fallback */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap');
+
+/* ============================================
+   CSS VARIABLES
+============================================ */
+:root {
+  --gold:        #D4AF37;
+  --gold-light:  #f0d060;
+  --gold-dark:   #b8921a;
+  --gold-dim:    rgba(212, 175, 55, 0.12);
+  --gold-glow:   rgba(212, 175, 55, 0.40);
+  --black:       #0a0a0a;
+  --black-mid:   #111108;
+  --black-soft:  #1a1a10;
+  --text:        #e8e0cc;
+  --text-dim:    #8a7d5a;
+  --error:       #ff4444;
+  --success:     #4CAF50;
+  --warning:     #FFC107;
+}
+
+/* ============================================
+   RESET & BASE
+============================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--gold);
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--gold-light);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   TYPOGRAPHY
+============================================ */
+h1, h2, h3, h4, h5 {
+  font-family: 'Cinzel', serif;
+  color: var(--gold);
+  line-height: 1.2;
+}
+
+p {
+  line-height: 1.8;
+}
+
+/* ============================================
+   SHARED TOPBAR
+============================================ */
+.topbar {
+  padding: 18px 40px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  background: rgba(10, 10, 10, 0.97);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-brand {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: 4px;
+  color: var(--gold);
+  margin: 0 auto;
+  text-shadow: 0 0 20px var(--gold-glow);
+}
+
+.back-link {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-link:hover {
+  color: var(--gold);
+}
+
+/* ============================================
+   SHARED BUTTONS
+============================================ */
+.btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-gold {
+  color: var(--black);
+  background: linear-gradient(135deg, #D4AF37, #f0d060, #D4AF37);
+  background-size: 200% 200%;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+}
+
+.btn-gold:hover {
+  background-position: 100% 100%;
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+  transform: translateY(-2px);
+  color: var(--black);
+}
+
+.btn-outline {
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold);
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+}
+
+.btn-outline:hover {
+  background: var(--gold-dim);
+  box-shadow: 0 0 30px var(--gold-dim);
+  transform: translateY(-2px);
+  color: var(--gold-light);
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+/* ============================================
+   SHARED FORM ELEMENTS
+============================================ */
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-label {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  padding: 13px 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+}
+
+.form-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-dim);
+}
+
+.form-input::placeholder {
+  color: var(--text-dim);
+}
+
+select.form-input {
+  cursor: pointer;
+}
+
+select.form-input option {
+  background: #111;
+  color: var(--text);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 110px;
+}
+
+/* Error / success messages */
+.msg-error {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  color: #ff6666;
+  padding: 12px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.msg-error.show {
+  display: block;
+}
+
+.msg-success {
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #81C784;
+  padding: 12px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.msg-success.show {
+  display: block;
+}
+
+/* ============================================
+   SHARED CARDS
+============================================ */
+.card {
+  background: var(--black-mid);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.card:hover {
+  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+}
+
+/* ============================================
+   SHARED STATUS BADGES
+============================================ */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.badge-pending  { background: rgba(255,193,7,0.15);  color: #FFC107; border: 1px solid rgba(255,193,7,0.3); }
+.badge-confirmed{ background: rgba(76,175,80,0.15);  color: #81C784; border: 1px solid rgba(76,175,80,0.3); }
+.badge-used     { background: rgba(33,150,243,0.15); color: #64B5F6; border: 1px solid rgba(33,150,243,0.3); }
+.badge-rejected { background: rgba(244,67,54,0.15);  color: #EF9A9A; border: 1px solid rgba(244,67,54,0.3); }
+.badge-approved { background: rgba(76,175,80,0.15);  color: #81C784; border: 1px solid rgba(76,175,80,0.3); }
+.badge-internal { background: rgba(212,175,55,0.1);  color: var(--gold); border: 1px solid rgba(212,175,55,0.2); }
+.badge-external { background: rgba(156,39,176,0.15); color: #CE93D8; border: 1px solid rgba(156,39,176,0.3); }
+.badge-king     { background: rgba(212,175,55,0.1);  color: var(--gold); border: 1px solid rgba(212,175,55,0.3); }
+.badge-queen    { background: rgba(236,64,122,0.1);  color: #F48FB1; border: 1px solid rgba(236,64,122,0.3); }
+
+/* ============================================
+   DECORATIVE ELEMENTS
+============================================ */
+.gold-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.gold-divider .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+
+.gold-divider .line.right {
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.gold-divider .diamond {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  box-shadow: 0 0 10px var(--gold-glow);
+  flex-shrink: 0;
+}
+
+.section-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* Ornamental corner borders */
+.ornate-border {
+  position: relative;
+}
+
+.ornate-border::before,
+.ornate-border::after {
+  content: '✦';
+  position: absolute;
+  color: rgba(212, 175, 55, 0.3);
+  font-size: 1rem;
+}
+
+.ornate-border::before { top: 12px; left: 12px; }
+.ornate-border::after  { bottom: 12px; right: 12px; }
+
+/* ============================================
+   SECTION STYLES
+============================================ */
+.section {
+  padding: 80px 40px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+  color: var(--gold);
+  text-align: center;
+  letter-spacing: 4px;
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 1px;
+  background: var(--gold);
+  margin: 14px auto 0;
+}
+
+/* ============================================
+   FILE UPLOAD
+============================================ */
+.file-upload-area {
+  position: relative;
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  padding: 36px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-upload-area:hover,
+.file-upload-area.dragover {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+}
+
+.file-upload-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.file-upload-icon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.file-upload-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+
+.file-upload-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  margin-top: 6px;
+}
+
+.file-selected-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin-top: 10px;
+}
+
+/* ============================================
+   LOADING SPINNER
+============================================ */
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: var(--black);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   TOAST NOTIFICATION
+============================================ */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--black-mid);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 14px 22px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  z-index: 9999;
+  transform: translateX(130%);
+  transition: transform 0.4s ease;
+  box-shadow: 0 0 30px var(--gold-dim);
+  max-width: 300px;
+}
+
+.toast.show {
+  transform: translateX(0);
+}
+
+.toast.toast-error {
+  border-color: var(--error);
+  color: #ff8888;
+}
+
+.toast.toast-success {
+  border-color: var(--success);
+  color: #81C784;
+}
+
+/* ============================================
+   SCROLL REVEAL ANIMATION
+============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+============================================ */
+@media (max-width: 768px) {
+  .topbar { padding: 14px 20px; }
+  .section { padding: 60px 20px; }
+  .hide-mobile { display: none !important; }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop { display: none !important; }
+}
