@@ -4,15 +4,15 @@
 // Golden Night Prom Management System
 // ============================================
 
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');       // Change for production
-define('DB_PASS', '');           // Change for production
-define('DB_NAME', 'prom_system');
+define('DB_HOST', 'sql311.infinityfree.com');
+define('DB_USER', 'if0_41311380');
+define('DB_PASS', 'F3glBaEgnP');
+define('DB_NAME', 'if0_41311380_prom');
 define('DB_CHARSET', 'utf8mb4');
 
 // Application settings
 define('APP_NAME', 'Golden Night 2026');
-define('APP_URL', 'http://localhost/prom-system');
+define('APP_URL', 'http://goldennight2026.kesug.com');
 define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');
 define('TICKET_PRICE_INTERNAL', 25000);
 define('TICKET_PRICE_EXTERNAL', 30000);

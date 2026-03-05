@@ -193,27 +193,10 @@ let verifiedTicket = null;
 let selectedKing = null;
 let selectedQueen = null;
 
-// ============================================================
-// DEMO CANDIDATES (would load from PHP API in production)
-// ============================================================
-const demoCandidates = {
-  king: [
-    { id: 1, name: 'Alexander Kim', class_school: 'XII IPA 1', bio: 'Student council president, basketball captain, aspiring engineer.' },
-    { id: 2, name: 'Marcus Santos', class_school: 'XII IPS 2', bio: 'Theatre lead, debate champion, passionate about social change.' },
-    { id: 3, name: 'Daniel Reyes', class_school: 'XII IPA 3', bio: 'Valedictorian candidate, chess club president, future doctor.' },
-    { id: 4, name: 'Nathan Cruz', class_school: 'XII IPS 1', bio: 'Music director, choir leader, brings joy wherever he goes.' },
-  ],
-  queen: [
-    { id: 5, name: 'Sophia Tan', class_school: 'XII IPA 2', bio: 'Student journalist, volunteer coordinator, future journalist.' },
-    { id: 6, name: 'Isabella Park', class_school: 'XII IPS 3', bio: 'Dance captain, art club leader, creative spirit of the year.' },
-    { id: 7, name: 'Aurora Lim', class_school: 'XII IPA 1', bio: 'Science olympiad winner, environmental advocate, compassionate leader.' },
-    { id: 8, name: 'Maya Rivera', class_school: 'XII IPS 2', bio: 'School photographer, yearbook editor, capturing life\'s precious moments.' },
-  ]
-};
-
 async function verifyTicket() {
   const input = document.getElementById('ticketInput').value.trim().toUpperCase();
   const errDiv = document.getElementById('authError');
+  errDiv.classList.remove('show');
 
   if (!input || input.length < 8) {
     errDiv.textContent = 'Please enter a valid ticket ID.';
@@ -222,7 +205,7 @@ async function verifyTicket() {
   }
 
   try {
-    const res = await fetch(`vote_api.php?action=verify&ticket_id=${encodeURIComponent(input)}`);
+    const res  = await fetch(`vote_api.php?action=verify&ticket_id=${encodeURIComponent(input)}`);
     const data = await res.json();
     if (data.success) {
       verifiedTicket = data.ticket;
@@ -232,14 +215,8 @@ async function verifyTicket() {
       errDiv.classList.add('show');
     }
   } catch (e) {
-    // Demo mode
-    if (input.startsWith('GN')) {
-      verifiedTicket = { ticket_id: input, full_name: 'Demo Attendee', already_voted: false };
-      showVoting(verifiedTicket);
-    } else {
-      errDiv.textContent = 'Invalid ticket ID. Please check and try again.';
-      errDiv.classList.add('show');
-    }
+    errDiv.textContent = 'Could not connect. Please try again.';
+    errDiv.classList.add('show');
   }
 }
 
@@ -251,26 +228,49 @@ function showVoting(ticket) {
     document.querySelector('.success-vote p').textContent = 'You have already cast your votes. Results will be revealed at the ceremony.';
     return;
   }
-
   document.getElementById('authBox').style.display = 'none';
   document.getElementById('voterName').textContent = ticket.full_name + ' · ' + ticket.ticket_id;
   document.getElementById('votingSection').classList.add('show');
-  renderCandidates();
+  loadCandidates();
 }
 
-function renderCandidates() {
-  renderGrid('kingGrid', demoCandidates.king, 'king');
-  renderGrid('queenGrid', demoCandidates.queen, 'queen');
+async function loadCandidates() {
+  try {
+    const res  = await fetch('vote_api.php?action=candidates');
+    const data = await res.json();
+
+    if (!data.success) throw new Error(data.message);
+
+    if (!data.king.length && !data.queen.length) {
+      document.getElementById('kingGrid').innerHTML  = '<p style="color:var(--text-dim);font-style:italic;grid-column:1/-1;text-align:center;padding:30px;">No candidates registered yet.</p>';
+      document.getElementById('queenGrid').innerHTML = '<p style="color:var(--text-dim);font-style:italic;grid-column:1/-1;text-align:center;padding:30px;">No candidates registered yet.</p>';
+      return;
+    }
+
+    renderGrid('kingGrid',  data.king,  'king');
+    renderGrid('queenGrid', data.queen, 'queen');
+
+  } catch (e) {
+    document.getElementById('kingGrid').innerHTML  = '<p style="color:var(--error);grid-column:1/-1;text-align:center;padding:30px;">Failed to load candidates. Please refresh.</p>';
+    document.getElementById('queenGrid').innerHTML = '';
+  }
 }
 
 function renderGrid(gridId, candidates, category) {
   const grid = document.getElementById(gridId);
+  if (!candidates.length) {
+    grid.innerHTML = '<p style="color:var(--text-dim);font-style:italic;grid-column:1/-1;text-align:center;padding:30px;">No candidates in this category yet.</p>';
+    return;
+  }
   grid.innerHTML = candidates.map(c => `
-    <div class="candidate-card" id="card-${c.id}" onclick="selectCandidate(${c.id}, '${category}', '${c.name}')">
+    <div class="candidate-card" id="card-${c.id}" onclick="selectCandidate(${c.id}, '${category}', '${c.full_name.replace(/'/g,"\\'")}')">
       <div class="vote-ring"></div>
-      <div class="candidate-photo-placeholder">${category === 'king' ? '👑' : '👸'}</div>
+      ${c.photo
+        ? `<img src="../${c.photo}" class="candidate-photo" alt="${c.full_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="candidate-photo-placeholder" style="display:none">${category === 'king' ? '👑' : '👸'}</div>`
+        : `<div class="candidate-photo-placeholder">${category === 'king' ? '👑' : '👸'}</div>`
+      }
       <div class="candidate-info">
-        <div class="candidate-name">${c.name}</div>
+        <div class="candidate-name">${c.full_name}</div>
         <div class="candidate-class">${c.class_school}</div>
         <div class="candidate-bio">"${c.bio}"</div>
       </div>
@@ -279,7 +279,6 @@ function renderGrid(gridId, candidates, category) {
 }
 
 function selectCandidate(id, category, name) {
-  // Deselect previous in category
   if (category === 'king') {
     if (selectedKing) document.getElementById('card-' + selectedKing)?.classList.remove('selected');
     selectedKing = id;
@@ -290,13 +289,7 @@ function selectCandidate(id, category, name) {
     document.getElementById('summaryQueen').textContent = name;
   }
   document.getElementById('card-' + id).classList.add('selected');
-
-  // Update summary
-  if (selectedKing || selectedQueen) {
-    document.getElementById('voteSummary').classList.add('show');
-  }
-
-  // Enable submit if both selected
+  if (selectedKing || selectedQueen) document.getElementById('voteSummary').classList.add('show');
   document.getElementById('submitVoteBtn').disabled = !(selectedKing && selectedQueen);
 }
 
@@ -308,13 +301,13 @@ async function submitVote() {
   btn.textContent = 'Submitting...';
 
   try {
-    const res = await fetch('vote_api.php', {
-      method: 'POST',
+    const res  = await fetch('vote_api.php', {
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body:    JSON.stringify({
         ticket_id: verifiedTicket.ticket_id,
-        king_id: selectedKing,
-        queen_id: selectedQueen
+        king_id:   selectedKing,
+        queen_id:  selectedQueen
       })
     });
     const data = await res.json();
@@ -323,11 +316,12 @@ async function submitVote() {
     } else {
       alert(data.message || 'Voting failed. Please try again.');
       btn.disabled = false;
-      btn.textContent = '✦ Submit My Votes';
+      btn.textContent = '✦   Submit My Votes';
     }
   } catch (e) {
-    // Demo success
-    showVoteSuccess();
+    alert('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = '✦   Submit My Votes';
   }
 }
 
