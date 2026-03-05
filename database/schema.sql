@@ -95,10 +95,10 @@ CREATE TABLE IF NOT EXISTS prom_settings (
 INSERT INTO prom_settings (setting_key, setting_value) VALUES
 ('prom_name', 'Golden Night 2026'),
 ('prom_date', '2026-06-15 18:00:00'),
-('prom_venue', 'Grand Ballroom, City Hotel'),
+('prom_venue', 'Iwacu Garden, Kicukiro'),
 ('dress_code', 'Black Tie / Evening Gown'),
-('ticket_price_internal', '50000'),
-('ticket_price_external', '75000'),
+('ticket_price_internal', '25000'),
+('ticket_price_external', '30000'),
 ('tickets_available', '300'),
 ('voting_enabled', '1'),
 ('registration_enabled', '1'),

@@ -107,16 +107,18 @@ switch ($action) {
     // UPDATE CANDIDATE STATUS
     // ============================================
     case 'update_candidate':
-        $id = (int) ($body['id'] ?? 0);
+        $id     = (int) ($body['id'] ?? 0);
         $status = $body['status'] ?? 'pending';
         if (!in_array($status, ['approved', 'rejected', 'pending'])) {
             jsonResponse(['success' => false, 'message' => 'Invalid status']);
         }
-        
-        $approved_at = $status === 'approved' ? 'NOW()' : 'NULL';
-        $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = {$approved_at} WHERE id = ?");
+        if ($status === 'approved') {
+            $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = NOW() WHERE id = ?");
+        } else {
+            $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = NULL WHERE id = ?");
+        }
         $stmt->execute([$status, $id]);
-        jsonResponse(['success' => true, 'message' => "Candidate {$status}."]); 
+        jsonResponse(['success' => true, 'message' => "Candidate {$status}."]);
 
     // ============================================
     // GET VOTES DATA

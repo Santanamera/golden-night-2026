@@ -35,40 +35,38 @@ if (!preg_match('/^[0-9+\-\s]{8,20}$/', $phone)) {
 }
 
 // ============================================
-// Handle file upload
+// Handle file upload (optional if MoMo used)
 // ============================================
 $paymentProofPath = null;
+$momoRequested = ($_POST['momo_requested'] ?? '0') === '1';
 
-if (!isset($_FILES['payment_proof']) || $_FILES['payment_proof']['error'] !== UPLOAD_ERR_OK) {
-    jsonResponse(['success' => false, 'message' => 'Payment proof is required.']);
+if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
+    $file = $_FILES['payment_proof'];
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+    $maxSize = 5 * 1024 * 1024;
+
+    if (!in_array($file['type'], $allowedTypes)) {
+        jsonResponse(['success' => false, 'message' => 'Invalid file type. Use JPG, PNG, or PDF.']);
+    }
+    if ($file['size'] > $maxSize) {
+        jsonResponse(['success' => false, 'message' => 'File too large. Maximum 5MB.']);
+    }
+
+    $uploadDir = __DIR__ . '/../assets/uploads/tickets/';
+    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+    $ext      = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $fileName = 'payment_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+    $uploadPath = $uploadDir . $fileName;
+
+    if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        jsonResponse(['success' => false, 'message' => 'Failed to upload payment proof.']);
+    }
+    $paymentProofPath = 'assets/uploads/tickets/' . $fileName;
+
+} elseif (!$momoRequested) {
+    jsonResponse(['success' => false, 'message' => 'Please upload payment proof or send a MoMo request first.']);
 }
-
-$file = $_FILES['payment_proof'];
-$allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
-$maxSize = 5 * 1024 * 1024; // 5MB
-
-if (!in_array($file['type'], $allowedTypes)) {
-    jsonResponse(['success' => false, 'message' => 'Invalid file type. Use JPG, PNG, or PDF.']);
-}
-
-if ($file['size'] > $maxSize) {
-    jsonResponse(['success' => false, 'message' => 'File too large. Maximum 5MB.']);
-}
-
-$uploadDir = __DIR__ . '/../assets/uploads/tickets/';
-if (!is_dir($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
-}
-
-$ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-$fileName = 'payment_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-$uploadPath = $uploadDir . $fileName;
-
-if (!move_uploaded_file($file['tmp_name'], $uploadPath)) {
-    jsonResponse(['success' => false, 'message' => 'Failed to upload payment proof.']);
-}
-
-$paymentProofPath = 'assets/uploads/tickets/' . $fileName;
 
 // ============================================
 // Generate ticket ID and save to DB

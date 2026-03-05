@@ -386,7 +386,7 @@ async function api(action,method='GET',body=null){
 
 // ---- DASHBOARD ----
 async function loadDash(){
-  tickets=DEMO_T; cands=DEMO_C;
+  tickets=[];cands=[];
   try{const d=await api('tickets');   if(d.success&&d.tickets)tickets=d.tickets;}catch{}
   try{const d=await api('candidates');if(d.success&&d.candidates)cands=d.candidates;}catch{}
 
@@ -418,7 +418,7 @@ function set(id,val){const e=document.getElementById(id);if(e)e.textContent=val;
 
 // ---- TICKETS ----
 async function loadTickets(){
-  try{const d=await api('tickets');tickets=d.success?d.tickets:DEMO_T;}catch{tickets=DEMO_T;}
+  try{const d=await api('tickets');tickets=d.success?d.tickets:[];}catch{tickets=[];}
   renderTickets();
 }
 function setTF(f,btn){tFilter=f;document.querySelectorAll('#pg-tickets .ft').forEach(b=>b.classList.remove('on'));btn?.classList.add('on');renderTickets();}
@@ -448,7 +448,7 @@ async function rejP(id){if(!confirm('Reject payment for '+id+'?'))return;try{awa
 
 // ---- CANDIDATES ----
 async function loadCandidates(){
-  try{const d=await api('candidates');cands=d.success?d.candidates:DEMO_C;}catch{cands=DEMO_C;}
+  try{const d=await api('candidates');cands=d.success?d.candidates:[];}catch{cands=[];}
   renderCands();
 }
 function setCF(f,btn){cFilter=f;document.querySelectorAll('#pg-candidates .ft').forEach(b=>b.classList.remove('on'));btn?.classList.add('on');renderCands();}
@@ -504,7 +504,7 @@ async function doScan(){
     const r=await fetch('../public/scan_api.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticket_id:id})});
     showScan(await r.json());
   }catch{
-    const d=tickets.find(t=>t.ticket_id===id)||DEMO_T.find(t=>t.ticket_id===id);
+    const d=tickets.find(t=>t.ticket_id===id);
     if(!d) showScan({result:'invalid',message:'Ticket not found.'});
     else if(d.ticket_status==='used') showScan({result:'already_used',message:'Already scanned.',ticket:d});
     else{d.ticket_status='used';showScan({result:'valid',message:'Entry granted!',ticket:d});}
@@ -526,7 +526,7 @@ function showScan(data){
 // ---- EXPORT ----
 function exportCSV(t){
   let csv='',fn='';
-  if(t==='tickets'){fn='golden-night-tickets.csv';csv='Ticket ID,Name,Class,Phone,Type,Payment,Entry,Amount\n';(tickets.length?tickets:DEMO_T).forEach(x=>{csv+=`${x.ticket_id},"${x.full_name}","${x.class_school}",${x.phone},${x.student_type},${x.payment_status},${x.ticket_status},${x.amount_paid}\n`;});}
+  if(t==='tickets'){fn='golden-night-tickets.csv';csv='Ticket ID,Name,Class,Phone,Type,Payment,Entry,Amount\n';tickets.forEach(x=>{csv+=`${x.ticket_id},"${x.full_name}","${x.class_school}",${x.phone},${x.student_type},${x.payment_status},${x.ticket_status},${x.amount_paid}\n`;});}
   else{fn='golden-night-votes.csv';csv='Ticket ID,King Vote,Queen Vote,Time\n';}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=fn;a.click();
   toast('Exported: '+fn,'ok');

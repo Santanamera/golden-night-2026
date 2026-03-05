@@ -4,15 +4,17 @@
 // Golden Night Prom Management System
 // ============================================
 
-define('DB_HOST', 'sql311.infinityfree.com');
-define('DB_USER', 'if0_41311380');
-define('DB_PASS', 'F3glBaEgnP');
-define('DB_NAME', 'if0_41311380_prom');
+// Railway uses environment variables — falls back to InfinityFree credentials
+define('DB_HOST',    getenv('MYSQLHOST')    ?: 'sql311.infinityfree.com');
+define('DB_USER',    getenv('MYSQLUSER')    ?: 'if0_41311380');
+define('DB_PASS',    getenv('MYSQLPASSWORD')?: 'F3glBaEgnP');
+define('DB_NAME',    getenv('MYSQLDATABASE')?: 'if0_41311380_prom');
+define('DB_PORT',    getenv('MYSQLPORT')    ?: '3306');
 define('DB_CHARSET', 'utf8mb4');
 
-// Application settings
+// Application URL
 define('APP_NAME', 'Golden Night 2026');
-define('APP_URL', 'http://goldennight2026.kesug.com');
+define('APP_URL',  getenv('APP_URL') ?: 'https://goldennight2026.kesug.com');
 define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');
 define('TICKET_PRICE_INTERNAL', 25000);
 define('TICKET_PRICE_EXTERNAL', 30000);
@@ -29,7 +31,7 @@ function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {
         try {
-            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+            $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
             $options = [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -107,7 +109,7 @@ function clean(string $input): string {
  * Format currency (IDR)
  */
 function formatCurrency(float $amount): string {
-    return 'Rp ' . number_format($amount, 0, ',', '.');
+    return 'Rwf ' . number_format($amount, 0, '.', ',');
 }
 
 /**

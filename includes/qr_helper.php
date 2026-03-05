@@ -56,7 +56,7 @@ function generateAndSaveQR(string $ticketId, string $data): string {
 function generateTicketHTML(array $ticket): string {
     $promName = getSetting('prom_name', 'Golden Night 2026');
     $promDate = getSetting('prom_date', '2026-06-15 18:00:00');
-    $promVenue = getSetting('prom_venue', 'Grand Ballroom');
+    $promVenue = getSetting('prom_venue', 'Iwacu Garden, Kicukiro');
     $formattedDate = date('F j, Y • g:i A', strtotime($promDate));
     
     $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . 
