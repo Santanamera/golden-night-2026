@@ -1,3 +1,7 @@
+<?php
+$momoCode = getenv('MOMO_PAYEE_CODE') ?: '11111';
+$momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -297,12 +301,13 @@
 <script>
 // ---- STATE ----
 let selType = 'internal';
-let momoRequested = false;
+let momoRequestSent = false;
+let momoPushSucceeded = false;
 let ticketData = null;
 
-// MTN MoMo merchant code — replace 11111 with real code when ready
-const MOMO_CODE = '11111';
-const MOMO_NAME = 'Kenny';
+// MTN MoMo merchant code and payee name are configurable via environment variables
+const MOMO_CODE = '<?= htmlspecialchars($momoCode, ENT_QUOTES) ?>';
+const MOMO_NAME = '<?= htmlspecialchars($momoName, ENT_QUOTES) ?>';
 
 // ---- TYPE SELECTION ----
 function selectType(t) {
@@ -379,26 +384,28 @@ async function sendMoMoRequest() {
       status.className = 'pay-status done';
       status.textContent = '✅ Request sent! Check your phone and approve the payment of Rwf ' + amt.toLocaleString();
       txt.textContent = '✓ Request Sent';
-      momoRequested = true;
+      momoRequestSent = true;
+      momoPushSucceeded = true;
     } else {
       throw new Error(data.message || 'Request failed');
     }
   } catch (e) {
-    // MTN API not yet configured — show USSD dial instruction clearly
+    // If the backend cannot send the request, show manual payment instructions only.
     status.className = 'pay-status pending';
     status.innerHTML = `
-      <div style="margin-bottom:10px;font-size:1rem;">📱 <strong>Pay via MoMo — 2 ways:</strong></div>
+      <div style="margin-bottom:10px;font-size:1rem;">📱 <strong>MoMo request failed.</strong></div>
       <div style="margin-bottom:8px;">
-        <strong>Option 1 — Dial this code:</strong><br>
-        <span style="font-family:'Courier New',monospace;font-size:1.3rem;color:var(--momo);letter-spacing:3px;display:block;margin-top:4px;">*182*8*1*${MOMO_CODE}*${amt}#</span>
+        <strong>Use manual payment instead:</strong><br>
+        Dial: <span style="font-family:'Courier New',monospace;font-size:1.3rem;color:var(--momo);letter-spacing:3px;display:block;margin-top:4px;">*182*8*1*${MOMO_CODE}*${amt}#</span>
       </div>
       <div>
-        <strong>Option 2 — MoMo App:</strong><br>
-        Open MoMo app → Pay → Enter code <strong style="color:var(--momo)">${MOMO_CODE}</strong> → Amount: <strong>Rwf ${amt.toLocaleString()}</strong>
+        Or use the MTN MoMo app and pay to code <strong style="color:var(--momo)">${MOMO_CODE}</strong> for Rwf <strong>${amt.toLocaleString()}</strong>.
       </div>
+      <div style="margin-top:12px;color:var(--text-dim);font-size:0.9rem;">Upload the payment screenshot below to complete the registration.</div>
     `;
-    txt.textContent = '✓ Instructions Shown ↑';
-    momoRequested = true;
+    txt.textContent = 'Try Again';
+    momoRequestSent = false;
+    momoPushSucceeded = false;
     btn.disabled = false;
   }
 }
@@ -420,7 +427,7 @@ async function submitTicket() {
   if (!name)  return showErr('Please enter your full name.');
   if (!cls)   return showErr('Please enter your class or school.');
   if (!phone) return showErr('Please enter your phone number.');
-  if (!momoRequested && !file) return showErr('Please send a MoMo request or upload payment proof.');
+  if (!momoPushSucceeded && !file) return showErr('Please send a MoMo request or upload payment proof.');
   if (file && file.size > 5 * 1024 * 1024) return showErr('File too large. Max 5MB.');
 
   btn.disabled = true;

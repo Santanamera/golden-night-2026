@@ -11,13 +11,18 @@ header('Content-Type: application/json');
 // ============================================
 // CREDENTIALS
 // ============================================
-define('MOMO_SUB_KEY',    'd71acf6855ad4c1391ab52e041f6e783');
-define('MOMO_API_USER',   '2f36f198-ae44-46f0-b2de-59cde6a3f033');
-define('MOMO_API_KEY',    'e96530b0795745f893d3cc74abc7bd88');
-define('MOMO_ENV',        'sandbox');
-define('MOMO_BASE_URL',   'https://sandbox.momodeveloper.mtn.com');
-define('MOMO_CURRENCY',   'EUR');
-define('MOMO_CALLBACK',   'https://goldennight2026.kesug.com/public/momo_callback.php');
+define('MOMO_SUB_KEY', getenv('MOMO_SUB_KEY') ?: 'd71acf6855ad4c1391ab52e041f6e783');
+define('MOMO_API_USER', getenv('MOMO_API_USER') ?: '2f36f198-ae44-46f0-b2de-59cde6a3f033');
+define('MOMO_API_KEY', getenv('MOMO_API_KEY') ?: 'e96530b0795745f893d3cc74abc7bd88');
+define('MOMO_ENV', getenv('MOMO_ENV') ?: 'sandbox');
+define('MOMO_BASE_URL', getenv('MOMO_BASE_URL') ?: 'https://sandbox.momodeveloper.mtn.com');
+define('MOMO_CURRENCY', getenv('MOMO_CURRENCY') ?: 'EUR');
+define('MOMO_CALLBACK', getenv('MOMO_CALLBACK') ?: APP_URL . '/public/momo_callback.php');
+
+if (!MOMO_SUB_KEY || !MOMO_API_USER || !MOMO_API_KEY) {
+    echo json_encode(['success' => false, 'message' => 'MTN MoMo credentials are not configured.']);
+    exit;
+}
 
 // ============================================
 // READ INPUT
