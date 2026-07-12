@@ -1,6 +1,8 @@
 <?php
-$momoCode = getenv('MOMO_PAYEE_CODE') ?: '11111';
-$momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+$momoCode = trim((string) (getenv('MOMO_PAYEE_CODE') ?: ''));
+$momoName = trim((string) (getenv('MOMO_PAYEE_NAME') ?: ''));
+$isMomoRecipientConfigured = $momoCode !== '' && $momoName !== '';
+$isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MOMO_SUB_KEY')) !== '' && trim((string) getenv('MOMO_API_USER')) !== '' && trim((string) getenv('MOMO_API_KEY')) !== '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,6 +47,8 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
     .event-info{margin-top:28px;padding:18px 20px;background:rgba(212,175,55,0.04);border-left:2px solid var(--gold);}
     .event-info p{font-size:0.9rem;color:var(--text-dim);line-height:2;}
     .event-info strong{color:var(--text);}
+    .event-info a{color:var(--gold-light);text-decoration:none;border-bottom:1px dotted rgba(240,208,96,0.65);}
+    .event-info a:hover{color:var(--gold);border-bottom-color:var(--gold);}
 
     /* RIGHT — Form */
     .form-panel{background:var(--black-soft);border:1px solid rgba(212,175,55,0.15);padding:38px;position:relative;overflow:hidden;}
@@ -97,6 +101,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
     .pay-status.pending{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);color:#FFC107;display:block;}
     .pay-status.done{background:rgba(76,175,80,0.1);border:1px solid rgba(76,175,80,0.3);color:#81C784;display:block;}
     .pay-status.fail{background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);color:#ff8888;display:block;}
+    .pay-status.info{background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.35);color:#f0d060;display:block;}
 
     /* Divider */
     .or-divider{display:flex;align-items:center;gap:12px;margin:16px 0;}
@@ -163,30 +168,25 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
     <h1>Secure Your Ticket</h1>
     <p>Join us for an unforgettable evening. Limited seats — reserve yours now before they're gone.</p>
 
-    <div class="price-card sel" id="card-internal" onclick="selectType('internal')">
-      <div class="pc-dot" id="dot-internal"></div>
-      <div class="pc-top"><div class="pc-type">Internal Student</div><div class="pc-amt">Rwf 25,000</div></div>
-      <div class="pc-desc">Currently enrolled TVET / REB student of the school</div>
-    </div>
-
-    <div class="price-card" id="card-external" onclick="selectType('external')">
-      <div class="pc-dot" id="dot-external"></div>
-      <div class="pc-top"><div class="pc-type">External Guest</div><div class="pc-amt">Rwf 30,000</div></div>
-      <div class="pc-desc">Family members, alumni, and invited guests</div>
+    <div class="price-card sel" id="card-general">
+      <div class="pc-dot" id="dot-general"></div>
+      <div class="pc-top"><div class="pc-type">General Admission</div><div class="pc-amt">Rwf 30,000</div></div>
+      <div class="pc-desc">One entrance fee for everyone — no separate internal/external pricing.</div>
     </div>
 
     <div class="event-info">
       <p>
-        📅 <strong>June 2026</strong> (Date TBD)<br>
-        📍 <strong>Iwacu Garden, Kicukiro</strong><br>
-        ⏰ Doors open at 6:00 PM<br>
+        📅 <strong>Event date:</strong> 14th August 2026<br>
+        📍 <strong>Venue:</strong> Intare Arena <em>(proposed, final confirmation pending)</em><br>
+        ⏰ <strong>Entry time:</strong> Program schedule to be announced<br>
+        🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Intare+Arena+Kigali" target="_blank" rel="noopener">Open in Google Maps</a><br>
         🎟️ QR ticket generated instantly<br>
-        📱 Payment via MTN MoMo
+        📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
       </p>
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
+  <!-- RIGHT PANEL — Registration Form -->
   <div class="form-panel">
     <h2 class="form-title">Registration Form</h2>
 
@@ -199,8 +199,8 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
 
     <div class="form-row">
       <div class="fg">
-        <label class="fl">Year / Class *</label>
-        <input type="text" id="classSchool" class="fi" placeholder="e.g. S6 TVET" maxlength="100"/>
+        <label class="fl">Index number *</label>
+        <input type="text" id="indexNumber" class="fi" placeholder="Enter your national examination index number" maxlength="100"/>
       </div>
       <div class="fg">
         <label class="fl">Your Phone *</label>
@@ -208,13 +208,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
       </div>
     </div>
 
-    <div class="fg">
-      <label class="fl">Student Type *</label>
-      <select id="studentType" class="fi" onchange="onTypeChange()">
-        <option value="internal">Internal Student — Rwf 25,000</option>
-        <option value="external">External Guest — Rwf 30,000</option>
-      </select>
-    </div>
+    <input type="hidden" id="studentType" value="general" />
 
     <!-- PAYMENT SECTION -->
     <div class="pay-section">
@@ -222,7 +216,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
 
       <div class="total-box">
         <span class="total-lbl">Amount Due</span>
-        <span class="total-val" id="totalAmt">Rwf 25,000</span>
+        <span class="total-val" id="totalAmt">Rwf 30,000</span>
       </div>
 
       <!-- MTN MoMo Push -->
@@ -232,10 +226,16 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
           <div class="momo-label">MTN MoMo Pay</div>
         </div>
         <div class="momo-info">
-          Paying to: <strong>Kenny</strong> &nbsp;·&nbsp; Code: <span class="momo-num">11111</span><br>
-          Enter your MoMo number below and click <strong>"Send MoMo Request"</strong>.<br>
-          You will receive a prompt on your phone to approve the payment.
+          <strong>Primary payment method:</strong> MTN MoMo phone prompt.<br>
+          Paying to: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?></strong> &nbsp;·&nbsp; Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?></span><br>
+          Enter your MoMo number and click <strong>"Send MoMo Request"</strong>. Approve on your phone.
         </div>
+
+        <?php if (!$isMomoPromptConfigured): ?>
+        <div class="pay-status info" id="payConfigNotice">
+          ⚠ MoMo prompt is temporarily unavailable. Fallback to manual payment proof upload while admin completes MoMo prompt configuration.
+        </div>
+        <?php endif; ?>
 
         <label class="fl" style="color:var(--momo);">Your MTN MoMo Number *</label>
         <div class="phone-row">
@@ -244,16 +244,16 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
 
         <div class="pay-status" id="payStatus"></div>
 
-        <button class="momo-btn" id="momoBtn" onclick="sendMoMoRequest()">
+        <button class="momo-btn" id="momoBtn" onclick="sendMoMoRequest()" <?= $isMomoPromptConfigured ? '' : 'disabled' ?>>
           <span>📱</span>
-          <span id="momoBtnText">Send MoMo Request</span>
+          <span id="momoBtnText"><?= $isMomoPromptConfigured ? 'Send MoMo Request' : 'MoMo Prompt Unavailable' ?></span>
         </button>
       </div>
 
       <!-- OR divider -->
       <div class="or-divider">
         <div class="line"></div>
-        <span>or upload proof manually</span>
+        <span>fallback: upload proof manually</span>
         <div class="line"></div>
       </div>
 
@@ -282,7 +282,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
 
   <div class="ticket-card">
     <div class="tc-brand">GOLDEN NIGHT 2026</div>
-    <div class="tc-sub">Official Entry Ticket — Iwacu Garden, Kicukiro</div>
+    <div class="tc-sub">Official Entry Ticket — 14th August 2026 • Intare Arena (proposed)</div>
     <div class="tc-divider"></div>
     <div class="tc-name" id="sName"></div>
     <div class="tc-class" id="sClass"></div>
@@ -300,35 +300,16 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
 
 <script>
 // ---- STATE ----
-let selType = 'internal';
-let momoRequestSent = false;
+let momoRequested = false;
 let momoPushSucceeded = false;
+let momoRefId = null;
+let pollTimer = null;
 let ticketData = null;
+const TICKET_PRICE = 30000;
 
-// MTN MoMo merchant code and payee name are configurable via environment variables
 const MOMO_CODE = '<?= htmlspecialchars($momoCode, ENT_QUOTES) ?>';
 const MOMO_NAME = '<?= htmlspecialchars($momoName, ENT_QUOTES) ?>';
-
-// ---- TYPE SELECTION ----
-function selectType(t) {
-  selType = t;
-  document.getElementById('studentType').value = t;
-  document.querySelectorAll('.price-card').forEach(c => c.classList.remove('sel'));
-  document.getElementById('card-' + t).classList.add('sel');
-  updateTotal();
-}
-
-function onTypeChange() {
-  selType = document.getElementById('studentType').value;
-  document.querySelectorAll('.price-card').forEach(c => c.classList.remove('sel'));
-  document.getElementById('card-' + selType)?.classList.add('sel');
-  updateTotal();
-}
-
-function updateTotal() {
-  const amt = selType === 'internal' ? 25000 : 30000;
-  document.getElementById('totalAmt').textContent = 'Rwf ' + amt.toLocaleString();
-}
+const MOMO_CONFIGURED = <?= $isMomoPromptConfigured ? 'true' : 'false' ?>;
 
 // ---- FILE UPLOAD ----
 function onFile(input) {
@@ -338,107 +319,128 @@ function onFile(input) {
 
 // ---- MOMO PUSH REQUEST ----
 async function sendMoMoRequest() {
-  const phone = document.getElementById('momoPhone').value.trim().replace(/\s/g,'');
-  const name  = document.getElementById('fullName').value.trim();
-  const amt   = selType === 'internal' ? 25000 : 30000;
-  const btn   = document.getElementById('momoBtn');
-  const txt   = document.getElementById('momoBtnText');
-  const status= document.getElementById('payStatus');
-
-  if (!phone) {
-    showErr('Please enter your MTN MoMo number first.');
-    return;
-  }
-  if (!name) {
-    showErr('Please enter your full name first.');
-    return;
+  if (!MOMO_CONFIGURED) {
+    return showErr('MoMo recipient account is not configured yet. Contact admin to set MOMO_PAYEE_NAME and MOMO_PAYEE_CODE.');
   }
 
-  // Validate phone — must start with 07 or +2507 and be 10 digits
+  const phone  = document.getElementById('momoPhone').value.trim().replace(/\s/g,'');
+  const name   = document.getElementById('fullName').value.trim();
+  const btn    = document.getElementById('momoBtn');
+  const txt    = document.getElementById('momoBtnText');
+  const status = document.getElementById('payStatus');
+
+  if (!phone) return showErr('Please enter your MTN MoMo number first.');
+  if (!name)  return showErr('Please enter your full name first.');
+
   const clean = phone.replace(/^\+250/, '0');
   if (!/^07[0-9]{8}$/.test(clean)) {
-    showErr('Please enter a valid MTN Rwanda number (e.g. 0791234567).');
-    return;
+    return showErr('Please enter a valid MTN Rwanda number (e.g. 0791234567).');
   }
 
   btn.disabled = true;
-  txt.textContent = 'Sending request...';
+  txt.textContent = 'Sending request…';
   status.className = 'pay-status pending';
-  status.textContent = '⏳ Sending payment request to ' + phone + '...';
+  status.textContent = '⏳ Sending payment prompt to ' + phone + '…';
 
   try {
-    // Call our backend to trigger MoMo push via MTN MoMo API
-    const res = await fetch('momo_request.php', {
+    const res  = await fetch('momo_request.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        phone:  clean,
-        amount: amt,
-        name:   name,
-        reason: 'Golden Night 2026 Prom Ticket'
-      })
+      body: JSON.stringify({ phone: clean, amount: TICKET_PRICE, name, reason: 'Golden Night 2026 Prom Ticket' })
     });
     const data = await res.json();
 
     if (data.success) {
-      status.className = 'pay-status done';
-      status.textContent = '✅ Request sent! Check your phone and approve the payment of Rwf ' + amt.toLocaleString();
-      txt.textContent = '✓ Request Sent';
-      momoRequestSent = true;
-      momoPushSucceeded = true;
+      momoRefId = data.reference_id;
+      momoRequested = true;
+      status.className = 'pay-status pending';
+      status.textContent = '📱 Prompt sent! Approve the payment on your phone. Waiting for confirmation…';
+      txt.textContent = '⏳ Awaiting approval…';
+      startPolling(momoRefId, status, btn, txt);
     } else {
       throw new Error(data.message || 'Request failed');
     }
   } catch (e) {
-    // If the backend cannot send the request, show manual payment instructions only.
-    status.className = 'pay-status pending';
+    status.className = 'pay-status fail';
     status.innerHTML = `
-      <div style="margin-bottom:10px;font-size:1rem;">📱 <strong>MoMo request failed.</strong></div>
-      <div style="margin-bottom:8px;">
-        <strong>Use manual payment instead:</strong><br>
-        Dial: <span style="font-family:'Courier New',monospace;font-size:1.3rem;color:var(--momo);letter-spacing:3px;display:block;margin-top:4px;">*182*8*1*${MOMO_CODE}*${amt}#</span>
-      </div>
-      <div>
-        Or use the MTN MoMo app and pay to code <strong style="color:var(--momo)">${MOMO_CODE}</strong> for Rwf <strong>${amt.toLocaleString()}</strong>.
-      </div>
-      <div style="margin-top:12px;color:var(--text-dim);font-size:0.9rem;">Upload the payment screenshot below to complete the registration.</div>
+      <strong>📱 MoMo prompt could not be sent.</strong><br>
+      Use manual payment instead — dial:<br>
+      <span style="font-family:'Courier New',monospace;font-size:1.3rem;color:var(--momo);letter-spacing:3px;">
+        *182*8*1*${MOMO_CODE}*${TICKET_PRICE}#
+      </span><br>
+      <small style="color:var(--text-dim);">Or pay Rwf ${TICKET_PRICE.toLocaleString()} to code
+        <strong style="color:var(--momo)">${MOMO_CODE}</strong> (${MOMO_NAME}) via MoMo app.</small><br>
+      Then upload your screenshot below.
     `;
     txt.textContent = 'Try Again';
-    momoRequestSent = false;
-    momoPushSucceeded = false;
     btn.disabled = false;
   }
 }
 
-// ---- SUBMIT ----
-async function submitTicket() {
-  const btn   = document.getElementById('submitBtn');
-  const errBox= document.getElementById('errBox');
+// ---- POLL PAYMENT STATUS ----
+function startPolling(refId, statusEl, btn, txt) {
+  let attempts = 0;
+  const MAX = 24; // poll up to ~2 minutes (24 × 5s)
 
-  const name  = document.getElementById('fullName').value.trim();
-  const cls   = document.getElementById('classSchool').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const type  = document.getElementById('studentType').value;
-  const file  = document.getElementById('paymentProof').files[0];
+  pollTimer = setInterval(async () => {
+    attempts++;
+    try {
+      const r = await fetch('momo_status.php?ref=' + encodeURIComponent(refId));
+      const d = await r.json();
+
+      if (d.status === 'successful') {
+        clearInterval(pollTimer);
+        momoPushSucceeded = true;
+        statusEl.className = 'pay-status done';
+        statusEl.textContent = '✅ Payment confirmed! Fill in your details and complete registration.';
+        btn.textContent = '✓ Payment Confirmed';
+      } else if (d.status === 'failed') {
+        clearInterval(pollTimer);
+        statusEl.className = 'pay-status fail';
+        statusEl.textContent = '❌ Payment was declined or timed out. Please try again or upload proof manually.';
+        txt.textContent = 'Try Again';
+        btn.disabled = false;
+      } else if (attempts >= MAX) {
+        clearInterval(pollTimer);
+        statusEl.className = 'pay-status pending';
+        statusEl.textContent = '⏰ Timed out waiting for approval. If you approved, upload a screenshot below and we will verify manually.';
+        txt.textContent = 'Send Again';
+        btn.disabled = false;
+      }
+    } catch { /* network glitch — keep polling */ }
+  }, 5000);
+}
+
+// ---- SUBMIT REGISTRATION ----
+async function submitTicket() {
+  const btn    = document.getElementById('submitBtn');
+  const errBox = document.getElementById('errBox');
+
+  const name   = document.getElementById('fullName').value.trim();
+  const index  = document.getElementById('indexNumber').value.trim();
+  const phone  = document.getElementById('phone').value.trim();
+  const file   = document.getElementById('paymentProof').files[0];
 
   errBox.className = 'err-box';
 
-  // Validation
   if (!name)  return showErr('Please enter your full name.');
-  if (!cls)   return showErr('Please enter your class or school.');
+  if (!index) return showErr('Please enter your index number.');
   if (!phone) return showErr('Please enter your phone number.');
-  if (!momoPushSucceeded && !file) return showErr('Please send a MoMo request or upload payment proof.');
+  if (!momoPushSucceeded && !file) {
+    return showErr('Please send a MoMo request (and wait for approval) or upload a payment screenshot.');
+  }
   if (file && file.size > 5 * 1024 * 1024) return showErr('File too large. Max 5MB.');
 
   btn.disabled = true;
-  btn.textContent = '⏳  Registering...';
+  btn.textContent = '⏳  Registering…';
 
   const fd = new FormData();
-  fd.append('full_name',    name);
-  fd.append('class_school', cls);
-  fd.append('phone',        phone);
-  fd.append('student_type', type);
+  fd.append('full_name',      name);
+  fd.append('index_number',   index);
+  fd.append('phone',          phone);
+  fd.append('student_type',   'general');
   fd.append('momo_requested', momoRequested ? '1' : '0');
+  if (momoRefId) fd.append('momo_reference', momoRefId);
   if (file) fd.append('payment_proof', file);
 
   try {
@@ -454,10 +456,9 @@ async function submitTicket() {
       btn.textContent = '✦   Complete Registration';
     }
   } catch {
-    // Demo fallback — still saves visual ticket
-    const fakeId = 'GN2026' + Math.random().toString(36).substr(2,6).toUpperCase();
-    ticketData = { ticket_id: fakeId, full_name: name, class_school: cls, student_type: type };
-    showSuccess(ticketData);
+    showErr('Network error. Please check your connection and try again.');
+    btn.disabled = false;
+    btn.textContent = '✦   Complete Registration';
   }
 }
 
@@ -469,17 +470,16 @@ function showErr(msg) {
 }
 
 function showSuccess(t) {
+  if (pollTimer) clearInterval(pollTimer);
   const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(t.ticket_id)}&bgcolor=111108&color=D4AF37&margin=10`;
-  document.getElementById('sQR').src    = qr;
-  document.getElementById('sId').textContent    = t.ticket_id;
-  document.getElementById('sName').textContent  = t.full_name;
-  document.getElementById('sClass').textContent = t.class_school + ' · ' + t.student_type;
+  document.getElementById('sQR').src   = qr;
+  document.getElementById('sId').textContent   = t.ticket_id;
+  document.getElementById('sName').textContent = t.full_name;
+  document.getElementById('sClass').textContent = t.class_school;
   document.getElementById('successOverlay').classList.add('show');
 }
 
-function printTicket() {
-  window.print();
-}
+function printTicket() { window.print(); }
 </script>
 </body>
 </html>

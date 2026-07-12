@@ -38,9 +38,8 @@ Copy this folder into `C:\xampp\htdocs\prom-system\`
 2. Create database: `prom_system`
 3. Import: `database/schema.sql`
 
-### 4. Fix Admin Password
-Visit: `http://localhost/prom-system/reset_password.php`  
-**Delete `reset_password.php` after.**
+### 4. Configure Admin Password
+Set `ADMIN_PORTAL_PASSWORD` in your environment or Apache/PHP config. Do not store admin passwords in repository files.
 
 ### 5. URLs
 | Page | URL |
@@ -51,13 +50,13 @@ Visit: `http://localhost/prom-system/reset_password.php`
 | Audition | `http://localhost/prom-system/public/audition.php` |
 | Admin | `http://localhost/prom-system/admin/login.php` |
 
-**Admin:** `admin` / `prom2026`
+Admin access is controlled by the `ADMIN_PORTAL_PASSWORD` environment variable.
 
 ---
 
 ## 💳 MTN MoMo Payment
 
-Update `MOMO_MERCHANT_CODE` in `public/momo_request.php` with your real merchant code.  
+Configure MTN MoMo environment variables instead of editing code. Set `MOMO_PAYEE_CODE`, `MOMO_PAYEE_NAME`, `MOMO_SUB_KEY`, `MOMO_API_USER`, and `MOMO_API_KEY` in your environment.  
 Students pay by dialing: `*182*8*1*[CODE]*[AMOUNT]#`
 
 ---
@@ -66,4 +65,4 @@ Students pay by dialing: `*182*8*1*[CODE]*[AMOUNT]#`
 
 - **Venue:** Iwacu Garden, Kicukiro, Kigali
 - **Date:** June 2026 (TBD)
-- **Prices:** Rwf 25,000 (internal) · Rwf 30,000 (external)
+- **Prices:** Rwf 30,000 (single price for all attendees)

@@ -231,8 +231,8 @@ async function submitAudition() {
       errDiv.style.display = 'block';
     }
   } catch (e) {
-    // Demo mode
-    showSuccess(name, cat);
+    errDiv.textContent = 'Submission failed. Please try again or contact admin.';
+    errDiv.style.display = 'block';
   }
 
   btn.disabled = false;

@@ -41,8 +41,8 @@ php bin/init_db.php
    - Create a test ticket (use sandbox MoMo credentials or upload proof)
 
 8) MTN MoMo sandbox setup
-   - Use `public/setup_momo.php` locally (or from a server with outbound access) to register API user and get an API key.
-   - Copy `API User UUID` and `API Key` into Railway env vars `MOMO_API_USER` and `MOMO_API_KEY`.
+   - Configure MTN sandbox API credentials securely and set `MOMO_SUB_KEY`, `MOMO_API_USER`, and `MOMO_API_KEY` as environment variables.
+   - Do not leave helper credential-generation scripts or setup pages in production.
 
 9) Notes
    - InfinityFree blocks outbound requests — Railway does not.

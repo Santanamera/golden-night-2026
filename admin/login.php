@@ -1,3 +1,10 @@
+<?php
+require_once '../includes/config.php';
+if (isAdminLoggedIn()) {
+    header('Location: dashboard.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -215,17 +222,12 @@
 
 <script>
 // ============================================================
-// CREDENTIALS
-// Change these here if you want different login details
+// Admin login uses server-side credentials only.
 // ============================================================
-const ADMIN_CREDENTIALS = {
-  'admin': 'prom2026'
-  // Add more admins: 'username2': 'password2'
-};
 
 // ============================================================
 // LOGIN FUNCTION
-// Tries PHP first, falls back to JS credentials above
+// Uses PHP auth and redirects to dashboard on success.
 // ============================================================
 async function login() {
   const u   = document.getElementById('uname').value.trim();
@@ -256,20 +258,9 @@ async function login() {
     const data = await res.json();
     if (data.success) {
       phpSuccess = true;
-      sessionStorage.setItem('admin_demo', '1');
-      sessionStorage.setItem('admin_name', data.admin?.name || u);
     }
   } catch {
-    // PHP not available — use JS fallback below
-  }
-
-  // ---- JS fallback (works without XAMPP/DB) ----
-  if (!phpSuccess) {
-    if (ADMIN_CREDENTIALS[u] && ADMIN_CREDENTIALS[u] === p) {
-      phpSuccess = true;
-      sessionStorage.setItem('admin_demo', '1');
-      sessionStorage.setItem('admin_name', u.charAt(0).toUpperCase() + u.slice(1));
-    }
+    // Login failed due to a server or network error.
   }
 
   // ---- Result ----
@@ -304,9 +295,7 @@ function toggleEye() {
   else                       { p.type = 'password'; btn.textContent = '👁'; }
 }
 
-// Pre-fill fields for demo convenience (remove in production)
 window.addEventListener('DOMContentLoaded', () => {
-  // Auto-focus username
   document.getElementById('uname').focus();
 });
 </script>

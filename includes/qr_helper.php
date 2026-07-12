@@ -55,15 +55,18 @@ function generateAndSaveQR(string $ticketId, string $data): string {
  */
 function generateTicketHTML(array $ticket): string {
     $promName = getSetting('prom_name', 'Golden Night 2026');
-    $promDate = getSetting('prom_date', '2026-06-15 18:00:00');
-    $promVenue = getSetting('prom_venue', 'Iwacu Garden, Kicukiro');
-    $formattedDate = date('F j, Y • g:i A', strtotime($promDate));
+  $promDate = getSetting('prom_date', '14th August 2026');
+  $promVenue = getSetting('prom_venue', 'Intare Arena (proposed, final confirmation pending)');
+
+  $timestamp = strtotime($promDate);
+  $formattedDate = $timestamp ? date('F j, Y • g:i A', $timestamp) : $promDate;
     
     $qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" . 
               urlencode($ticket['ticket_id']) . 
               "&bgcolor=0a0a0a&color=D4AF37&margin=10&format=png";
     
-    $typeLabel = $ticket['student_type'] === 'internal' ? 'Internal Student' : 'External Guest';
+    // Show a neutral attendee label instead of internal/external
+    $typeLabel = 'Attendee';
     
     return '<!DOCTYPE html>
 <html>

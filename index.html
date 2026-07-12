@@ -1,721 +1,836 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Golden Night 2026 — Prom Night</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Night. One Memory. One Golden Story.</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    /* =========================================
-       VARIABLES & RESET
-    ========================================= */
     :root {
-      --gold:      #D4AF37;
-      --gold-light:#f0d060;
-      --gold-dark: #b8921a;
-      --gold-dim:  rgba(212,175,55,0.12);
-      --gold-glow: rgba(212,175,55,0.4);
-      --black:     #0a0a0a;
-      --black-mid: #111108;
-      --black-soft:#1a1a10;
-      --text:      #e8e0cc;
-      --text-dim:  #8a7d5a;
+      --bg: #0b0b0b;
+      --surface: #111111;
+      --surface-soft: #1c1c1c;
+      --text: #f5f3ef;
+      --text-muted: #c3bba8;
+      --champagne: #c9b37d;
+      --champagne-soft: rgba(201,179,125,0.16);
+      --shadow: 0 40px 120px rgba(0,0,0,0.35);
+      --radius: 32px;
+      --transition: 0.35s ease;
     }
 
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { background:var(--black); color:var(--text); font-family:'Cormorant Garamond',serif; overflow-x:hidden; }
-
-    /* =========================================
-       NAVBAR
-    ========================================= */
-    nav {
-      position: fixed; top:0; left:0; right:0; z-index:500;
-      display: flex; align-items:center; justify-content:space-between;
-      padding: 0 40px; height: 70px;
-      background: transparent;
-      transition: background 0.4s ease, border-bottom 0.4s;
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.03), transparent 32%),
+                  linear-gradient(180deg, #0b0b0b 0%, #090909 100%);
+      color: var(--text);
+      overflow-x: hidden;
     }
 
-    nav.scrolled {
-      background: rgba(10,10,10,0.96);
-      border-bottom: 1px solid rgba(212,175,55,0.15);
-      backdrop-filter: blur(10px);
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 18% 15%, rgba(201,179,125,0.09), transparent 18%),
+                  radial-gradient(circle at 85% 12%, rgba(201,179,125,0.06), transparent 14%),
+                  radial-gradient(circle at 50% 95%, rgba(255,255,255,0.03), transparent 18%);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .nav-logo {
+    a { color: inherit; text-decoration: none; }
+
+    .page-wrap { position: relative; z-index: 1; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: rgba(11,11,11,0.75);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .nav-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
       font-family: 'Cinzel', serif;
-      font-size: 1rem;
-      letter-spacing: 4px;
-      color: var(--gold);
-      text-decoration: none;
-      text-shadow: 0 0 20px var(--gold-glow);
+      letter-spacing: 0.35em;
+      font-size: 0.95rem;
+      color: var(--champagne);
+      text-transform: uppercase;
     }
 
     .nav-links {
       display: flex;
-      list-style: none;
       gap: 32px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .nav-links a {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 3px;
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
       text-transform: uppercase;
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.3s;
+      transition: color var(--transition);
     }
 
-    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover { color: var(--text); }
 
-    .nav-admin {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 3px;
+    .nav-action {
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.24em;
+      font-size: 0.76rem;
       text-transform: uppercase;
-      color: var(--gold);
-      text-decoration: none;
-      border: 1px solid rgba(212,175,55,0.4);
-      padding: 7px 16px;
-      transition: all 0.3s;
+      border: 1px solid rgba(201,179,125,0.45);
+      padding: 12px 20px;
+      transition: all var(--transition);
     }
 
-    .nav-admin:hover { background: var(--gold-dim); border-color: var(--gold); }
-
-    /* Hamburger */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
+    .nav-action:hover {
+      background: rgba(201,179,125,0.08);
+      color: var(--champagne);
+      border-color: rgba(201,179,125,0.7);
     }
 
-    .hamburger span {
-      display: block; width: 24px; height: 2px;
-      background: var(--gold); transition: all 0.3s;
-    }
-
-    /* Mobile menu */
-    .mobile-nav {
-      display: none;
-      position: fixed; top: 70px; left:0; right:0;
-      background: rgba(10,10,10,0.98);
-      border-bottom: 1px solid rgba(212,175,55,0.15);
-      padding: 20px 40px;
-      z-index: 499;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .mobile-nav.open { display: flex; }
-
-    .mobile-nav a {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      text-decoration: none;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(212,175,55,0.08);
-      transition: color 0.3s;
-    }
-
-    .mobile-nav a:hover { color: var(--gold); }
-    .mobile-nav a:last-child { border-bottom: none; color: var(--gold); }
-
-    @media (max-width: 860px) {
-      nav { padding: 0 24px; }
-      .nav-links, .nav-admin { display: none; }
-      .hamburger { display: flex; }
-    }
-
-    /* =========================================
-       HERO SECTION
-    ========================================= */
     .hero {
-      min-height: 100vh;
-      display: flex; align-items:center; justify-content:center;
-      text-align: center;
-      position: relative; overflow: hidden;
-      padding: 120px 24px 80px;
+      min-height: calc(100vh - 88px);
+      display: grid;
+      place-items: center;
+      padding: 48px 32px 100px;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Radial glow bg */
     .hero::before {
       content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(212,175,55,0.06) 0%, transparent 70%);
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.08), transparent 18%),
+                  radial-gradient(circle at 20% 80%, rgba(201,179,125,0.08), transparent 12%),
+                  linear-gradient(180deg, rgba(255,255,255,0.04), transparent 20%, rgba(0,0,0,0.66));
       pointer-events: none;
+      z-index: 1;
     }
 
-    /* Expanding rings */
-    .ring {
-      position: absolute; border-radius:50%;
-      border: 1px solid rgba(212,175,55,0.07);
-      animation: ringExpand 8s ease-out infinite;
-      pointer-events: none;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-    }
-    .ring:nth-child(1){ width:400px;  height:400px;  animation-delay:0s; }
-    .ring:nth-child(2){ width:700px;  height:700px;  animation-delay:2s; }
-    .ring:nth-child(3){ width:1000px; height:1000px; animation-delay:4s; }
-    .ring:nth-child(4){ width:1300px; height:1300px; animation-delay:6s; }
-
-    @keyframes ringExpand {
-      0%   { opacity:0; transform:translate(-50%,-50%) scale(0.8); }
-      20%  { opacity:1; }
-      100% { opacity:0; transform:translate(-50%,-50%) scale(1.15); }
+    .hero-grid {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.95fr);
+      gap: 48px;
+      align-items: center;
+      max-width: 1320px;
+      width: 100%;
     }
 
-    .hero-inner { position:relative; z-index:2; max-width:900px; }
+    .hero-copy {
+      max-width: 720px;
+      animation: fadeUp 0.9s ease forwards;
+      opacity: 0;
+    }
 
-    .hero-eyebrow {
+    .hero-pretitle {
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.68rem; letter-spacing: 8px; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 24px;
-      display: flex; align-items:center; justify-content:center; gap: 16px;
-      opacity:0; animation: fadeUp 1s 0.3s ease forwards;
+      text-transform: uppercase;
+      letter-spacing: 0.42em;
+      font-size: 0.72rem;
+      color: var(--champagne);
+      margin-bottom: 32px;
     }
 
     .hero-title {
       font-family: 'Cinzel', serif;
-      font-size: clamp(3rem, 8vw, 7rem);
-      font-weight: 900; line-height:1; letter-spacing: 8px;
-      color: transparent;
-      background: linear-gradient(135deg, #c8a228, #f0d060, #D4AF37, #b8921a, #f0d060);
-      background-size: 300% 300%;
-      -webkit-background-clip: text; background-clip: text;
-      opacity:0; animation: fadeUp 1.2s 0.5s ease forwards, shimmer 6s 1.5s ease infinite;
-      filter: drop-shadow(0 0 30px rgba(212,175,55,0.3));
+      font-size: clamp(3.5rem, 5vw, 6.8rem);
+      line-height: 0.95;
+      letter-spacing: 0.12em;
+      margin: 0;
+      max-width: 12ch;
+      color: #f8f5ef;
+      text-transform: uppercase;
     }
 
-    @keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-
-    .hero-sub {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
-      font-style: italic; color: var(--text-dim);
-      margin: 20px 0 10px;
-      opacity:0; animation: fadeUp 1s 0.8s ease forwards;
+    .hero-text {
+      margin: 32px 0 36px;
+      max-width: 640px;
+      font-size: 1.1rem;
+      line-height: 1.9;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
     }
 
-    .hero-date {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.68rem; letter-spacing: 5px; text-transform: uppercase;
-      color: var(--text-dim); margin-bottom: 50px;
-      opacity:0; animation: fadeUp 1s 1s ease forwards;
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
     }
 
-    .hero-date span { color: var(--gold); }
-
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(30px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    /* CTA Buttons */
-    .hero-btns {
-      display: flex; gap: 16px; justify-content:center; flex-wrap:wrap;
-      opacity:0; animation: fadeUp 1s 1.2s ease forwards;
-    }
-
-    .btn-cta {
-      font-family: 'Cinzel', serif;
-      font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase;
-      text-decoration: none; padding: 16px 32px;
-      transition: all 0.4s ease; position:relative; overflow:hidden;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      border-radius: 999px;
+      padding: 0 30px;
+      font-size: 0.9rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+      cursor: pointer;
+      font-weight: 600;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      color: var(--black);
+      background: linear-gradient(135deg, rgba(201,179,125,0.95), rgba(255,255,255,0.95));
+      color: #0b0b0b;
+      box-shadow: 0 22px 50px rgba(201,179,125,0.22);
     }
 
     .btn-primary:hover {
-      box-shadow: 0 0 40px rgba(212,175,55,0.5);
       transform: translateY(-2px);
+      box-shadow: 0 28px 65px rgba(201,179,125,0.28);
     }
 
     .btn-secondary {
-      background: transparent;
-      color: var(--gold);
-      border: 1px solid rgba(212,175,55,0.5);
+      border-color: rgba(255,255,255,0.16);
+      color: var(--text);
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.04);
     }
 
     .btn-secondary:hover {
-      background: var(--gold-dim);
-      border-color: var(--gold);
       transform: translateY(-2px);
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.3);
     }
 
-    /* =========================================
-       COUNTDOWN
-    ========================================= */
-    .countdown-section {
-      padding: 80px 40px;
-      text-align: center;
-      border-top: 1px solid rgba(212,175,55,0.08);
-      border-bottom: 1px solid rgba(212,175,55,0.08);
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 34px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      line-height: 1.8;
     }
 
-    .cd-eyebrow {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.6rem; letter-spacing: 6px; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 40px;
+    .hero-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 999px;
     }
 
-    .cd-grid {
-      display: flex; justify-content:center; gap: 40px; flex-wrap:wrap;
+    .hero-card {
+      position: relative;
+      display: grid;
+      gap: 20px;
+      padding: 40px 34px;
+      border-radius: var(--radius);
+      background: rgba(16,16,16,0.94);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      min-width: 320px;
+      backdrop-filter: blur(16px);
+      overflow: hidden;
+      animation: fadeUp 0.9s ease 0.15s forwards;
+      opacity: 0;
     }
 
-    .cd-unit { text-align: center; }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, rgba(201,179,125,0.18), transparent 40%, rgba(255,255,255,0.12));
+      pointer-events: none;
+    }
 
-    .cd-num {
+    .hero-card-title {
       font-family: 'Cinzel', serif;
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      color: var(--gold); line-height: 1;
-      text-shadow: 0 0 40px rgba(212,175,55,0.3);
-      animation: cdPulse 2s ease-in-out infinite;
+      font-size: 0.9rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--champagne);
+      z-index: 1;
     }
 
-    @keyframes cdPulse { 0%,100%{text-shadow:0 0 20px rgba(212,175,55,0.2)} 50%{text-shadow:0 0 50px rgba(212,175,55,0.5)} }
-
-    .cd-lbl {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase;
-      color: var(--text-dim); margin-top: 8px;
+    .hero-card-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 16px;
+      z-index: 1;
     }
 
-    .cd-sep {
+    .hero-card-list li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.85;
+    }
+
+    .hero-card-list li::before {
+      content: '✓';
+      color: var(--champagne);
+      font-size: 0.95rem;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .hero-card-price {
       font-family: 'Cinzel', serif;
-      font-size: 2.5rem; color: rgba(212,175,55,0.3);
-      align-self: center; padding-bottom: 20px;
+      font-size: 2.6rem;
+      color: #f8f5ef;
+      letter-spacing: 0.04em;
+      margin-top: 12px;
+      z-index: 1;
     }
 
-    /* =========================================
-       INFO CARDS
-    ========================================= */
-    .info-section {
-      padding: 80px 40px;
-      max-width: 1200px; margin: 0 auto;
+    .btn-card {
+      width: 100%;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(201,179,125,0.95), rgba(255,255,255,0.95));
+      color: #0b0b0b;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-flag {
+      display: grid;
+      align-items: center;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 100px 32px;
+      position: relative;
+      z-index: 1;
     }
 
     .section-title {
+      display: inline-block;
       font-family: 'Cinzel', serif;
-      font-size: clamp(1.5rem, 3vw, 2.2rem);
-      color: var(--gold); text-align:center; letter-spacing: 4px;
-      margin-bottom: 50px;
+      font-size: clamp(2rem, 3vw, 3rem);
+      margin: 0 0 20px;
+      letter-spacing: 0.15em;
+      color: var(--champagne);
+      text-transform: uppercase;
+      line-height: 1;
     }
 
-    .section-title::after {
-      content: ''; display:block; width:50px; height:1px;
-      background: var(--gold); margin: 12px auto 0;
+    .section-intro {
+      max-width: 680px;
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.9;
+      margin-bottom: 56px;
     }
 
-    .info-grid {
+    .story-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 20px;
+      gap: 24px;
+      grid-template-columns: 1.2fr 0.8fr;
+      align-items: start;
     }
 
-    .info-card {
-      background: var(--black-mid);
-      border: 1px solid rgba(212,175,55,0.12);
-      padding: 36px 28px;
-      text-align: center;
-      position: relative; overflow:hidden;
-      transition: all 0.4s;
-    }
-
-    .info-card::before {
-      content:''; position:absolute; top:0; left:0; right:0;
-      height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent);
-    }
-
-    .info-card:hover { border-color:rgba(212,175,55,0.3); transform:translateY(-4px); }
-
-    .info-icon { font-size:2rem; display:block; margin-bottom:16px; }
-
-    .info-card h3 {
-      font-family: 'Cinzel', serif; font-size:0.95rem; color:var(--gold);
-      letter-spacing:3px; margin-bottom:10px;
-    }
-
-    .info-card p { font-size:0.95rem; color:var(--text-dim); line-height:1.7; }
-
-    /* =========================================
-       DRESS CODE
-    ========================================= */
-    .dress-section {
-      padding: 80px 40px;
-      background: linear-gradient(135deg, var(--black-mid) 0%, var(--black) 100%);
-      border-top: 1px solid rgba(212,175,55,0.08);
-    }
-
-    .dress-inner {
-      max-width: 800px; margin: 0 auto; text-align:center;
-    }
-
-    .dress-section p {
-      font-size: 1.1rem; color: var(--text-dim); line-height:1.9;
-      margin-bottom: 30px;
-    }
-
-    .dress-tags {
-      display: flex; flex-wrap:wrap; gap: 10px; justify-content:center;
-    }
-
-    .dress-tag {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 0.62rem; letter-spacing: 2px; text-transform:uppercase;
-      color: var(--gold);
-      border: 1px solid rgba(212,175,55,0.3);
-      padding: 8px 18px;
-    }
-
-    /* =========================================
-       ACTION SECTION
-    ========================================= */
-    .action-section {
-      padding: 80px 40px;
-      max-width: 1200px; margin: 0 auto;
-    }
-
-    .action-grid {
+    .story-copy {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 24px;
     }
 
-    .action-card {
-      background: var(--black-mid);
-      border: 1px solid rgba(212,175,55,0.12);
-      padding: 44px 32px;
-      text-align: center;
-      position: relative; overflow:hidden;
-      transition: all 0.4s;
+    .story-panel {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 32px;
+      border-radius: 28px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.22);
+      backdrop-filter: blur(16px);
     }
 
-    .action-card::before {
-      content:''; position:absolute; top:0; left:0; right:0;
-      height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    .story-panel h3 {
+      margin: 0 0 16px;
+      font-family: 'Cinzel', serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.14em;
+      color: var(--text);
     }
 
-    .action-card:hover { border-color:rgba(212,175,55,0.3); transform:translateY(-4px); }
-
-    .action-icon { font-size:2.5rem; display:block; margin-bottom:16px; }
-
-    .action-card h3 {
-      font-family:'Cinzel',serif; font-size:1.1rem; color:var(--gold);
-      letter-spacing:3px; margin-bottom:12px;
+    .story-panel p {
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.9;
     }
 
-    .action-card p { font-size:0.95rem; color:var(--text-dim); line-height:1.7; margin-bottom:24px; }
+    .story-image {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      min-height: 520px;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.3);
+    }
 
-    /* =========================================
-       FOOTER
-    ========================================= */
-    footer {
+    .story-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.05);
+      transition: transform 15s ease;
+      will-change: transform;
+    }
+
+    .story-image:hover img {
+      transform: scale(1.1);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 64px;
+    }
+
+    .metric-card {
+      padding: 28px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.18);
+      transition: transform var(--transition), border-color var(--transition);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(201,179,125,0.35);
+    }
+
+    .metric-number {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .ticket-section {
+      padding-bottom: 120px;
+    }
+
+    .ticket-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      align-items: center;
+      margin-top: 48px;
+    }
+
+    .ticket-copy {
+      max-width: 540px;
+    }
+
+    .ticket-card {
       padding: 40px;
+      border-radius: 32px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 35px 110px rgba(0,0,0,0.28);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ticket-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(201,179,125,0.16), transparent 35%, rgba(255,255,255,0.05));
+      pointer-events: none;
+    }
+
+    .ticket-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--champagne);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-price {
+      font-family: 'Cinzel', serif;
+      font-size: 3.2rem;
+      color: #f8f5ef;
+      letter-spacing: 0.02em;
+      margin: 0 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-list li {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.9;
+    }
+
+    .ticket-list li::before {
+      content: '✓';
+      color: var(--champagne);
+      margin-top: 2px;
+    }
+
+    .ticket-card-button {
+      margin-top: 32px;
+      width: 100%;
+      justify-content: center;
+      padding: 16px 0;
+      font-size: 0.95rem;
+      letter-spacing: 0.16em;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(201,179,125,0.95), rgba(255,255,255,0.95));
+      color: #0b0b0b;
+      border: none;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticket-card-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 60px rgba(201,179,125,0.24);
+    }
+
+    .trust-section {
+      padding: 100px 32px 120px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%);
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .trust-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.18);
+      backdrop-filter: blur(14px);
+    }
+
+    .trust-card h3 {
+      margin-top: 0;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.16em;
+      font-size: 1rem;
+      color: var(--champagne);
+      margin-bottom: 20px;
+    }
+
+    .trust-card ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 16px;
+    }
+
+    .trust-card li {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      line-height: 1.8;
+    }
+
+    .trust-card li::before {
+      content: '•';
+      color: var(--champagne);
+      margin-top: 4px;
+    }
+
+    .footer {
+      padding: 48px 32px 68px;
       text-align: center;
-      border-top: 1px solid rgba(212,175,55,0.1);
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
 
-    footer .f-logo {
-      font-family: 'Cinzel', serif; font-size:1.1rem;
-      color: var(--gold); letter-spacing:6px; display:block; margin-bottom:10px;
+    .footer p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.8;
     }
 
-    footer p {
-      font-family: 'Montserrat', sans-serif; font-size:0.62rem;
-      letter-spacing:3px; color:var(--text-dim); text-transform:uppercase;
+    .footer small {
+      display: block;
+      margin-top: 16px;
+      color: rgba(255,255,255,0.45);
     }
 
-    footer a { color:var(--gold); text-decoration:none; }
-
-    /* =========================================
-       REVEAL ANIMATION
-    ========================================= */
-    .reveal {
-      opacity:0; transform:translateY(36px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .reveal.visible { opacity:1; transform:translateY(0); }
-
-    /* =========================================
-       GOLD DIVIDER
-    ========================================= */
-    .gold-div {
-      display: flex; align-items:center; gap:14px;
-      max-width: 300px; margin: 0 auto 20px;
-    }
-    .gold-div .line { flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--gold)); }
-    .gold-div .line.r { background:linear-gradient(90deg,var(--gold),transparent); }
-    .gold-div .dia { width:7px; height:7px; background:var(--gold); transform:rotate(45deg); flex-shrink:0; }
-
-    /* =========================================
-       CSS PARTICLES (lightweight)
-    ========================================= */
-    .pt {
-      position: fixed; width:2px; height:2px;
-      background: var(--gold); border-radius:50%;
-      pointer-events:none; opacity:0;
-      animation: floatPt linear infinite; z-index:0;
-    }
-    @keyframes floatPt {
-      0%  { opacity:0; transform:translateY(0); }
-      15% { opacity:0.5; }
-      85% { opacity:0.25; }
-      100%{ opacity:0; transform:translateY(-100vh); }
+    @media(max-width: 1040px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .story-grid, .ticket-panel, .trust-grid { grid-template-columns: 1fr; }
+      header { padding: 18px 24px; }
+      .nav-inner { gap: 16px; }
     }
 
-    /* =========================================
-       RESPONSIVE
-    ========================================= */
-    @media (max-width: 768px) {
-      .info-section, .action-section, .countdown-section,
-      .dress-section, footer { padding: 60px 24px; }
-      .cd-grid { gap:24px; }
-      .cd-sep { display:none; }
+    @media(max-width: 780px) {
+      .nav-links { gap: 18px; }
+      .hero { padding-top: 36px; }
+      .hero-pretitle { margin-bottom: 20px; }
+      .hero-title { font-size: clamp(2.8rem, 12vw, 4.4rem); }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .hero-card { padding: 32px; }
+      .section { padding: 70px 24px; }
+      .metric-grid { grid-template-columns: 1fr; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(46px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
+  <div class="page-wrap">
+    <header>
+      <div class="nav-inner">
+        <div class="brand">GOLDEN NIGHT</div>
+        <nav class="nav-links">
+          <a href="#story">Imagine</a>
+          <a href="#countdown">Countdown</a>
+          <a href="#tickets">Tickets</a>
+          <a href="#trust">Trust</a>
+        </nav>
+        <a class="nav-action" href="public/buy-ticket.php">Buy Ticket</a>
+      </div>
+    </header>
 
-<!-- ================================================
-     NAVBAR
-================================================ -->
-<nav id="navbar">
-  <a href="#" class="nav-logo">✦ GN</a>
+    <main>
+      <section class="hero">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="hero-pretitle">Kigali's most anticipated prom experience</p>
+            <h1 class="hero-title">One Night. One Memory. One Golden Story.</h1>
+            <p class="hero-text">Step into an evening defined by cinematic moments, elegant arrivals, and the kind of celebration that lives in your memory long after the lights dim.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="public/buy-ticket.php">Buy Ticket</a>
+              <a class="btn btn-secondary" href="#story">Discover the Night</a>
+            </div>
+            <div class="hero-meta">
+              <span>✓ MTN MoMo accepted</span>
+              <span>✓ Secure payment</span>
+              <span>✓ 530+ tickets reserved</span>
+            </div>
+          </div>
 
-  <ul class="nav-links">
-    <li><a href="#countdown">Countdown</a></li>
-    <li><a href="#tickets">Tickets</a></li>
-    <li><a href="#voting">Voting</a></li>
-    <li><a href="#audition">Audition</a></li>
-    <li><a href="#dresscode">Dress Code</a></li>
-  </ul>
+          <aside class="hero-flag">
+            <div class="hero-card">
+              <div class="hero-card-title">GENERAL ADMISSION</div>
+              <ul class="hero-card-list">
+                <li>Entry to the grand prom experience</li>
+                <li>Luxury atmosphere with premium lighting</li>
+                <li>Live entertainment & signature moments</li>
+                <li>Photography-ready red carpet energy</li>
+              </ul>
+              <div class="hero-card-price">30,000 RWF</div>
+              <a class="btn btn-card" href="public/buy-ticket.php">Reserve My Spot</a>
+            </div>
+          </aside>
+        </div>
+      </section>
 
-  <a href="admin/login.php" class="nav-admin">Admin</a>
+      <section class="section" id="story">
+        <h2 class="section-title">The Experience</h2>
+        <p class="section-intro">This evening is designed to feel less like a ticketed event and more like a story you are invited to live. From the first elegant step through the doors to the final crown moment, every detail draws you deeper into a world of movement, music, and luxury.</p>
+        <div class="story-grid">
+          <div class="story-copy">
+            <div class="story-panel">
+              <h3>Dream</h3>
+              <p>Imagine a night where every entrance is cinematic, every detail feels exceptional, and the energy is elevated by the people around you.</p>
+            </div>
+            <div class="story-panel">
+              <h3>Imagine</h3>
+              <p>Picture premium styling, dramatic lighting, and a soundtrack that turns every moment into the memory you want to keep.</p>
+            </div>
+            <div class="story-panel">
+              <h3>The Venue</h3>
+              <p>Experience an atmosphere of luminous elegance, where spacious luxury and soft textures make every moment feel beautifully curated.</p>
+            </div>
+            <div class="story-panel">
+              <h3>The Entertainment</h3>
+              <p>Expect a line-up of performances, surprises, and an immersive ambience designed to keep the night alive and unforgettable.</p>
+            </div>
+          </div>
 
-  <div class="hamburger" id="hamburger" onclick="toggleMob()">
-    <span></span><span></span><span></span>
+          <div class="story-image">
+            <img src="https://images.unsplash.com/photo-1515165562835-cceb6c44d262?auto=format&fit=crop&w=1200&q=80" alt="Elegant prom atmosphere with luxury lighting" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="countdown">
+        <h2 class="section-title">Countdown to the Night</h2>
+        <p class="section-intro">The moment is coming. Feel the anticipation build with a live countdown to the event.</p>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-number" id="cdDays">00</div>
+            <div class="metric-label">Days</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number" id="cdHours">00</div>
+            <div class="metric-label">Hours</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number" id="cdMins">00</div>
+            <div class="metric-label">Minutes</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number" id="cdSecs">00</div>
+            <div class="metric-label">Seconds</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section ticket-section" id="tickets">
+        <h2 class="section-title">Ticket</h2>
+        <p class="section-intro">Reserve your seat and join a night that feels more like an invitation than an event.</p>
+        <div class="ticket-panel">
+          <div class="ticket-copy">
+            <div class="story-panel">
+              <h3>Why buy now?</h3>
+              <p>Luxury events are defined by confidence, space, and the people who attend. Secure your ticket early to guarantee a place in a curated evening with premium energy and unforgettable moments.</p>
+            </div>
+            <a class="btn btn-primary" href="public/buy-ticket.php">Reserve Your Seat</a>
+          </div>
+
+          <div class="ticket-card">
+            <div class="ticket-label">GENERAL ADMISSION</div>
+            <div class="ticket-price">30,000 RWF</div>
+            <ul class="ticket-list">
+              <li>✓ Entry to the full prom experience</li>
+              <li>✓ Professional photo-ready lighting</li>
+              <li>✓ Live entertainment & music</li>
+              <li>✓ Elegant lounge atmosphere</li>
+            </ul>
+            <button class="ticket-card-button" onclick="location.href='public/buy-ticket.php'">Reserve My Spot</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="trust-section" id="trust">
+        <h2 class="section-title">Trusted by the Moment</h2>
+        <p class="section-intro">Every detail is designed to build trust and confidence before you arrive.</p>
+        <div class="trust-grid">
+          <div class="trust-card">
+            <h3>What you can trust</h3>
+            <ul>
+              <li>MTN MoMo accepted for secure local payment.</li>
+              <li>Clear ticket confirmation for every purchase.</li>
+              <li>Refund policy available on request before the event.</li>
+              <li>Organized by a dedicated local event team.</li>
+            </ul>
+          </div>
+          <div class="trust-card">
+            <h3>Social proof</h3>
+            <ul>
+              <li>530+ tickets reserved ahead of the event.</li>
+              <li>4 schools already represented.</li>
+              <li>Premium partners supporting the night.</li>
+              <li>Confirmed audience of elegant, like-minded attendees.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>Golden Night 2026 • Kigali, Rwanda</p>
+        <small>Tickets are limited. Buy now to lock in your place for the night that becomes the story.</small>
+      </footer>
+    </main>
   </div>
-</nav>
 
-<!-- Mobile nav -->
-<div class="mobile-nav" id="mobileNav">
-  <a href="#countdown" onclick="toggleMob()">Countdown</a>
-  <a href="#tickets"   onclick="toggleMob()">Buy Ticket</a>
-  <a href="#voting"    onclick="toggleMob()">Vote Now</a>
-  <a href="#audition"  onclick="toggleMob()">Audition</a>
-  <a href="#dresscode" onclick="toggleMob()">Dress Code</a>
-  <a href="admin/login.php">Admin Portal ↗</a>
-</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var eventDate = new Date('2026-08-14T18:00:00+02:00').getTime();
+      var dayEl = document.getElementById('cdDays');
+      var hourEl = document.getElementById('cdHours');
+      var minEl = document.getElementById('cdMins');
+      var secEl = document.getElementById('cdSecs');
 
-<!-- ================================================
-     HERO
-================================================ -->
-<section class="hero">
-  <!-- Rings -->
-  <div class="ring"></div>
-  <div class="ring"></div>
-  <div class="ring"></div>
-  <div class="ring"></div>
+      function pad(value) {
+        return String(value).padStart(2, '0');
+      }
 
-  <div class="hero-inner">
-    <div class="hero-eyebrow">✦ &nbsp; Presenting &nbsp; ✦</div>
-    <h1 class="hero-title">Golden Night</h1>
-    <p class="hero-sub">An Evening Under the Stars</p>
-    <p class="hero-date">
-      June 2026 (Date TBD) &nbsp;·&nbsp; 6:00 PM
-      &nbsp;·&nbsp; <span>Iwacu Garden, Kicukiro</span>
-    </p>
+      function tick() {
+        var now = Date.now();
+        var diff = eventDate - now;
+        if (diff <= 0) {
+          dayEl.textContent = '00';
+          hourEl.textContent = '00';
+          minEl.textContent = '00';
+          secEl.textContent = '00';
+          return;
+        }
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        var mins = Math.floor((diff / (1000 * 60)) % 60);
+        var secs = Math.floor((diff / 1000) % 60);
+        dayEl.textContent = pad(days);
+        hourEl.textContent = pad(hours);
+        minEl.textContent = pad(mins);
+        secEl.textContent = pad(secs);
+      }
 
-    <div class="hero-btns">
-      <a href="public/buy-ticket.php" class="btn-cta btn-primary">Buy Your Ticket</a>
-      <a href="public/vote.php"       class="btn-cta btn-secondary">Vote for Royalty</a>
-      <a href="public/audition.php"   class="btn-cta btn-secondary">Register Audition</a>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================
-     COUNTDOWN
-================================================ -->
-<section class="countdown-section reveal" id="countdown">
-  <div class="cd-eyebrow">✦ &nbsp; Time Until The Magic Begins &nbsp; ✦</div>
-  <div class="cd-grid">
-    <div class="cd-unit"><div class="cd-num" id="cd-d">000</div><div class="cd-lbl">Days</div></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Hours</div></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit"><div class="cd-num" id="cd-m">00</div><div class="cd-lbl">Minutes</div></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Seconds</div></div>
-  </div>
-</section>
-
-<!-- ================================================
-     INFO CARDS
-================================================ -->
-<section class="info-section reveal" id="tickets">
-  <h2 class="section-title">Event Details</h2>
-  <div class="info-grid">
-    <div class="info-card">
-      <span class="info-icon">📍</span>
-      <h3>Venue</h3>
-      <p>Iwacu Garden<br/>Kicukiro, Kigali</p>
-    </div>
-    <div class="info-card">
-      <span class="info-icon">📅</span>
-      <h3>Date & Time</h3>
-      <p>June 2026<br/>Doors open at 6:00 PM</p>
-    </div>
-    <div class="info-card">
-      <span class="info-icon">🎟️</span>
-      <h3>Ticket Prices</h3>
-      <p>Internal Students: <strong style="color:var(--gold)">Rwf 25,000</strong><br/>
-         External Guests: <strong style="color:var(--gold)">Rwf 30,000</strong></p>
-    </div>
-    <div class="info-card">
-      <span class="info-icon">📱</span>
-      <h3>Payment</h3>
-      <p>MTN MoMo Pay<br/>Code: <strong style="color:var(--gold)">11111</strong> (Kenny)<br/><span style="font-size:0.85rem;color:var(--text-dim)">Dial *182*8*1*11111*amount#</span></p>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================
-     DRESS CODE
-================================================ -->
-<section class="dress-section reveal" id="dresscode">
-  <div class="dress-inner">
-    <h2 class="section-title">Dress Code</h2>
-    <div class="gold-div"><div class="line"></div><div class="dia"></div><div class="line r"></div></div>
-    <p>
-      This is your night to shine. We invite you to dress in your finest formal attire
-      and embrace the elegance of an unforgettable evening. Think gowns, suits, and
-      the timeless allure of black tie sophistication.
-    </p>
-    <div class="dress-tags">
-      <span class="dress-tag">Black Tie</span>
-      <span class="dress-tag">Formal Gowns</span>
-      <span class="dress-tag">Suits & Tuxedos</span>
-      <span class="dress-tag">Evening Wear</span>
-      <span class="dress-tag">No Casual Attire</span>
-    </div>
-  </div>
-</section>
-
-<!-- ================================================
-<!-- ================================================
-     ACTION CARDS
-================================================ -->
-<section class="action-section reveal" id="voting">
-  <h2 class="section-title">Get Involved</h2>
-  <div class="action-grid">
-
-    <div class="action-card">
-      <span class="action-icon">🎟️</span>
-      <h3>Buy a Ticket</h3>
-      <p>Secure your spot at the most memorable night of the year. Limited seats available — don't miss out.</p>
-      <a href="public/buy-ticket.php" class="btn-cta btn-primary" style="display:inline-block;">Get Your Ticket</a>
-    </div>
-
-    <div class="action-card" id="voting">
-      <span class="action-icon">👑</span>
-      <h3>Vote for Royalty</h3>
-      <p>Cast your vote for Prom King and Queen. Use your confirmed ticket ID to participate.</p>
-      <a href="public/vote.php" class="btn-cta btn-secondary" style="display:inline-block;">Vote Now</a>
-    </div>
-
-    <div class="action-card" id="audition">
-      <span class="action-icon">🌟</span>
-      <h3>Register as Candidate</h3>
-      <p>Think you have what it takes to be crowned? Submit your candidacy for Prom King or Queen.</p>
-      <a href="public/audition.php" class="btn-cta btn-secondary" style="display:inline-block;">Register Now</a>
-    </div>
-
-  </div>
-</section>
-
-<!-- ================================================
-     FOOTER
-================================================ -->
-<footer>
-  <span class="f-logo">✦ Golden Night 2026 ✦</span>
-  <p>Iwacu Garden, Kicukiro &nbsp;·&nbsp; June 2026 &nbsp;·&nbsp; <a href="admin/login.php">Admin Portal</a></p>
-</footer>
-
-<!-- CSS Particles -->
-<script>
-(function(){
-  var lefts=[5,12,20,28,35,42,50,58,65,72,80,88,95,15,45,70,30];
-  lefts.forEach(function(l){
-    var d=document.createElement('div');
-    d.className='pt';
-    d.style.left=l+'vw';
-    d.style.bottom='-4px';
-    d.style.animationDuration=(Math.random()*12+10)+'s';
-    d.style.animationDelay=(Math.random()*10)+'s';
-    d.style.width=d.style.height=(Math.random()<0.3?'3px':'2px');
-    document.body.appendChild(d);
-  });
-})();
-</script>
-
-<script>
-// ---- NAVBAR ----
-window.addEventListener('scroll', function(){
-  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
-}, {passive:true});
-
-function toggleMob(){
-  document.getElementById('mobileNav').classList.toggle('open');
-}
-
-// Close mobile nav on outside click
-document.addEventListener('click', function(e){
-  var mn = document.getElementById('mobileNav');
-  var hb = document.getElementById('hamburger');
-  if(mn.classList.contains('open') && !mn.contains(e.target) && !hb.contains(e.target)){
-    mn.classList.remove('open');
-  }
-});
-
-// ---- SCROLL REVEAL ----
-var observer = new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
-  });
-}, {threshold:0.1});
-document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
-
-// ---- COUNTDOWN ----
-var promDate = new Date('2026-06-15T18:00:00');
-function updateCountdown(){
-  var now  = new Date();
-  var diff = promDate - now;
-  if(diff <= 0){ diff = 0; }
-  var d = Math.floor(diff/86400000);
-  var h = Math.floor((diff%86400000)/3600000);
-  var m = Math.floor((diff%3600000)/60000);
-  var s = Math.floor((diff%60000)/1000);
-  function p(n,l){ return String(n).padStart(l||2,'0'); }
-  document.getElementById('cd-d').textContent = p(d,3);
-  document.getElementById('cd-h').textContent = p(h);
-  document.getElementById('cd-m').textContent = p(m);
-  document.getElementById('cd-s').textContent = p(s);
-}
-updateCountdown();
-setInterval(updateCountdown, 1000);
-</script>
+      tick();
+      setInterval(tick, 1000);
+    });
+  </script>
 </body>
 </html>

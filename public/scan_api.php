@@ -8,8 +8,9 @@ require_once '../includes/config.php';
 
 header('Content-Type: application/json');
 
-// Basic admin check (session or API key)
-// In production, add proper auth check: requireAdmin();
+if (!isAdminLoggedIn()) {
+    jsonResponse(['result' => 'unauthorized', 'message' => 'Admin login required.'], 401);
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['success' => false, 'message' => 'Method not allowed'], 405);
@@ -67,7 +68,7 @@ try {
     }
     
     // VALID - mark as used
-    $db->prepare("UPDATE tickets SET ticket_status = 'used', used_at = NOW() WHERE ticket_id = ?")
+    $db->prepare("UPDATE tickets SET ticket_status = 'used', used_at = CURRENT_TIMESTAMP WHERE ticket_id = ?")
        ->execute([$ticketId]);
        
     $db->prepare("INSERT INTO scan_logs (ticket_id, scan_result) VALUES (?, 'valid')")

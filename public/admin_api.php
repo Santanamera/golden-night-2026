@@ -40,10 +40,10 @@ switch ($action) {
         $stats['candidates']    = $db->query("SELECT COUNT(*) FROM candidates WHERE status = 'approved'")->fetchColumn();
         $stats['pending_candidates'] = $db->query("SELECT COUNT(*) FROM candidates WHERE status = 'pending'")->fetchColumn();
         
-        $stats['internal_count']   = $db->query("SELECT COUNT(*) FROM tickets WHERE student_type='internal' AND payment_status='confirmed'")->fetchColumn();
-        $stats['external_count']   = $db->query("SELECT COUNT(*) FROM tickets WHERE student_type='external' AND payment_status='confirmed'")->fetchColumn();
-        $stats['internal_revenue'] = $db->query("SELECT COALESCE(SUM(amount_paid),0) FROM tickets WHERE student_type='internal' AND payment_status='confirmed'")->fetchColumn();
-        $stats['external_revenue'] = $db->query("SELECT COALESCE(SUM(amount_paid),0) FROM tickets WHERE student_type='external' AND payment_status='confirmed'")->fetchColumn();
+        $stats['internal_count']   = $stats['confirmed'];
+        $stats['external_count']   = 0;
+        $stats['internal_revenue'] = $stats['revenue'];
+        $stats['external_revenue'] = 0;
         
         jsonResponse(['success' => true, 'stats' => $stats]);
 
@@ -113,7 +113,7 @@ switch ($action) {
             jsonResponse(['success' => false, 'message' => 'Invalid status']);
         }
         if ($status === 'approved') {
-            $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = NOW() WHERE id = ?");
+            $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = CURRENT_TIMESTAMP WHERE id = ?");
         } else {
             $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = NULL WHERE id = ?");
         }

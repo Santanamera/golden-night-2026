@@ -1,8 +1,6 @@
 <?php
 require_once "../includes/config.php";
-if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
-    // Allow JS to handle auth check for demo mode
-}
+requireAdmin();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,6 +79,7 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
     .br{background:rgba(244,67,54,.14);color:#EF9A9A;border:1px solid rgba(244,67,54,.3);}
     .ba{background:rgba(76,175,80,.14);color:#81C784;border:1px solid rgba(76,175,80,.3);}
     .bi{background:rgba(212,175,55,.1);color:var(--gold);border:1px solid rgba(212,175,55,.25);}
+    .bg{background:rgba(212,175,55,.1);color:var(--gold);border:1px solid rgba(212,175,55,.25);}
     .be{background:rgba(156,39,176,.14);color:#CE93D8;border:1px solid rgba(156,39,176,.3);}
     .bki{background:rgba(212,175,55,.1);color:var(--gold);border:1px solid rgba(212,175,55,.3);}
     .bq{background:rgba(236,64,122,.1);color:#F48FB1;border:1px solid rgba(236,64,122,.3);}
@@ -102,6 +101,8 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
     .bno:hover{background:rgba(244,67,54,.3);}
     .bap{background:rgba(212,175,55,.14);color:var(--gold);border:1px solid rgba(212,175,55,.3);}
     .bap:hover{background:rgba(212,175,55,.3);}
+    .bvw{background:rgba(33,150,243,.14);color:#90CAF9;border:1px solid rgba(33,150,243,.3);}
+    .bvw:hover{background:rgba(33,150,243,.3);}
 
     /* SEARCH */
     .srch{background:rgba(0,0,0,.5);border:1px solid rgba(212,175,55,.2);color:var(--text);font-family:'Montserrat',sans-serif;font-size:.74rem;padding:7px 13px;outline:none;transition:border .25s;width:190px;}
@@ -151,6 +152,7 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
     .crow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(212,175,55,.09);padding:13px;margin-bottom:7px;transition:border-color .3s;}
     .crow:hover{border-color:rgba(212,175,55,.28);}
     .cav{width:48px;height:48px;border:1px solid rgba(212,175,55,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;background:#111;}
+    .cav img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;}
     .ci{flex:1;min-width:0;}
     .cn{font-family:'Cinzel',serif;font-size:.87rem;color:var(--gold);letter-spacing:1px;}
     .cm{font-size:.68rem;color:var(--dim);margin-top:2px;display:flex;gap:5px;align-items:center;flex-wrap:wrap;}
@@ -169,6 +171,19 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
     .toast.on{transform:translateX(0);}
     .toast.tok{border-color:var(--ok);color:#81C784;}
     .toast.ter{border-color:var(--err);color:#ff8888;}
+
+    /* MEDIA MODAL */
+    .mm{position:fixed;inset:0;background:rgba(0,0,0,.84);z-index:10000;display:none;align-items:center;justify-content:center;padding:24px;}
+    .mm.on{display:flex;}
+    .mmc{width:min(980px,100%);max-height:90vh;background:#0c0c07;border:1px solid rgba(212,175,55,.28);display:flex;flex-direction:column;overflow:hidden;}
+    .mmh{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(212,175,55,.16);}
+    .mmt{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+    .mmx{background:transparent;border:1px solid rgba(212,175,55,.25);color:var(--gold);padding:6px 10px;cursor:pointer;font-size:.62rem;letter-spacing:1px;}
+    .mmb{padding:12px;overflow:auto;}
+    .mmi{max-width:100%;max-height:74vh;display:block;margin:0 auto;border:1px solid rgba(212,175,55,.18);}
+    .mmf{width:100%;height:74vh;border:1px solid rgba(212,175,55,.18);background:#111;}
+    .mml{display:flex;gap:8px;justify-content:flex-end;padding:8px 12px;border-top:1px solid rgba(212,175,55,.1);}
+    .mml a{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);text-decoration:none;border:1px solid rgba(212,175,55,.28);padding:7px 10px;}
 
     @media(max-width:860px){
       .sb{transform:translateX(-100%);}
@@ -239,8 +254,8 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
         </div>
         <div>
           <div class="th"><div class="ttl">Revenue</div></div>
-          <div class="rv"><div class="rl">Internal (Rwf 25,000)</div><div class="rvl" id="ri">Rwf 0</div></div>
-          <div class="rv"><div class="rl">External (Rwf 30,000)</div><div class="rvl" id="re">Rwf 0</div></div>
+          <div class="rv"><div class="rl">Confirmed Tickets</div><div class="rvl" id="ri">0</div></div>
+          <div class="rv"><div class="rl">Revenue (Rwf 30,000 each)</div><div class="rvl" id="re">Rwf 0</div></div>
           <div class="rv hi"><div class="rl">Grand Total</div><div class="rvl" id="rt">Rwf 0</div></div>
         </div>
       </div>
@@ -262,7 +277,7 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
         <button class="ft"    onclick="setTF('used',this)">Used</button>
       </div>
       <div class="tw"><table>
-        <thead><tr><th>Ticket ID</th><th>Name</th><th>Class</th><th>Phone</th><th>Type</th><th>Payment</th><th>Entry</th><th>Amount</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Ticket ID</th><th>Name</th><th>Index</th><th>Phone</th><th>Type</th><th>Payment</th><th>Entry</th><th>Proof</th><th>Amount</th><th>Actions</th></tr></thead>
         <tbody id="ttbody"><tr><td colspan="9" style="text-align:center;padding:40px;color:var(--dim);font-style:italic;">No tickets yet</td></tr></tbody>
       </table></div>
     </div>
@@ -330,6 +345,17 @@ if (!isAdminLoggedIn() && !isset($_COOKIE["PHPSESSID"])) {
 
 <div class="toast" id="toast"></div>
 
+<div class="mm" id="mm" onclick="if(event.target.id==='mm')closeMedia()">
+  <div class="mmc">
+    <div class="mmh">
+      <div class="mmt" id="mmt">Media Preview</div>
+      <button class="mmx" onclick="closeMedia()">Close ✕</button>
+    </div>
+    <div class="mmb" id="mmb"></div>
+    <div class="mml"><a id="mmd" href="#" target="_blank" rel="noopener">Open Original</a></div>
+  </div>
+</div>
+
 <script>
 // ---- STATE ----
 let tickets=[], cands=[], tFilter='all', cFilter='all';
@@ -340,8 +366,7 @@ const DEMO_C=[];
 
 // ---- INIT ----
 document.addEventListener('DOMContentLoaded',()=>{
-  if(!sessionStorage.getItem('admin_demo')&&!document.cookie.includes('PHPSESSID')) window.location.href='login.php';
-  document.getElementById('adminName').textContent=sessionStorage.getItem('admin_name')||'Admin';
+  document.getElementById('adminName').textContent=<?php echo json_encode($_SESSION['admin_name'] ?? 'Admin', JSON_UNESCAPED_UNICODE); ?>;
   setInterval(()=>{document.getElementById('clk').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});},1000);
   document.getElementById('clk').textContent=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
   loadDash();
@@ -361,7 +386,10 @@ function go(p){
   if(p==='votes')      loadVotes();
   if(window.innerWidth<=860) document.getElementById('sb').classList.remove('open');
 }
-function doLogout(){sessionStorage.clear();window.location.href='login.php';}
+function doLogout(){
+  fetch('auth.php?action=logout').catch(() => {});
+  window.location.href='login.php';
+}
 
 // ---- TOAST ----
 function toast(msg,t=''){
@@ -380,8 +408,22 @@ async function api(action,method='GET',body=null){
       headers:method==='POST'?{'Content-Type':'application/json'}:{},
       body:body?JSON.stringify(body):null
     });
-    return await r.json();
+    if (r.status === 401) {
+      redirectToLogin();
+      return { success: false };
+    }
+    const data = await r.json();
+    if (!data.success && data.message && /unauthorized/i.test(data.message)) {
+      redirectToLogin();
+      return { success: false };
+    }
+    return data;
   }catch{return{success:false};}
+}
+
+function redirectToLogin(){
+  toast('Session expired. Redirecting to login...','er');
+  setTimeout(()=>window.location.href='login.php',900);
 }
 
 // ---- DASHBOARD ----
@@ -397,13 +439,13 @@ async function loadDash(){
   try{const vd=await api('votes');if(vd.success&&vd.votes)voteCount=vd.votes.length;}catch{}
   const pc  =cands.filter(c=>c.status==='pending');
   const rev =conf.reduce((s,t)=>s+Number(t.amount_paid),0);
-  const ri  =conf.filter(t=>t.student_type==='internal').reduce((s,t)=>s+Number(t.amount_paid),0);
-  const re  =conf.filter(t=>t.student_type==='external').reduce((s,t)=>s+Number(t.amount_paid),0);
+  const ri  =conf.length;
+  const re  =rev;
 
   set('s0',tickets.length);set('s1',conf.length);set('s2',used.length);
   set('s3','Rwf '+rev.toLocaleString());set('s4',voteCount);set('s5',cands.filter(c=>c.status==='approved').length);
   set('bp',pend.length);set('bc',pc.length);
-  set('ri','Rwf '+ri.toLocaleString());set('re','Rwf '+re.toLocaleString());set('rt','Rwf '+rev.toLocaleString());
+  set('ri',ri.toLocaleString());set('re','Rwf '+re.toLocaleString());set('rt','Rwf '+rev.toLocaleString());
 
   document.getElementById('rtbody').innerHTML=tickets.slice(0,5).map(t=>`
     <tr>
@@ -439,9 +481,10 @@ function renderTickets(){
       <td><span class="bx b${t.student_type[0]}">${t.student_type}</span></td>
       <td><span class="bx b${t.payment_status[0]}">${t.payment_status}</span></td>
       <td><span class="bx b${t.ticket_status==='used'?'u':'p'}">${t.ticket_status}</span></td>
+      <td>${t.payment_proof?`<button class="bact bvw" onclick="showMedia('${safeJs(mediaHref(t.payment_proof))}','Payment proof: ${safeJs(t.ticket_id)}')">View</button>`:'<span style="color:var(--dim);font-size:.7rem;">—</span>'}</td>
       <td>Rwf ${Number(t.amount_paid).toLocaleString()}</td>
       <td>${t.payment_status==='pending'?`<button class="bact bok" onclick="confP('${t.ticket_id}')">✓</button><button class="bact bno" onclick="rejP('${t.ticket_id}')">✗</button>`:'<span style="color:var(--dim);font-size:.7rem;">—</span>'}</td>
-    </tr>`).join(''):'<tr><td colspan="9" style="text-align:center;padding:36px;color:var(--dim);font-style:italic;">No tickets found</td></tr>';
+    </tr>`).join(''):'<tr><td colspan="10" style="text-align:center;padding:36px;color:var(--dim);font-style:italic;">No tickets found</td></tr>';
 }
 async function confP(id){if(!confirm('Confirm MoMo payment for '+id+'?'))return;try{await api('confirm_payment','POST',{ticket_id:id});}catch{}const t=tickets.find(x=>x.ticket_id===id);if(t)t.payment_status='confirmed';renderTickets();toast('Payment confirmed: '+id,'ok');}
 async function rejP(id){if(!confirm('Reject payment for '+id+'?'))return;try{await api('reject_payment','POST',{ticket_id:id});}catch{}const t=tickets.find(x=>x.ticket_id===id);if(t)t.payment_status='rejected';renderTickets();toast('Payment rejected','er');}
@@ -456,14 +499,14 @@ function renderCands(){
   let list=cands.filter(c=>{if(cFilter==='pending')return c.status==='pending';if(cFilter==='king')return c.category==='king';if(cFilter==='queen')return c.category==='queen';return true;});
   document.getElementById('candWrap').innerHTML=list.length?list.map(c=>`
     <div class="crow">
-      <div class="cav">${c.category==='king'?'👑':'👸'}</div>
+      <div class="cav">${c.photo?`<img src="${mediaHref(c.photo)}" alt="${safeJs(c.full_name)}"/>`:(c.category==='king'?'👑':'👸')}</div>
       <div class="ci">
         <div class="cn">${c.full_name}</div>
         <div class="cm"><span>${c.class_school}</span><span class="bx b${c.category==='king'?'ki':'q'}">${c.category}</span><span class="bx b${c.status[0]}">${c.status}</span></div>
         <div class="cb">"${c.bio}"</div>
       </div>
       ${c.status==='approved'?`<div class="cvb"><div class="cvn">${c.vote_count}</div><div class="cvl">votes</div></div>`:''}
-      <div class="cacts">${c.status==='pending'?`<button class="bact bap" onclick="appC(${c.id})">✓ Approve</button><button class="bact bno" onclick="remC(${c.id})">✗ Reject</button>`:`<button class="bact bno" onclick="remC(${c.id})">Remove</button>`}</div>
+      <div class="cacts">${c.photo?`<button class="bact bvw" onclick="showMedia('${safeJs(mediaHref(c.photo))}','Candidate photo: ${safeJs(c.full_name)}')">Photo</button>`:''}${c.status==='pending'?`<button class="bact bap" onclick="appC(${c.id})">✓ Approve</button><button class="bact bno" onclick="remC(${c.id})">✗ Reject</button>`:`<button class="bact bno" onclick="remC(${c.id})">Remove</button>`}</div>
     </div>`).join(''):'<div class="emp"><span class="ei">👑</span><p style="font-style:italic">No candidates found</p></div>';
 }
 async function appC(id){try{await api('update_candidate','POST',{id,status:'approved'});}catch{}const c=cands.find(x=>x.id===id);if(c)c.status='approved';renderCands();toast('Candidate approved!','ok');}
@@ -530,6 +573,33 @@ function exportCSV(t){
   else{fn='golden-night-votes.csv';csv='Ticket ID,King Vote,Queen Vote,Time\n';}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=fn;a.click();
   toast('Exported: '+fn,'ok');
+}
+
+function mediaHref(path){
+  if(!path) return '';
+  if(/^https?:\/\//i.test(path)) return path;
+  return '../'+String(path).replace(/^\/+/, '');
+}
+
+function safeJs(v){
+  return String(v||'').replace(/'/g, '&#39;');
+}
+
+function showMedia(url,title){
+  if(!url){toast('No file attached','er');return;}
+  const lower=url.toLowerCase();
+  const isPdf=lower.endsWith('.pdf');
+  document.getElementById('mmt').textContent=title||'Media Preview';
+  document.getElementById('mmb').innerHTML=isPdf
+    ? `<iframe class="mmf" src="${url}"></iframe>`
+    : `<img class="mmi" src="${url}" alt="preview"/>`;
+  document.getElementById('mmd').href=url;
+  document.getElementById('mm').classList.add('on');
+}
+
+function closeMedia(){
+  document.getElementById('mm').classList.remove('on');
+  document.getElementById('mmb').innerHTML='';
 }
 </script>
 </body>

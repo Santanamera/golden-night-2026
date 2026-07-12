@@ -16,17 +16,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // ============================================
 // Validate inputs
 // ============================================
-$fullName    = clean($_POST['full_name'] ?? '');
-$classSchool = clean($_POST['class_school'] ?? '');
-$phone       = clean($_POST['phone'] ?? '');
-$studentType = $_POST['student_type'] ?? 'internal';
+$fullName     = clean($_POST['full_name'] ?? '');
+$classSchool  = clean($_POST['index_number'] ?? ($_POST['class_school'] ?? ''));
+$phone        = clean($_POST['phone'] ?? '');
+$studentType  = $_POST['student_type'] ?? 'general';
+$momoReference = clean($_POST['momo_reference'] ?? '');
 
 if (empty($fullName) || empty($classSchool) || empty($phone)) {
     jsonResponse(['success' => false, 'message' => 'All fields are required.']);
 }
 
-if (!in_array($studentType, ['internal', 'external'])) {
-    $studentType = 'internal';
+if (!in_array($studentType, ['internal', 'external', 'general'])) {
+    $studentType = 'general';
 }
 
 // Validate phone
@@ -40,22 +41,50 @@ if (!preg_match('/^[0-9+\-\s]{8,20}$/', $phone)) {
 $paymentProofPath = null;
 $momoRequested = ($_POST['momo_requested'] ?? '0') === '1';
 
-if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
-    $file = $_FILES['payment_proof'];
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
-    $maxSize = 5 * 1024 * 1024;
+$uploadDir = __DIR__ . '/../assets/uploads/tickets/';
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
 
-    if (!in_array($file['type'], $allowedTypes)) {
-        jsonResponse(['success' => false, 'message' => 'Invalid file type. Use JPG, PNG, or PDF.']);
+if ($momoRequested && empty($momoReference)) {
+    jsonResponse(['success' => false, 'message' => 'Payment reference is required when using MoMo prompt payment.']);
+}
+
+if ($momoReference && !preg_match('/^[a-f0-9\-]{36}$/i', $momoReference)) {
+    jsonResponse(['success' => false, 'message' => 'Invalid payment reference format.']);
+}
+
+if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] !== UPLOAD_ERR_NO_FILE) {
+    $file = $_FILES['payment_proof'];
+    $maxSize = 5 * 1024 * 1024;
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']) ?: '';
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        jsonResponse(['success' => false, 'message' => 'Failed to upload payment proof.']);
     }
     if ($file['size'] > $maxSize) {
         jsonResponse(['success' => false, 'message' => 'File too large. Maximum 5MB.']);
     }
+    if (!in_array($mimeType, $allowedMimeTypes) || !in_array($ext, $allowedExtensions)) {
+        jsonResponse(['success' => false, 'message' => 'Invalid file type. Use JPG, PNG, or PDF.']);
+    }
 
-    $uploadDir = __DIR__ . '/../assets/uploads/tickets/';
-    if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+    if ($mimeType === 'application/pdf') {
+        $header = file_get_contents($file['tmp_name'], false, null, 0, 4);
+        if ($header !== '%PDF') {
+            jsonResponse(['success' => false, 'message' => 'Invalid PDF file.']);
+        }
+    } else {
+        $imageInfo = @getimagesize($file['tmp_name']);
+        if (!$imageInfo || !in_array($imageInfo['mime'], ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)) {
+            jsonResponse(['success' => false, 'message' => 'Invalid image file.']);
+        }
+    }
 
-    $ext      = pathinfo($file['name'], PATHINFO_EXTENSION);
     $fileName = 'payment_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
     $uploadPath = $uploadDir . $fileName;
 
@@ -63,7 +92,6 @@ if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPL
         jsonResponse(['success' => false, 'message' => 'Failed to upload payment proof.']);
     }
     $paymentProofPath = 'assets/uploads/tickets/' . $fileName;
-
 } elseif (!$momoRequested) {
     jsonResponse(['success' => false, 'message' => 'Please upload payment proof or send a MoMo request first.']);
 }
@@ -89,7 +117,7 @@ try {
     $ticketId = generateTicketID();
     
     // Determine price
-    $price = ($studentType === 'internal') ? TICKET_PRICE_INTERNAL : TICKET_PRICE_EXTERNAL;
+    $price = TICKET_PRICE;
     
     // Generate QR code URL (saved as reference)
     $qrData = $ticketId; // Scan just returns the ticket ID
@@ -98,16 +126,17 @@ try {
     // Assign seat number
     $seatNum = 'A' . str_pad($currentCount + 1, 3, '0', STR_PAD_LEFT);
     
-    // Insert ticket
+    // Insert ticket (store momo_reference if provided)
     $stmt = $db->prepare("
-        INSERT INTO tickets (ticket_id, qr_code, full_name, class_school, phone, student_type, 
-                             payment_proof, payment_status, ticket_status, seat_number, amount_paid)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', 'unused', ?, ?)
+        INSERT INTO tickets (ticket_id, qr_code, full_name, class_school, phone, student_type,
+                             payment_proof, payment_status, ticket_status, seat_number, amount_paid, momo_reference)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', 'unused', ?, ?, ?)
     ");
-    
+
     $stmt->execute([
         $ticketId, $qrCodeUrl, $fullName, $classSchool, $phone,
-        $studentType, $paymentProofPath, $seatNum, $price
+        $studentType, $paymentProofPath, $seatNum, $price,
+        $momoReference ?: null
     ]);
     
     // Return success with ticket data

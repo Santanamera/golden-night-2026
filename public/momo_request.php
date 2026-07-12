@@ -11,13 +11,28 @@ header('Content-Type: application/json');
 // ============================================
 // CREDENTIALS
 // ============================================
-define('MOMO_SUB_KEY', getenv('MOMO_SUB_KEY') ?: 'd71acf6855ad4c1391ab52e041f6e783');
-define('MOMO_API_USER', getenv('MOMO_API_USER') ?: '2f36f198-ae44-46f0-b2de-59cde6a3f033');
-define('MOMO_API_KEY', getenv('MOMO_API_KEY') ?: 'e96530b0795745f893d3cc74abc7bd88');
+define('MOMO_SUB_KEY', trim((string) (getenv('MOMO_SUB_KEY') ?: '')));
+define('MOMO_API_USER', trim((string) (getenv('MOMO_API_USER') ?: '')));
+define('MOMO_API_KEY', trim((string) (getenv('MOMO_API_KEY') ?: '')));
 define('MOMO_ENV', getenv('MOMO_ENV') ?: 'sandbox');
 define('MOMO_BASE_URL', getenv('MOMO_BASE_URL') ?: 'https://sandbox.momodeveloper.mtn.com');
-define('MOMO_CURRENCY', getenv('MOMO_CURRENCY') ?: 'EUR');
+// Use EUR by default in sandbox testing; override with RWF in production via MOMO_CURRENCY.
+define('MOMO_CURRENCY', getenv('MOMO_CURRENCY') ?: (MOMO_ENV === 'sandbox' ? 'EUR' : 'RWF'));
 define('MOMO_CALLBACK', getenv('MOMO_CALLBACK') ?: APP_URL . '/public/momo_callback.php');
+
+if (isset($_GET['debug_env'])) {
+    echo json_encode([
+        'MOMO_SUB_KEY' => MOMO_SUB_KEY,
+        'MOMO_API_USER' => MOMO_API_USER,
+        'MOMO_API_KEY' => MOMO_API_KEY,
+        'MOMO_BASE_URL' => MOMO_BASE_URL,
+        'MOMO_ENV' => MOMO_ENV,
+        'MOMO_CURRENCY' => MOMO_CURRENCY,
+        'MOMO_CALLBACK' => MOMO_CALLBACK,
+        'APP_URL' => APP_URL,
+    ]);
+    exit;
+}
 
 if (!MOMO_SUB_KEY || !MOMO_API_USER || !MOMO_API_KEY) {
     echo json_encode(['success' => false, 'message' => 'MTN MoMo credentials are not configured.']);
@@ -70,7 +85,8 @@ curl_setopt_array($ch, [
         'Ocp-Apim-Subscription-Key: ' . MOMO_SUB_KEY,
     ],
     CURLOPT_TIMEOUT        => 15,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
 ]);
 
 $tokenRes  = curl_exec($ch);
@@ -78,13 +94,25 @@ $tokenCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if ($tokenCode !== 200) {
-    echo json_encode(['success' => false, 'message' => 'Token request failed. HTTP ' . $tokenCode, 'debug' => $tokenRes]);
+    $debug = json_decode($tokenRes, true);
+    $errorMessage = $debug['message'] ?? $tokenRes;
+    echo json_encode([
+        'success' => false,
+        'message' => 'Token request failed. HTTP ' . $tokenCode,
+        'debug' => $errorMessage,
+    ]);
     exit;
 }
 
 $token = json_decode($tokenRes, true)['access_token'] ?? null;
 if (!$token) {
-    echo json_encode(['success' => false, 'message' => 'No access token received.']);
+    $debug = json_decode($tokenRes, true);
+    $errorMessage = $debug['message'] ?? $tokenRes;
+    echo json_encode([
+        'success' => false,
+        'message' => 'No access token received.',
+        'debug' => $errorMessage,
+    ]);
     exit;
 }
 
@@ -115,6 +143,22 @@ $payload = json_encode([
     'payeeNote'    => 'Prom 2026 - ' . $name,
 ]);
 
+// debugging payload for MTN inspector
+if (isset($_GET['debug_payload'])) {
+    echo json_encode([
+        'payload' => json_decode($payload, true),
+        'headers' => [
+            'Authorization' => 'Bearer <token>',
+            'X-Reference-Id' => $refId,
+            'X-Target-Environment' => MOMO_ENV,
+            'Ocp-Apim-Subscription-Key' => MOMO_SUB_KEY,
+            'Content-Type' => 'application/json',
+            'X-Callback-Url' => MOMO_CALLBACK,
+        ],
+    ]);
+    exit;
+}
+
 $ch2 = curl_init(MOMO_BASE_URL . '/collection/v1_0/requesttopay');
 curl_setopt_array($ch2, [
     CURLOPT_RETURNTRANSFER => true,
@@ -126,10 +170,12 @@ curl_setopt_array($ch2, [
         'X-Target-Environment: '         . MOMO_ENV,
         'Ocp-Apim-Subscription-Key: '    . MOMO_SUB_KEY,
         'Content-Type: application/json',
-        'X-Callback-Url: '               . MOMO_CALLBACK,
+        // X-Callback-Url removed — status is polled via momo_status.php instead
+        // so sandbox callback-host restrictions do not block payment requests
     ],
     CURLOPT_TIMEOUT        => 20,
-    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
 ]);
 
 $payRes  = curl_exec($ch2);
@@ -145,7 +191,7 @@ if ($payCode === 202) {
         $db = getDB();
         $db->prepare("
             INSERT INTO momo_requests (reference, phone, amount, name, reason, status, created_at)
-            VALUES (?, ?, ?, ?, 'Golden Night 2026 Ticket', 'pending', NOW())
+            VALUES (?, ?, ?, ?, 'Golden Night 2026 Ticket', 'pending', CURRENT_TIMESTAMP)
         ")->execute([$refId, $phone, $amount, $name]);
     } catch (PDOException $e) {}
 

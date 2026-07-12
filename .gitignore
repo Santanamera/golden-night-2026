@@ -12,10 +12,9 @@ assets/uploads/candidates/*
 !assets/uploads/.htaccess
 
 # Password reset utility — delete after use
-reset_password.php
 
 # MoMo setup utility — delete after use
-setup_momo.php
+
 
 # XAMPP / local config
 *.log
