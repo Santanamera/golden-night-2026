@@ -312,11 +312,116 @@
       background: linear-gradient(135deg, rgba(201,179,125,0.95), rgba(255,255,255,0.95));
       color: #0b0b0b;
       border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-action {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-action::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), transparent 38%);
+      opacity: 0;
+      transition: opacity var(--transition);
+      pointer-events: none;
+    }
+
+    .btn-action:hover::before {
+      opacity: 1;
+    }
+
+    .btn-action:active {
+      transform: scale(0.98);
     }
 
     .hero-flag {
       display: grid;
       align-items: center;
+    }
+
+    .page-wrap.blur {
+      filter: blur(7px) saturate(0.95);
+      transition: filter 0.35s ease;
+    }
+
+    .overlay-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.82);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      display: grid;
+      place-items: center;
+      transition: opacity 0.35s ease;
+      z-index: 50;
+    }
+
+    .overlay-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-card {
+      width: min(560px, calc(100% - 48px));
+      padding: 34px;
+      border-radius: 32px;
+      background: rgba(12, 12, 12, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 42px 120px rgba(0, 0, 0, 0.32);
+      transform: translateY(40px);
+      opacity: 0;
+      transition: transform 0.45s ease, opacity 0.45s ease;
+    }
+
+    .overlay-backdrop.active .overlay-card {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .overlay-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .overlay-loader {
+      position: relative;
+      width: 100%;
+      height: 12px;
+      margin-top: 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+    }
+
+    .overlay-loader::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 45%;
+      background: linear-gradient(90deg, rgba(201, 179, 125, 0.95), rgba(255, 255, 255, 0.95));
+      transform: translateX(-110%);
+      animation: shimmer 1.6s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-110%); }
+      100% { transform: translateX(210%); }
     }
 
     .section {
@@ -648,7 +753,7 @@
           <a href="#tickets">Tickets</a>
           <a href="#trust">Trust</a>
         </nav>
-        <a class="nav-action" href="public/buy-ticket.php">Buy Ticket</a>
+        <button class="nav-action btn-action buy-ticket-trigger" type="button" data-target="public/buy-ticket.php">Reserve My Spot</button>
       </div>
     </header>
 
@@ -658,15 +763,15 @@
           <div class="hero-copy">
             <p class="hero-pretitle">Kigali's most anticipated prom experience</p>
             <h1 class="hero-title">One Night. One Memory. One Golden Story.</h1>
-            <p class="hero-text">Step into an evening defined by cinematic moments, elegant arrivals, and the kind of celebration that lives in your memory long after the lights dim.</p>
+            <p class="hero-text">Step into an evening designed to feel irresistible: cinematic moments, elegant arrivals, and a gathering that becomes the story you tell.</p>
             <div class="hero-actions">
-              <a class="btn btn-primary" href="public/buy-ticket.php">Buy Ticket</a>
-              <a class="btn btn-secondary" href="#story">Discover the Night</a>
+              <button class="btn btn-primary btn-action buy-ticket-trigger" type="button" data-target="public/buy-ticket.php">Reserve My Spot</button>
+              <a class="btn btn-secondary btn-action" href="#story">Discover the Night</a>
             </div>
             <div class="hero-meta">
-              <span>✓ MTN MoMo accepted</span>
-              <span>✓ Secure payment</span>
-              <span>✓ 530+ tickets reserved</span>
+              <span>14 August 2026 · Intare Arena</span>
+              <span>Limited passes remain</span>
+              <span>Only a select audience will be inside</span>
             </div>
           </div>
 
@@ -674,13 +779,13 @@
             <div class="hero-card">
               <div class="hero-card-title">GENERAL ADMISSION</div>
               <ul class="hero-card-list">
-                <li>Entry to the grand prom experience</li>
-                <li>Luxury atmosphere with premium lighting</li>
-                <li>Live entertainment & signature moments</li>
-                <li>Photography-ready red carpet energy</li>
+                <li>Entry to the full Golden Night experience</li>
+                <li>Photography-ready moments & premium staging</li>
+                <li>Live entertainment, music, and surprise guests</li>
+                <li>Curated food service and elegant atmosphere</li>
               </ul>
               <div class="hero-card-price">30,000 RWF</div>
-              <a class="btn btn-card" href="public/buy-ticket.php">Reserve My Spot</a>
+              <a class="btn btn-card btn-action buy-ticket-trigger" href="public/buy-ticket.php" data-target="public/buy-ticket.php">Reserve My Spot</a>
             </div>
           </aside>
         </div>
@@ -754,12 +859,12 @@
             <div class="ticket-label">GENERAL ADMISSION</div>
             <div class="ticket-price">30,000 RWF</div>
             <ul class="ticket-list">
-              <li>✓ Entry to the full prom experience</li>
-              <li>✓ Professional photo-ready lighting</li>
-              <li>✓ Live entertainment & music</li>
-              <li>✓ Elegant lounge atmosphere</li>
+              <li>✓ Entry to the full experience</li>
+              <li>✓ Photography-ready moments</li>
+              <li>✓ Live entertainment & celebration</li>
+              <li>✓ Curated food and premium atmosphere</li>
             </ul>
-            <button class="ticket-card-button" onclick="location.href='public/buy-ticket.php'">Reserve My Spot</button>
+            <button class="ticket-card-button btn-action buy-ticket-trigger" type="button" data-target="public/buy-ticket.php">Reserve My Spot</button>
           </div>
         </div>
       </section>
@@ -794,6 +899,16 @@
         <small>Tickets are limited. Buy now to lock in your place for the night that becomes the story.</small>
       </footer>
     </main>
+
+    <div class="overlay-backdrop" id="ticketOverlay" aria-hidden="true">
+      <div class="overlay-card" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+        <div class="overlay-strip">Secure payment flow</div>
+        <h3 id="overlayTitle" class="section-title" style="margin-bottom:16px;">Reserve your place</h3>
+        <p class="section-intro" style="margin-bottom:24px; max-width:none;">A premium ticket card is ready. We’re creating your payment session now.</p>
+        <div class="overlay-loader"></div>
+        <button class="btn btn-primary btn-card" id="overlayConfirm" type="button">Continue to payment</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -803,6 +918,10 @@
       var hourEl = document.getElementById('cdHours');
       var minEl = document.getElementById('cdMins');
       var secEl = document.getElementById('cdSecs');
+      var overlay = document.getElementById('ticketOverlay');
+      var pageWrap = document.querySelector('.page-wrap');
+      var buyButtons = document.querySelectorAll('.buy-ticket-trigger');
+      var overlayConfirm = document.getElementById('overlayConfirm');
 
       function pad(value) {
         return String(value).padStart(2, '0');
@@ -826,6 +945,56 @@
         hourEl.textContent = pad(hours);
         minEl.textContent = pad(mins);
         secEl.textContent = pad(secs);
+      }
+
+      var selectedTarget = 'public/buy-ticket.php';
+
+      function openOverlay(target) {
+        if (!overlay) { return; }
+        selectedTarget = target || selectedTarget;
+        overlayConfirm.textContent = 'Preparing payment...';
+        overlayConfirm.disabled = true;
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        pageWrap.classList.add('blur');
+
+        setTimeout(function () {
+          overlayConfirm.textContent = 'Opening payment';
+        }, 480);
+
+        setTimeout(function () {
+          window.location.href = selectedTarget;
+        }, 950);
+      }
+
+      buyButtons.forEach(function (button) {
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+          var target = button.dataset.target || button.getAttribute('href') || 'public/buy-ticket.php';
+          openOverlay(target);
+        });
+      });
+
+      if (overlayConfirm) {
+        overlayConfirm.addEventListener('click', function () {
+          if (!overlay.classList.contains('active')) { return; }
+          overlayConfirm.disabled = true;
+          overlayConfirm.textContent = 'Opening payment';
+          setTimeout(function () {
+            window.location.href = selectedTarget;
+          }, 350);
+        });
+      }
+
+      if (overlay) {
+        overlay.addEventListener('click', function (event) {
+          if (event.target === overlay) {
+            overlay.classList.remove('active');
+            pageWrap.classList.remove('blur');
+            overlayConfirm.disabled = false;
+            overlayConfirm.textContent = 'Continue to payment';
+          }
+        });
       }
 
       tick();
