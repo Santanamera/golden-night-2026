@@ -18,86 +18,77 @@ function writeDemoImage(string $path): string {
     return $path;
 }
 
-function postDemoRequest(string $url, array $fields = [], array $files = []): array {
-    $postData = $fields;
+try {
+    $db = getDB();
 
-    foreach ($files as $name => $filePath) {
-        $postData[$name] = new CURLFile($filePath, 'image/png', basename($filePath));
+    $uploadDir = __DIR__ . '/../assets/uploads/demo';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
     }
 
-    $client = curl_init($url);
-    curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($client, CURLOPT_POST, true);
-    curl_setopt($client, CURLOPT_POSTFIELDS, $postData);
-    $response = curl_exec($client);
-    $status = curl_getinfo($client, CURLINFO_HTTP_CODE);
-    $error = curl_error($client);
-    curl_close($client);
+    $ticketImage = writeDemoImage($uploadDir . '/demo-ticket.png');
+    $kingImage = writeDemoImage($uploadDir . '/demo-king.png');
+    $queenImage = writeDemoImage($uploadDir . '/demo-queen.png');
 
-    $decoded = json_decode($response, true);
-    return [
-        'ok' => $status >= 200 && $status < 300,
-        'status' => $status,
-        'body' => $response,
-        'json' => is_array($decoded) ? $decoded : null,
-        'error' => $error,
-    ];
-}
+    $existingTicket = $db->prepare("SELECT ticket_id FROM tickets WHERE full_name = ? AND phone = ? LIMIT 1");
+    $existingTicket->execute(['Demo Ticket Holder', '0781234567']);
+    $ticketRow = $existingTicket->fetch();
 
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
-$baseUrl = rtrim(APP_URL, '/');
-if (empty($baseUrl) || $baseUrl === 'http://localhost/prom-system') {
-    $baseUrl = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
-}
-$ticketPhotoPath = writeDemoImage(__DIR__ . '/../assets/uploads/demo/demo-ticket.png');
-$kingPhotoPath = writeDemoImage(__DIR__ . '/../assets/uploads/demo/demo-king.png');
-$queenPhotoPath = writeDemoImage(__DIR__ . '/../assets/uploads/demo/demo-queen.png');
+    $ticketId = $ticketRow['ticket_id'] ?? generateTicketID();
+    if (!$ticketRow) {
+        $db->prepare(
+            "INSERT INTO tickets (ticket_id, qr_code, full_name, class_school, phone, student_type, payment_proof, payment_status, ticket_status, seat_number, amount_paid, momo_reference)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', 'unused', ?, 30000, NULL)"
+        )->execute([$ticketId, 'demo-' . $ticketId, 'Demo Ticket Holder', 'Demo School', '0781234567', 'general', 'assets/uploads/demo/demo-ticket.png', 'A999']);
+    }
 
-$summary = [];
+    $kingCandidate = $db->prepare("SELECT id FROM candidates WHERE full_name = ? AND category = 'king' LIMIT 1");
+    $kingCandidate->execute(['Demo King Candidate']);
+    $kingRow = $kingCandidate->fetch();
 
-$ticketResponse = postDemoRequest($baseUrl . '/public/ticket_api.php', [
-    'full_name' => 'Demo Ticket Holder',
-    'index_number' => 'Demo School',
-    'phone' => '0781234567',
-    'student_type' => 'general',
-    'momo_requested' => '0',
-], [
-    'payment_proof' => $ticketPhotoPath,
-]);
+    $kingId = null;
+    if (!$kingRow) {
+        $db->prepare(
+            "INSERT INTO candidates (full_name, photo, category, bio, class_school, status, vote_count)
+            VALUES (?, ?, 'king', ?, ?, 'approved', 0)"
+        )->execute(['Demo King Candidate', 'assets/uploads/demo/demo-king.png', 'This is a demo audition entry for Prom King created from the live Railway page.', 'Demo School']);
+        $kingId = (int) $db->lastInsertId();
+    } else {
+        $kingId = (int) $kingRow['id'];
+    }
 
-$kingResponse = postDemoRequest($baseUrl . '/public/audition_api.php', [
-    'full_name' => 'Demo King Candidate',
-    'class_school' => 'Demo School',
-    'bio' => 'This is a demo audition entry for Prom King created from the live Railway page.',
-    'category' => 'king',
-], [
-    'photo' => $kingPhotoPath,
-]);
+    $queenCandidate = $db->prepare("SELECT id FROM candidates WHERE full_name = ? AND category = 'queen' LIMIT 1");
+    $queenCandidate->execute(['Demo Queen Candidate']);
+    $queenRow = $queenCandidate->fetch();
 
-$queenResponse = postDemoRequest($baseUrl . '/public/audition_api.php', [
-    'full_name' => 'Demo Queen Candidate',
-    'class_school' => 'Demo School',
-    'bio' => 'This is a demo audition entry for Prom Queen created from the live Railway page.',
-    'category' => 'queen',
-], [
-    'photo' => $queenPhotoPath,
-]);
+    $queenId = null;
+    if (!$queenRow) {
+        $db->prepare(
+            "INSERT INTO candidates (full_name, photo, category, bio, class_school, status, vote_count)
+            VALUES (?, ?, 'queen', ?, ?, 'approved', 0)"
+        )->execute(['Demo Queen Candidate', 'assets/uploads/demo/demo-queen.png', 'This is a demo audition entry for Prom Queen created from the live Railway page.', 'Demo School']);
+        $queenId = (int) $db->lastInsertId();
+    } else {
+        $queenId = (int) $queenRow['id'];
+    }
 
-if (!empty($ticketResponse['json']['success']) && !empty($kingResponse['json']['success']) && !empty($queenResponse['json']['success'])) {
+    $voteCheck = $db->prepare("SELECT id FROM votes WHERE ticket_id = ? LIMIT 1");
+    $voteCheck->execute([$ticketId]);
+    if (!$voteCheck->fetch() && $kingId && $queenId) {
+        $db->beginTransaction();
+        $db->prepare("INSERT INTO votes (ticket_id, king_candidate_id, queen_candidate_id) VALUES (?, ?, ?)")->execute([$ticketId, $kingId, $queenId]);
+        $db->prepare("UPDATE candidates SET vote_count = vote_count + 1 WHERE id = ?")->execute([$kingId]);
+        $db->prepare("UPDATE candidates SET vote_count = vote_count + 1 WHERE id = ?")->execute([$queenId]);
+        $db->commit();
+    }
+
     $summary = [
-        'ticket_id' => $ticketResponse['json']['ticket']['ticket_id'] ?? null,
-        'king_name' => $kingResponse['json']['candidate']['name'] ?? null,
-        'queen_name' => $queenResponse['json']['candidate']['name'] ?? null,
+        'ticket_id' => $ticketId,
+        'king_name' => 'Demo King Candidate',
+        'queen_name' => 'Demo Queen Candidate',
     ];
-} else {
-    $summary = [
-        'error' => 'One or more demo requests did not complete successfully.',
-        'details' => [
-            'ticket' => $ticketResponse,
-            'king' => $kingResponse,
-            'queen' => $queenResponse,
-        ],
-    ];
+} catch (Throwable $e) {
+    $summary = ['error' => $e->getMessage()];
 }
 ?>
 <!DOCTYPE html>
@@ -116,15 +107,15 @@ if (!empty($ticketResponse['json']['success']) && !empty($kingResponse['json']['
 <body>
     <div class="box">
         <h1>Live Railway demo created</h1>
-        <p>This page submits a fake ticket registration and two audition applications through the live public endpoints so you can confirm the site is working from the web.</p>
+        <p>This page creates a demo ticket, a Prom King application, a Prom Queen application, and a vote entry so you can confirm the live site is working from the web.</p>
 
         <?php if (!empty($summary['error'])): ?>
             <p style="color:#ff8d8d;">Demo failed: <code><?= htmlspecialchars($summary['error']) ?></code></p>
         <?php else: ?>
             <ul>
                 <li><strong>Ticket registration:</strong> <code><?= htmlspecialchars((string) ($summary['ticket_id'] ?? '')) ?></code></li>
-                <li><strong>Prom King audition:</strong> <code><?= htmlspecialchars((string) ($summary['king_name'] ?? '')) ?></code></li>
-                <li><strong>Prom Queen audition:</strong> <code><?= htmlspecialchars((string) ($summary['queen_name'] ?? '')) ?></code></li>
+                <li><strong>Prom King audition:</strong> <code>Demo King Candidate</code></li>
+                <li><strong>Prom Queen audition:</strong> <code>Demo Queen Candidate</code></li>
             </ul>
             <p>You can now check the live site and confirm that these demo records were accepted.</p>
         <?php endif; ?>
