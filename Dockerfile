@@ -12,4 +12,4 @@ COPY . /var/www/html
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "php -S 0.0.0.0:${PORT:-8080} -t /var/www/html"]
+CMD ["sh", "-c", "cd /var/www/html && php -S 0.0.0.0:${PORT:-8080} -t ."]

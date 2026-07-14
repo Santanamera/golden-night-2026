@@ -4,7 +4,7 @@
     "builder": "DOCKERFILE"
   },
   "deploy": {
-    "startCommand": "php -S 0.0.0.0:${PORT:-8080} -t /var/www/html",
+    "startCommand": "cd /var/www/html && php -S 0.0.0.0:${PORT:-8080} -t .",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }
