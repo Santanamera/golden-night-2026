@@ -18,29 +18,17 @@ function writeDemoImage(string $path): string {
     return $path;
 }
 
-function postDemoRequest(string $url, array $fields = [], array $files = [], array $headers = []): array {
-    $multipart = [];
-    foreach ($fields as $name => $value) {
-        $multipart[] = [
-            'name' => $name,
-            'contents' => (string) $value,
-        ];
-    }
+function postDemoRequest(string $url, array $fields = [], array $files = []): array {
+    $postData = $fields;
 
     foreach ($files as $name => $filePath) {
-        $multipart[] = [
-            'name' => $name,
-            'contents' => fopen($filePath, 'r'),
-            'filename' => basename($filePath),
-            'headers' => ['Content-Type' => 'image/png'],
-        ];
+        $postData[$name] = new CURLFile($filePath, 'image/png', basename($filePath));
     }
 
     $client = curl_init($url);
     curl_setopt($client, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($client, CURLOPT_POST, true);
-    curl_setopt($client, CURLOPT_POSTFIELDS, $multipart);
-    curl_setopt($client, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($client, CURLOPT_POSTFIELDS, $postData);
     $response = curl_exec($client);
     $status = curl_getinfo($client, CURLINFO_HTTP_CODE);
     $error = curl_error($client);
@@ -56,7 +44,11 @@ function postDemoRequest(string $url, array $fields = [], array $files = [], arr
     ];
 }
 
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
 $baseUrl = rtrim(APP_URL, '/');
+if (empty($baseUrl) || $baseUrl === 'http://localhost/prom-system') {
+    $baseUrl = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+}
 $ticketPhotoPath = writeDemoImage(__DIR__ . '/../assets/uploads/demo/demo-ticket.png');
 $kingPhotoPath = writeDemoImage(__DIR__ . '/../assets/uploads/demo/demo-king.png');
 $queenPhotoPath = writeDemoImage(__DIR__ . '/../assets/uploads/demo/demo-queen.png');
