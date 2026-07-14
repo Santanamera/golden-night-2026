@@ -57,8 +57,11 @@ if ($momoReference && !preg_match('/^[a-f0-9\-]{36}$/i', $momoReference)) {
 if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] !== UPLOAD_ERR_NO_FILE) {
     $file = $_FILES['payment_proof'];
     $maxSize = 5 * 1024 * 1024;
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
-    $mimeType = $finfo->file($file['tmp_name']) ?: '';
+    $mimeType = $file['type'] ?? '';
+    if (function_exists('finfo_open')) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        $mimeType = $finfo->file($file['tmp_name']) ?: $mimeType;
+    }
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
     $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
@@ -79,8 +82,11 @@ if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] !== UPL
             jsonResponse(['success' => false, 'message' => 'Invalid PDF file.']);
         }
     } else {
-        $imageInfo = @getimagesize($file['tmp_name']);
-        if (!$imageInfo || !in_array($imageInfo['mime'], ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)) {
+        $imageInfo = function_exists('getimagesize') ? @getimagesize($file['tmp_name']) : false;
+        if ($imageInfo === false && !in_array($mimeType, ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)) {
+            jsonResponse(['success' => false, 'message' => 'Invalid image file.']);
+        }
+        if ($imageInfo !== false && !in_array($imageInfo['mime'], ['image/jpeg', 'image/png', 'image/gif', 'image/webp'], true)) {
             jsonResponse(['success' => false, 'message' => 'Invalid image file.']);
         }
     }
