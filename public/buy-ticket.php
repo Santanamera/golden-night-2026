@@ -176,11 +176,11 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
     <div class="event-info">
       <p>
-        📅 <strong>Event date:</strong> 14th August 2026<br>
-        📍 <strong>Venue:</strong> Intare Arena <em>(proposed, final confirmation pending)</em><br>
-        ⏰ <strong>Entry time:</strong> Program schedule to be announced<br>
-        🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=Intare+Arena+Kigali" target="_blank" rel="noopener">Open in Google Maps</a><br>
-        🎟️ QR ticket generated instantly<br>
+        📅 <strong>Event date:</strong> Friday, 14th August 2026<br>
+        📍 <strong>Venue:</strong> RAKKA Hotel, Kigali<br>
+        ⏰ <strong>Schedule:</strong> 4:00 PM – 10:00 PM<br>
+        🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=RAKKA+Hotel+Kigali" target="_blank" rel="noopener">Open in Google Maps</a><br>
+        🎟️ Register now and complete payment later if needed<br>
         📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
       </p>
     </div>
@@ -282,7 +282,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
   <div class="ticket-card">
     <div class="tc-brand">GOLDEN NIGHT 2026</div>
-    <div class="tc-sub">Official Entry Ticket — 14th August 2026 • Intare Arena (proposed)</div>
+    <div class="tc-sub">Official Entry Ticket — 14th August 2026 • RAKKA Hotel • 4:00 PM – 10:00 PM</div>
     <div class="tc-divider"></div>
     <div class="tc-name" id="sName"></div>
     <div class="tc-class" id="sClass"></div>
