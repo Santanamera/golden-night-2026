@@ -22,16 +22,54 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         .info-container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 40px 20px 80px;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #111111 0%, #1f1f1f 50%, #0a0a0a 100%);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 18px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .hero-banner h1 {
+            font-size: 2.5em;
+            color: #D4AF37;
+            margin-bottom: 12px;
+        }
+
+        .hero-banner p {
+            color: #f0e8cc;
+            font-size: 1.05em;
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .hero-badges span {
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #f0d060;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.85em;
         }
         
         .info-header {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             border-bottom: 3px solid #D4AF37;
-            padding-bottom: 30px;
+            padding-bottom: 20px;
         }
         
         .info-header h1 {
@@ -188,6 +226,29 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
             margin-top: 20px;
         }
 
+        .feature-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin: 20px 0 8px;
+        }
+
+        .feature-pill {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .feature-pill strong {
+            color: #1a1a1a;
+            display: block;
+            margin-bottom: 4px;
+        }
+
         .activity-card {
             background: white;
             border: 1px solid #eee;
@@ -271,7 +332,17 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
     </nav>
 
     <div class="info-container">
-        <!-- Header -->
+        <div class="hero-banner">
+            <h1><?php echo htmlspecialchars($promName); ?></h1>
+            <p>A glamorous evening designed to feel like a movie premiere, a celebration, and a once-in-a-lifetime memory — all rolled into one unforgettable night.</p>
+            <div class="hero-badges">
+                <span>✨ Red Carpet Experience</span>
+                <span>🎶 Live Entertainment</span>
+                <span>👑 Royal Crowning</span>
+                <span>📸 Premium Memories</span>
+            </div>
+        </div>
+
         <div class="info-header">
             <h1><?php echo htmlspecialchars($promName); ?></h1>
             <p class="theme">An Evening of Elegance & Celebration</p>
@@ -314,6 +385,12 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
         <div class="info-section">
             <h2><span class="icon">🎉</span> What the Night Will Feel Like</h2>
             <p>This prom is being shaped as more than a party — it is a full experience of elegance, music, surprise moments, and unforgettable memories.</p>
+            <div class="feature-strip">
+                <div class="feature-pill"><strong>VIP Feeling</strong>Luxury vibes from the moment you arrive</div>
+                <div class="feature-pill"><strong>Memorable Moments</strong>Every corner designed for photos and stories</div>
+                <div class="feature-pill"><strong>High Energy</strong>Dance, music, games, and celebration all night</div>
+                <div class="feature-pill"><strong>Grand Finale</strong>A crown-worthy ending for Prom King & Queen</div>
+            </div>
             <div class="activity-grid">
                 <div class="activity-card">
                     <h3>📸 Red Carpet Entrance</h3>
@@ -346,6 +423,14 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
                 <div class="activity-card">
                     <h3>👑 Prom King & Queen</h3>
                     <p>The night will end with the grand announcement and rewarding of Prom King and Queen, crowned in style.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>✨ Guest Media Personalities</h3>
+                    <p>We are bringing a special touch of glam with guest media personalities to make the evening feel like a true red-carpet experience.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🎁 Surprise Giveaways</h3>
+                    <p>Special prizes, tokens, and surprises will keep the energy high and make the celebration even more exciting.</p>
                 </div>
             </div>
         </div>
