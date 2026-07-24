@@ -273,7 +273,7 @@ function generateTicketID(): string {
     return $id;
 }
 
-function getSetting(string $key, string $default = ''): string {
+function getSetting(mixed $key, mixed $default = ''): mixed {
     static $settings = [];
     if (empty($settings)) {
         try {
@@ -283,9 +283,21 @@ function getSetting(string $key, string $default = ''): string {
                 $settings[$row['setting_key']] = $row['setting_value'];
             }
         } catch (Exception $e) {
+            if (is_array($key)) {
+                return array_fill_keys($key, $default);
+            }
             return $default;
         }
     }
+
+    if (is_array($key)) {
+        $values = [];
+        foreach ($key as $name) {
+            $values[$name] = $settings[$name] ?? $default;
+        }
+        return $values;
+    }
+
     return $settings[$key] ?? $default;
 }
 

@@ -3,7 +3,7 @@
 require_once '../includes/config.php';
 
 $db = getDB();
-$settings = getSetting($db, ['prom_name', 'prom_date', 'prom_time', 'prom_venue', 'prom_venue_address', 'prom_venue_description', 'prom_venue_phone']);
+$settings = getSetting(['prom_name', 'prom_date', 'prom_time', 'prom_venue', 'prom_venue_address', 'prom_venue_description', 'prom_venue_phone'], '');
 
 $promName = $settings['prom_name'] ?? 'Golden Night 2026';
 $promDate = $settings['prom_date'] ?? 'June 28, 2026';
@@ -180,6 +180,33 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
             color: #D4AF37;
             font-weight: 600;
         }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .activity-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 18px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .activity-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .activity-card p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+        }
         
         .button-group {
             text-align: center;
@@ -279,7 +306,47 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Ticket Price:</span>
-                <span class="info-detail-value"><span class="highlight">GHS 30,000</span></span>
+                <span class="info-detail-value"><span class="highlight">Rwf 30,000</span></span>
+            </div>
+        </div>
+
+        <!-- What the Night Will Feel Like -->
+        <div class="info-section">
+            <h2><span class="icon">🎉</span> What the Night Will Feel Like</h2>
+            <p>This prom is being shaped as more than a party — it is a full experience of elegance, music, surprise moments, and unforgettable memories.</p>
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <h3>📸 Red Carpet Entrance</h3>
+                    <p>Guests will step into a glamorous entrance with photo moments, media attention, and that true celebrity feeling.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>💃 Dance Sessions with Twists</h3>
+                    <p>Expect energetic dance moments, themed transitions, and unexpected surprises that keep the energy alive all night.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🍽️ Food & Beverages</h3>
+                    <p>Delicious refreshments and a refined dining experience will make the evening feel both classy and celebratory.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🎤 Surprise Artist Performance</h3>
+                    <p>We are planning special performances that will bring an extra spark to the evening and create memorable highlights.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🎲 Interactive Games</h3>
+                    <p>Enjoy fun activities such as secret message games, card games, and other lively experiences between the major moments.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🏆 Awards & Recognition</h3>
+                    <p>Multiple awards and special recognitions will be handed out to celebrate standout moments and contributions.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>⚡ Dance & Rap Battles</h3>
+                    <p>Competitive and entertaining battle moments will add excitement, laughter, and unforgettable energy to the night.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>👑 Prom King & Queen</h3>
+                    <p>The night will end with the grand announcement and rewarding of Prom King and Queen, crowned in style.</p>
+                </div>
             </div>
         </div>
 
