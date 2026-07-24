@@ -4,7 +4,7 @@
     "builder": "DOCKERFILE"
   },
   "deploy": {
-    "startCommand": "cd /var/www/html && php -S 0.0.0.0:${PORT:-8080} -t .",
+    "startCommand": "sh -c 'php-fpm -D && nginx -g \"daemon off;\"'",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }
