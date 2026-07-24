@@ -11,7 +11,7 @@ $promTime = $settings['prom_time'] ?? '4:00 PM - 10:00 PM';
 $promVenue = $settings['prom_venue'] ?? 'RAKKA Hotel';
 $promVenueAddress = $settings['prom_venue_address'] ?? 'KN 4 Ave, Kigali, Rwanda';
 $promVenueDescription = $settings['prom_venue_description'] ?? 'Experience elegance at RAKKA Hotel.';
-$promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
+$promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
 ?>
 <!DOCTYPE html>
 <html lang="en">

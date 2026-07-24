@@ -181,7 +181,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         📅 <strong>Event date:</strong> Friday, 14th August 2026<br>
         📍 <strong>Venue:</strong> RAKKA Hotel, Kigali<br>
         ⏰ <strong>Schedule:</strong> 4:00 PM – 10:00 PM<br>
-        🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=RAKKA+Hotel+Kigali" target="_blank" rel="noopener">Open in Google Maps</a><br>
+        🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=RAKKA+Hotel+Kigali+Rwanda" target="_blank" rel="noopener">Open in Google Maps</a><br>
         🎟️ Register now and complete payment later if needed<br>
         📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
       </p>
@@ -206,8 +206,8 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
     <div class="form-row">
       <div class="fg">
-        <label class="fl">Index number *</label>
-        <input type="text" id="indexNumber" class="fi" placeholder="Enter your national examination index number" maxlength="100"/>
+        <label class="fl">Class / School *</label>
+        <input type="text" id="classSchool" class="fi" placeholder="Enter your class or school" maxlength="100"/>
       </div>
       <div class="fg">
         <label class="fl">Your Phone *</label>
@@ -424,14 +424,14 @@ async function submitTicket() {
   const errBox = document.getElementById('errBox');
 
   const name   = document.getElementById('fullName').value.trim();
-  const index  = document.getElementById('indexNumber').value.trim();
+  const classSchool = document.getElementById('classSchool').value.trim();
   const phone  = document.getElementById('phone').value.trim();
   const file   = document.getElementById('paymentProof').files[0];
 
   errBox.className = 'err-box';
 
   if (!name)  return showErr('Please enter your full name.');
-  if (!index) return showErr('Please enter your index number.');
+  if (!classSchool) return showErr('Please enter your class or school.');
   if (!phone) return showErr('Please enter your phone number.');
   if (file && file.size > 5 * 1024 * 1024) return showErr('File too large. Max 5MB.');
 
@@ -440,7 +440,8 @@ async function submitTicket() {
 
   const fd = new FormData();
   fd.append('full_name',      name);
-  fd.append('index_number',   index);
+  fd.append('class_school',   classSchool);
+  fd.append('index_number',   classSchool);
   fd.append('phone',          phone);
   fd.append('student_type',   'general');
   fd.append('momo_requested', momoRequested ? '1' : '0');
