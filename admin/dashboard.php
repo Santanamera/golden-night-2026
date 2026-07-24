@@ -213,6 +213,8 @@ requireAdmin();
     <div class="nav-grp">Royalty</div>
     <button class="nav-btn" data-p="candidates" onclick="go('candidates')"><span class="ni">👑</span>Candidates<span class="nbadge" id="bc">0</span></button>
     <button class="nav-btn" data-p="votes" onclick="go('votes')"><span class="ni">🗳️</span>Vote Results</button>
+    <div class="nav-grp">Payments</div>
+    <a class="nav-btn" href="payment-management.php"><span class="ni">💳</span>Payment Management</a>
     <div class="nav-grp">More</div>
     <a class="nav-btn" href="../index.html" target="_blank"><span class="ni">🌐</span>Public Site</a>
   </nav>

@@ -3,12 +3,15 @@
 require_once '../includes/config.php';
 
 $db = getDB();
-$settings = getSetting($db, ['prom_name', 'prom_date', 'prom_venue', 'prom_theme']);
+$settings = getSetting($db, ['prom_name', 'prom_date', 'prom_time', 'prom_venue', 'prom_venue_address', 'prom_venue_description', 'prom_venue_phone']);
 
 $promName = $settings['prom_name'] ?? 'Golden Night 2026';
 $promDate = $settings['prom_date'] ?? 'June 28, 2026';
-$promVenue = $settings['prom_venue'] ?? 'Imperial Ballroom, City Center';
-$promTheme = $settings['prom_theme'] ?? 'An Evening of Elegance & Celebration';
+$promTime = $settings['prom_time'] ?? '4:00 PM - 10:00 PM';
+$promVenue = $settings['prom_venue'] ?? 'RAKKA Hotel';
+$promVenueAddress = $settings['prom_venue_address'] ?? 'KN 4 Ave, Kigali, Rwanda';
+$promVenueDescription = $settings['prom_venue_description'] ?? 'Experience elegance at RAKKA Hotel.';
+$promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -244,7 +247,7 @@ $promTheme = $settings['prom_theme'] ?? 'An Evening of Elegance & Celebration';
         <!-- Header -->
         <div class="info-header">
             <h1><?php echo htmlspecialchars($promName); ?></h1>
-            <p class="theme"><?php echo htmlspecialchars($promTheme); ?></p>
+            <p class="theme">An Evening of Elegance & Celebration</p>
         </div>
 
         <!-- Event Details -->
@@ -255,12 +258,20 @@ $promTheme = $settings['prom_theme'] ?? 'An Evening of Elegance & Celebration';
                 <span class="info-detail-value"><?php echo htmlspecialchars($promDate); ?></span>
             </div>
             <div class="info-detail">
+                <span class="info-detail-label">Time:</span>
+                <span class="info-detail-value"><?php echo htmlspecialchars($promTime); ?></span>
+            </div>
+            <div class="info-detail">
                 <span class="info-detail-label">Venue:</span>
                 <span class="info-detail-value"><?php echo htmlspecialchars($promVenue); ?></span>
             </div>
             <div class="info-detail">
-                <span class="info-detail-label">Event Type:</span>
-                <span class="info-detail-value">Formal Dinner & Dance</span>
+                <span class="info-detail-label">Location:</span>
+                <span class="info-detail-value"><?php echo htmlspecialchars($promVenueAddress); ?></span>
+            </div>
+            <div class="info-detail">
+                <span class="info-detail-label">Contact:</span>
+                <span class="info-detail-value"><?php echo htmlspecialchars($promVenuePhone); ?></span>
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Dress Code:</span>
@@ -269,6 +280,26 @@ $promTheme = $settings['prom_theme'] ?? 'An Evening of Elegance & Celebration';
             <div class="info-detail">
                 <span class="info-detail-label">Ticket Price:</span>
                 <span class="info-detail-value"><span class="highlight">GHS 30,000</span></span>
+            </div>
+        </div>
+
+        <!-- Venue Description -->
+        <div class="info-section" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%); border-left: 5px solid #D4AF37;">
+            <h2><span class="icon">🏨</span> About Our Venue - RAKKA Hotel</h2>
+            <p style="font-size: 1.1em; line-height: 1.8; color: #333; margin-bottom: 15px;">
+                <?php echo htmlspecialchars($promVenueDescription); ?>
+            </p>
+            <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
+                <h4 style="color: #1a1a1a; margin-bottom: 10px;">✨ Venue Highlights</h4>
+                <ul style="margin: 0; padding-left: 30px; color: #555; line-height: 1.8;">
+                    <li>Grand ballroom with elegant décor and premium lighting</li>
+                    <li>State-of-the-art sound system for live entertainment</li>
+                    <li>Professional dining service with multi-course menu</li>
+                    <li>Dance floor with premium DJ equipment</li>
+                    <li>Professional photography and videography services</li>
+                    <li>Complimentary parking for all guests</li>
+                    <li>VIP lounge for special guests and chaperones</li>
+                </ul>
             </div>
         </div>
 
@@ -291,39 +322,39 @@ $promTheme = $settings['prom_theme'] ?? 'An Evening of Elegance & Celebration';
             <h2><span class="icon">⏰</span> Event Schedule</h2>
             <div class="timeline">
                 <div class="timeline-item">
-                    <span class="time">6:00 PM</span>
+                    <span class="time">4:00 PM</span>
                     <span class="activity">Doors Open - Welcome Reception & Cocktails</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">6:30 PM</span>
+                    <span class="time">4:30 PM</span>
                     <span class="activity">Guests Seated - Dinner Service Begins</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">7:45 PM</span>
+                    <span class="time">5:45 PM</span>
                     <span class="activity">Opening Remarks & Toast</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">8:00 PM</span>
+                    <span class="time">6:00 PM</span>
                     <span class="activity">Live Entertainment - Band Performance</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">8:45 PM</span>
+                    <span class="time">6:45 PM</span>
                     <span class="activity">Dance Floor Opens</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">9:30 PM</span>
+                    <span class="time">7:30 PM</span>
                     <span class="activity">Class Superlatives & Special Awards</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">10:00 PM</span>
+                    <span class="time">8:00 PM</span>
                     <span class="activity">Prom King & Queen Coronation Ceremony</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">10:15 PM</span>
+                    <span class="time">8:15 PM</span>
                     <span class="activity">First Dance & Continued Celebration</span>
                 </div>
                 <div class="timeline-item">
-                    <span class="time">2:00 AM</span>
+                    <span class="time">10:00 PM</span>
                     <span class="activity">Event Concludes</span>
                 </div>
             </div>
@@ -457,6 +488,7 @@ $promTheme = $settings['prom_theme'] ?? 'An Evening of Elegance & Celebration';
         <!-- Call to Action Buttons -->
         <div class="button-group">
             <a href="buy-ticket.php">🎟️ Get Your Ticket Now</a>
+            <a href="complete-payment.php">💳 Complete Payment</a>
             <a href="audition.php">✨ Apply as Candidate</a>
             <a href="vote.php">🗳️ Vote Now</a>
             <a href="../" class="secondary">← Back to Home</a>

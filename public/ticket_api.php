@@ -36,7 +36,7 @@ if (!preg_match('/^[0-9+\-\s]{8,20}$/', $phone)) {
 }
 
 // ============================================
-// Handle file upload (optional if MoMo used)
+// Handle file upload (optional)
 // ============================================
 $paymentProofPath = null;
 $momoRequested = ($_POST['momo_requested'] ?? '0') === '1';
@@ -98,8 +98,6 @@ if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] !== UPL
         jsonResponse(['success' => false, 'message' => 'Failed to upload payment proof.']);
     }
     $paymentProofPath = 'assets/uploads/tickets/' . $fileName;
-} elseif (!$momoRequested) {
-    jsonResponse(['success' => false, 'message' => 'Please upload payment proof or send a MoMo request first.']);
 }
 
 // ============================================
@@ -148,7 +146,7 @@ try {
     // Return success with ticket data
     jsonResponse([
         'success'  => true,
-        'message'  => 'Ticket registered successfully!',
+        'message'  => $paymentProofPath ? 'Ticket registered successfully! Payment confirmed.' : 'Ticket registered! You can pay anytime. Visit https://web-production-1d8213.up.railway.app/public/complete-payment.php with your ticket ID to complete payment.',
         'ticket'   => [
             'ticket_id'    => $ticketId,
             'full_name'    => $fullName,
@@ -158,7 +156,8 @@ try {
             'seat_number'  => $seatNum,
             'amount_paid'  => $price,
             'qr_url'       => $qrCodeUrl,
-            'status'       => 'pending'
+            'payment_status' => $paymentProofPath ? 'confirmed' : 'pending',
+            'status'       => 'registered'
         ]
     ]);
 

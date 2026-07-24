@@ -104,9 +104,14 @@ function sqliteSchema(PDO $db): void {
     $settings = [
         'prom_name' => 'Golden Night 2026',
         'prom_date' => '14th August 2026',
-        'prom_venue' => 'Intare Arena (proposed, final confirmation pending)',
+        'prom_time' => '4:00 PM - 10:00 PM',
+        'prom_venue' => 'RAKKA Hotel',
+        'prom_venue_address' => 'KN 4 Ave, Kigali, Rwanda',
+        'prom_venue_description' => 'Experience elegance at RAKKA Hotel, Kigali\'s premier hospitality destination. Our grand ballroom features state-of-the-art lighting, premium acoustics, and a sophisticated atmosphere perfect for an unforgettable prom night.',
+        'prom_venue_phone' => '+250 (0) 728 123 456',
         'tickets_available' => '300',
         'voting_enabled' => '1',
+        'allow_registration_without_payment' => '1',
     ];
     $stmt = $db->prepare("INSERT INTO prom_settings (setting_key, setting_value) VALUES (?, ?) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value");
     foreach ($settings as $key => $value) {
@@ -200,9 +205,14 @@ function mysqlSchema(PDO $db): void {
     $settings = [
         'prom_name' => 'Golden Night 2026',
         'prom_date' => '14th August 2026',
-        'prom_venue' => 'Intare Arena (proposed, final confirmation pending)',
+        'prom_time' => '4:00 PM - 10:00 PM',
+        'prom_venue' => 'RAKKA Hotel',
+        'prom_venue_address' => 'KN 4 Ave, Kigali, Rwanda',
+        'prom_venue_description' => 'Experience elegance at RAKKA Hotel, Kigali\'s premier hospitality destination. Our grand ballroom features state-of-the-art lighting, premium acoustics, and a sophisticated atmosphere perfect for an unforgettable prom night.',
+        'prom_venue_phone' => '+250 (0) 728 123 456',
         'tickets_available' => '300',
         'voting_enabled' => '1',
+        'allow_registration_without_payment' => '1',
     ];
     $stmt = $db->prepare("INSERT INTO prom_settings (setting_key, setting_value)
                           VALUES (?, ?)

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Golden Night 2026 — Prom Night</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* =========================================
+       VARIABLES & RESET
+    ========================================= */
+    :root {
+      --gold:      #D4AF37;
+      --gold-light:#f0d060;
+      --gold-dark: #b8921a;
+      --gold-dim:  rgba(212,175,55,0.12);
+      --gold-glow: rgba(212,175,55,0.4);
+      --black:     #0a0a0a;
+      --black-mid: #111108;
+      --black-soft:#1a1a10;
+      --text:      #e8e0cc;
+      --text-dim:  #8a7d5a;
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background:var(--black); color:var(--text); font-family:'Cormorant Garamond',serif; overflow-x:hidden; }
+
+    /* =========================================
+       NAVBAR
+    ========================================= */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:500;
+      display: flex; align-items:center; justify-content:space-between;
+      padding: 0 40px; height: 70px;
+      background: transparent;
+      transition: background 0.4s ease, border-bottom 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(10,10,10,0.96);
+      border-bottom: 1px solid rgba(212,175,55,0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-decoration: none;
+      text-shadow: 0 0 20px var(--gold-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-admin {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid rgba(212,175,55,0.4);
+      padding: 7px 16px;
+      transition: all 0.3s;
+    }
+
+    .nav-admin:hover { background: var(--gold-dim); border-color: var(--gold); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--gold); transition: all 0.3s;
+    }
+
+    /* Mobile menu */
+    .mobile-nav {
+      display: none;
+      position: fixed; top: 70px; left:0; right:0;
+      background: rgba(10,10,10,0.98);
+      border-bottom: 1px solid rgba(212,175,55,0.15);
+      padding: 20px 40px;
+      z-index: 499;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mobile-nav.open { display: flex; }
+
+    .mobile-nav a {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(212,175,55,0.08);
+      transition: color 0.3s;
+    }
+
+    .mobile-nav a:hover { color: var(--gold); }
+    .mobile-nav a:last-child { border-bottom: none; color: var(--gold); }
+
+    @media (max-width: 860px) {
+      nav { padding: 0 24px; }
+      .nav-links, .nav-admin { display: none; }
+      .hamburger { display: flex; }
+    }
+
+    /* =========================================
+       HERO SECTION
+    ========================================= */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items:center; justify-content:center;
+      text-align: center;
+      position: relative; overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+
+    /* Radial glow bg */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(212,175,55,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Expanding rings */
+    .ring {
+      position: absolute; border-radius:50%;
+      border: 1px solid rgba(212,175,55,0.07);
+      animation: ringExpand 8s ease-out infinite;
+      pointer-events: none;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+    }
+    .ring:nth-child(1){ width:400px;  height:400px;  animation-delay:0s; }
+    .ring:nth-child(2){ width:700px;  height:700px;  animation-delay:2s; }
+    .ring:nth-child(3){ width:1000px; height:1000px; animation-delay:4s; }
+    .ring:nth-child(4){ width:1300px; height:1300px; animation-delay:6s; }
+
+    @keyframes ringExpand {
+      0%   { opacity:0; transform:translate(-50%,-50%) scale(0.8); }
+      20%  { opacity:1; }
+      100% { opacity:0; transform:translate(-50%,-50%) scale(1.15); }
+    }
+
+    .hero-inner { position:relative; z-index:2; max-width:900px; }
+
+    .hero-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem; letter-spacing: 8px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 24px;
+      display: flex; align-items:center; justify-content:center; gap: 16px;
+      opacity:0; animation: fadeUp 1s 0.3s ease forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900; line-height:1; letter-spacing: 8px;
+      color: transparent;
+      background: linear-gradient(135deg, #c8a228, #f0d060, #D4AF37, #b8921a, #f0d060);
+      background-size: 300% 300%;
+      -webkit-background-clip: text; background-clip: text;
+      opacity:0; animation: fadeUp 1.2s 0.5s ease forwards, shimmer 6s 1.5s ease infinite;
+      filter: drop-shadow(0 0 30px rgba(212,175,55,0.3));
+    }
+
+    @keyframes shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-style: italic; color: var(--text-dim);
+      margin: 20px 0 10px;
+      opacity:0; animation: fadeUp 1s 0.8s ease forwards;
+    }
+
+    .hero-date {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.68rem; letter-spacing: 5px; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 50px;
+      opacity:0; animation: fadeUp 1s 1s ease forwards;
+    }
+
+    .hero-date span { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(30px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* CTA Buttons */
+    .hero-btns {
+      display: flex; gap: 16px; justify-content:center; flex-wrap:wrap;
+      opacity:0; animation: fadeUp 1s 1.2s ease forwards;
+    }
+
+    .btn-cta {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase;
+      text-decoration: none; padding: 16px 32px;
+      transition: all 0.4s ease; position:relative; overflow:hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--black);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 40px rgba(212,175,55,0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid rgba(212,175,55,0.5);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    /* =========================================
+       COUNTDOWN
+    ========================================= */
+    .countdown-section {
+      padding: 80px 40px;
+      text-align: center;
+      border-top: 1px solid rgba(212,175,55,0.08);
+      border-bottom: 1px solid rgba(212,175,55,0.08);
+    }
+
+    .cd-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.6rem; letter-spacing: 6px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 40px;
+    }
+
+    .cd-grid {
+      display: flex; justify-content:center; gap: 40px; flex-wrap:wrap;
+    }
+
+    .cd-unit { text-align: center; }
+
+    .cd-num {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      color: var(--gold); line-height: 1;
+      text-shadow: 0 0 40px rgba(212,175,55,0.3);
+      animation: cdPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes cdPulse { 0%,100%{text-shadow:0 0 20px rgba(212,175,55,0.2)} 50%{text-shadow:0 0 50px rgba(212,175,55,0.5)} }
+
+    .cd-lbl {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--text-dim); margin-top: 8px;
+    }
+
+    .cd-sep {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem; color: rgba(212,175,55,0.3);
+      align-self: center; padding-bottom: 20px;
+    }
+
+    /* =========================================
+       INFO CARDS
+    ========================================= */
+    .info-section {
+      padding: 80px 40px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      color: var(--gold); text-align:center; letter-spacing: 4px;
+      margin-bottom: 50px;
+    }
+
+    .section-title::after {
+      content: ''; display:block; width:50px; height:1px;
+      background: var(--gold); margin: 12px auto 0;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .info-card {
+      background: var(--black-mid);
+      border: 1px solid rgba(212,175,55,0.12);
+      padding: 36px 28px;
+      text-align: center;
+      position: relative; overflow:hidden;
+      transition: all 0.4s;
+    }
+
+    .info-card::before {
+      content:''; position:absolute; top:0; left:0; right:0;
+      height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    }
+
+    .info-card:hover { border-color:rgba(212,175,55,0.3); transform:translateY(-4px); }
+
+    .info-icon { font-size:2rem; display:block; margin-bottom:16px; }
+
+    .info-card h3 {
+      font-family: 'Cinzel', serif; font-size:0.95rem; color:var(--gold);
+      letter-spacing:3px; margin-bottom:10px;
+    }
+
+    .info-card p { font-size:0.95rem; color:var(--text-dim); line-height:1.7; }
+
+    /* =========================================
+       VENUE SHOWCASE
+    ========================================= */
+    .venue-section {
+      padding: 20px 40px 90px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .venue-wrap {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .venue-card {
+      background: var(--black-mid);
+      border: 1px solid rgba(212,175,55,0.12);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .venue-card::before {
+      content:'';
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+      z-index:2;
+    }
+
+    .venue-photo {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.95) contrast(1.05);
+    }
+
+    .venue-copy {
+      padding: 24px;
+    }
+
+    .venue-copy h3 {
+      font-family:'Cinzel',serif;
+      font-size:1.1rem;
+      color:var(--gold);
+      letter-spacing:3px;
+      margin-bottom:10px;
+    }
+
+    .venue-copy p {
+      color:var(--text-dim);
+      line-height:1.8;
+      margin-bottom:12px;
+    }
+
+    .venue-note {
+      font-family:'Montserrat',sans-serif;
+      font-size:0.62rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--gold-light);
+    }
+
+    .venue-map {
+      border: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 468px;
+      display: block;
+      filter: grayscale(0.35) contrast(1.05);
+    }
+
+    .venue-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-family:'Montserrat',sans-serif;
+      font-size:0.62rem;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      color:var(--gold);
+      text-decoration:none;
+      border:1px solid rgba(212,175,55,0.35);
+      padding:10px 14px;
+      transition:all 0.3s;
+    }
+
+    .venue-link:hover {
+      background:var(--gold-dim);
+      border-color:var(--gold);
+    }
+
+    /* =========================================
+       DRESS CODE
+    ========================================= */
+    .dress-section {
+      padding: 80px 40px;
+      background: linear-gradient(135deg, var(--black-mid) 0%, var(--black) 100%);
+      border-top: 1px solid rgba(212,175,55,0.08);
+    }
+
+    .dress-inner {
+      max-width: 800px; margin: 0 auto; text-align:center;
+    }
+
+    .dress-section p {
+      font-size: 1.1rem; color: var(--text-dim); line-height:1.9;
+      margin-bottom: 30px;
+    }
+
+    .dress-tags {
+      display: flex; flex-wrap:wrap; gap: 10px; justify-content:center;
+    }
+
+    .dress-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.62rem; letter-spacing: 2px; text-transform:uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(212,175,55,0.3);
+      padding: 8px 18px;
+    }
+
+    /* =========================================
+       ACTION SECTION
+    ========================================= */
+    .action-section {
+      padding: 80px 40px;
+      max-width: 1200px; margin: 0 auto;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .action-card {
+      background: var(--black-mid);
+      border: 1px solid rgba(212,175,55,0.12);
+      padding: 44px 32px;
+      text-align: center;
+      position: relative; overflow:hidden;
+      transition: all 0.4s;
+    }
+
+    .action-card::before {
+      content:''; position:absolute; top:0; left:0; right:0;
+      height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    }
+
+    .action-card:hover { border-color:rgba(212,175,55,0.3); transform:translateY(-4px); }
+
+    .action-icon { font-size:2.5rem; display:block; margin-bottom:16px; }
+
+    .action-card h3 {
+      font-family:'Cinzel',serif; font-size:1.1rem; color:var(--gold);
+      letter-spacing:3px; margin-bottom:12px;
+    }
+
+    .action-card p { font-size:0.95rem; color:var(--text-dim); line-height:1.7; margin-bottom:24px; }
+
+    /* =========================================
+       FOOTER
+    ========================================= */
+    footer {
+      padding: 40px;
+      text-align: center;
+      border-top: 1px solid rgba(212,175,55,0.1);
+    }
+
+    footer .f-logo {
+      font-family: 'Cinzel', serif; font-size:1.1rem;
+      color: var(--gold); letter-spacing:6px; display:block; margin-bottom:10px;
+    }
+
+    footer p {
+      font-family: 'Montserrat', sans-serif; font-size:0.62rem;
+      letter-spacing:3px; color:var(--text-dim); text-transform:uppercase;
+    }
+
+    footer a { color:var(--gold); text-decoration:none; }
+
+    /* =========================================
+       REVEAL ANIMATION
+    ========================================= */
+    .reveal {
+      opacity:0; transform:translateY(36px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* =========================================
+       GOLD DIVIDER
+    ========================================= */
+    .gold-div {
+      display: flex; align-items:center; gap:14px;
+      max-width: 300px; margin: 0 auto 20px;
+    }
+    .gold-div .line { flex:1; height:1px; background:linear-gradient(90deg,transparent,var(--gold)); }
+    .gold-div .line.r { background:linear-gradient(90deg,var(--gold),transparent); }
+    .gold-div .dia { width:7px; height:7px; background:var(--gold); transform:rotate(45deg); flex-shrink:0; }
+
+    /* =========================================
+       CSS PARTICLES (lightweight)
+    ========================================= */
+    .pt {
+      position: fixed; width:2px; height:2px;
+      background: var(--gold); border-radius:50%;
+      pointer-events:none; opacity:0;
+      animation: floatPt linear infinite; z-index:0;
+    }
+    @keyframes floatPt {
+      0%  { opacity:0; transform:translateY(0); }
+      15% { opacity:0.5; }
+      85% { opacity:0.25; }
+      100%{ opacity:0; transform:translateY(-100vh); }
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+    @media (max-width: 768px) {
+      .info-section, .action-section, .countdown-section,
+      .dress-section, footer { padding: 60px 24px; }
+      .cd-grid { gap:24px; }
+      .cd-sep { display:none; }
+      .venue-section { padding: 0 24px 70px; }
+      .venue-wrap { grid-template-columns: 1fr; }
+      .venue-map { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================
+     NAVBAR
+================================================ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">✦ GN</a>
+
+  <ul class="nav-links">
+    <li><a href="#countdown">Countdown</a></li>
+    <li><a href="public/buy-ticket.php">Tickets</a></li>
+    <li><a href="#voting">Voting</a></li>
+    <li><a href="#audition">Audition</a></li>
+    <li><a href="#dresscode">Dress Code</a></li>
+  </ul>
+
+  <a href="admin/login.php" class="nav-admin">Admin</a>
+
+  <div class="hamburger" id="hamburger" onclick="toggleMob()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#countdown" onclick="toggleMob()">Countdown</a>
+  <a href="public/buy-ticket.php" onclick="toggleMob()">Buy Ticket</a>
+  <a href="#voting"    onclick="toggleMob()">Vote Now</a>
+  <a href="#audition"  onclick="toggleMob()">Audition</a>
+  <a href="#dresscode" onclick="toggleMob()">Dress Code</a>
+  <a href="admin/login.php">Admin Portal ↗</a>
+</div>
+
+<!-- ================================================
+     HERO
+================================================ -->
+<section class="hero">
+  <!-- Rings -->
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">✦ &nbsp; Presenting &nbsp; ✦</div>
+    <h1 class="hero-title">Golden Night</h1>
+    <p class="hero-sub">An Evening Under the Stars</p>
+    <p class="hero-date"><span>14th August 2026</span> &nbsp;•&nbsp; Intare Arena (proposed)</p>
+
+    <div class="hero-btns">
+      <a href="public/buy-ticket.php" class="btn-cta btn-primary">Buy Your Ticket</a>
+      <a href="public/vote.php"       class="btn-cta btn-secondary">Vote for Royalty</a>
+      <a href="public/audition.php"   class="btn-cta btn-secondary">Register Audition</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+     COUNTDOWN
+================================================ -->
+<section class="countdown-section reveal" id="countdown">
+  <div class="cd-eyebrow">✦ &nbsp; Time Until The Magic Begins &nbsp; ✦</div>
+  <div class="cd-grid" style="padding:16px 0;">
+    <div class="cd-unit"><div class="cd-num" id="cdDays">00</div><div class="cd-lbl">Days</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cdHours">00</div><div class="cd-lbl">Hours</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cdMins">00</div><div class="cd-lbl">Minutes</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cdSecs">00</div><div class="cd-lbl">Seconds</div></div>
+  </div>
+  <div style="color:var(--text-dim);max-width:720px;margin:16px auto 0;">Save the date: Friday, 14th August 2026. Program time will be announced with the final run sheet.</div>
+  <div style="margin-top:8px;font-family:'Montserrat',sans-serif;font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold-light);">Venue status: Intare Arena is currently under final discussion.</div>
+  <div style="margin-top:16px;">
+    <a href="https://www.google.com/maps/search/?api=1&query=Intare+Arena+Kigali" target="_blank" rel="noopener" class="venue-link">Open Intare Arena on Google Maps</a>
+  </div>
+</section>
+
+<!-- ================================================
+     INFO CARDS
+================================================ -->
+<section class="info-section reveal" id="tickets">
+  <h2 class="section-title">Event Details</h2>
+    <div class="info-grid">
+    <div class="info-card">
+      <span class="info-icon">📍</span>
+      <h3>Venue</h3>
+      <p>Intare Arena <span style="font-size:0.85rem; color:var(--gold-light);">(proposed)</span><br/><span style="font-size:0.85rem;color:var(--text-dim)">Final confirmation in progress.</span></p>
+    </div>
+    <div class="info-card">
+      <span class="info-icon">📅</span>
+      <h3>Date & Time</h3>
+      <p>14th August 2026<br/><span style="font-size:0.85rem;color:var(--text-dim)">Program timeline to be published soon.</span></p>
+    </div>
+    <div class="info-card">
+      <span class="info-icon">🎟️</span>
+      <h3>Ticket Price</h3>
+      <p>General Admission: <strong style="color:var(--gold)">Rwf 30,000</strong><br/><span style="font-size:0.85rem;color:var(--text-dim)">Single price for all attendees.</span></p>
+    </div>
+    <div class="info-card">
+      <span class="info-icon">📱</span>
+      <h3>Payment</h3>
+      <p>Payments are handled on the Buy Ticket page via MTN MoMo.<br/><span style="font-size:0.85rem;color:var(--text-dim)">Always verify recipient name and code before approving.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+     VENUE SHOWCASE
+================================================ -->
+<section class="venue-section reveal" id="venue">
+  <h2 class="section-title">Venue Spotlight</h2>
+  <div class="venue-wrap">
+    <article class="venue-card">
+      <img class="venue-photo" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1400&q=80" alt="Night event atmosphere preview for Golden Night 2026">
+      <div class="venue-copy">
+        <h3>Intare Arena Atmosphere</h3>
+        <p>We are shaping Golden Night 2026 around the Intare Arena experience: grand, energetic, and camera-ready from entrance to crowning moment.</p>
+        <p>The venue is still being finalized, but this gives you the mood and scale we are targeting for the night.</p>
+        <div class="venue-note">Preview image for event vibe. Final venue visuals may vary.</div>
+      </div>
+    </article>
+
+    <article class="venue-card">
+      <iframe class="venue-map" src="https://www.google.com/maps?q=Intare+Arena+Kigali&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Intare Arena Kigali map"></iframe>
+    </article>
+  </div>
+</section>
+
+<!-- ================================================
+     DRESS CODE
+================================================ -->
+<section class="dress-section reveal" id="dresscode">
+  <div class="dress-inner">
+    <h2 class="section-title">Dress Code</h2>
+    <div class="gold-div"><div class="line"></div><div class="dia"></div><div class="line r"></div></div>
+    <p>
+      This is your night to shine. We invite you to dress in your finest formal attire
+      and embrace the elegance of an unforgettable evening. Think gowns, suits, and
+      the timeless allure of black tie sophistication.
+    </p>
+    <div class="dress-tags">
+      <span class="dress-tag">Black Tie</span>
+      <span class="dress-tag">Formal Gowns</span>
+      <span class="dress-tag">Suits & Tuxedos</span>
+      <span class="dress-tag">Evening Wear</span>
+      <span class="dress-tag">No Casual Attire</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+<!-- ================================================
+     ACTION CARDS
+================================================ -->
+<section class="action-section reveal" id="voting">
+  <h2 class="section-title">Get Involved</h2>
+  <div class="action-grid">
+
+    <div class="action-card">
+      <span class="action-icon">🎟️</span>
+      <h3>Buy a Ticket</h3>
+      <p>Secure your spot at the most memorable night of the year. Limited seats — don't miss out.</p>
+      <a href="public/buy-ticket.php" class="btn-cta btn-primary" style="display:inline-block;">Get Your Ticket</a>
+    </div>
+
+    <div class="action-card" id="voting">
+      <span class="action-icon">👑</span>
+      <h3>Vote for Royalty</h3>
+      <p>Cast your vote for Prom King and Queen. Use your confirmed ticket ID to participate.</p>
+      <a href="public/vote.php" class="btn-cta btn-secondary" style="display:inline-block;">Vote Now</a>
+    </div>
+
+    <div class="action-card" id="audition">
+      <span class="action-icon">🌟</span>
+      <h3>Register as Candidate</h3>
+      <p>Think you have what it takes to be crowned? Submit your candidacy for Prom King or Queen.</p>
+      <a href="public/audition.php" class="btn-cta btn-secondary" style="display:inline-block;">Register Now</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================================
+     FOOTER
+================================================ -->
+<footer>
+  <span class="f-logo">✦ Golden Night 2026 ✦</span>
+  <p><a href="admin/login.php">Admin Portal</a></p>
+</footer>
+
+<!-- CSS Particles -->
+<script>
+(function(){
+  var lefts=[5,12,20,28,35,42,50,58,65,72,80,88,95,15,45,70,30];
+  lefts.forEach(function(l){
+    var d=document.createElement('div');
+    d.className='pt';
+    d.style.left=l+'vw';
+    d.style.bottom='-4px';
+    d.style.animationDuration=(Math.random()*12+10)+'s';
+    d.style.animationDelay=(Math.random()*10)+'s';
+    d.style.width=d.style.height=(Math.random()<0.3?'3px':'2px');
+    document.body.appendChild(d);
+  });
+})();
+</script>
+
+<script>
+// ---- NAVBAR ----
+window.addEventListener('scroll', function(){
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+}, {passive:true});
+
+function toggleMob(){
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+// Close mobile nav on outside click
+document.addEventListener('click', function(e){
+  var mn = document.getElementById('mobileNav');
+  var hb = document.getElementById('hamburger');
+  if(mn.classList.contains('open') && !mn.contains(e.target) && !hb.contains(e.target)){
+    mn.classList.remove('open');
+  }
+});
+
+// ---- SCROLL REVEAL ----
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, {threshold:0.1});
+document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
+
+// ---- COUNTDOWN ----
+(function () {
+  var eventDate = new Date('2026-08-14T18:00:00+02:00').getTime();
+  var dayEl = document.getElementById('cdDays');
+  var hourEl = document.getElementById('cdHours');
+  var minEl = document.getElementById('cdMins');
+  var secEl = document.getElementById('cdSecs');
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function tick(){
+    var now = Date.now();
+    var diff = eventDate - now;
+
+    if (diff <= 0) {
+      dayEl.textContent = '00';
+      hourEl.textContent = '00';
+      minEl.textContent = '00';
+      secEl.textContent = '00';
+      return;
+    }
+
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    var mins = Math.floor((diff / (1000 * 60)) % 60);
+    var secs = Math.floor((diff / 1000) % 60);
+
+    dayEl.textContent = pad(days);
+    hourEl.textContent = pad(hours);
+    minEl.textContent = pad(mins);
+    secEl.textContent = pad(secs);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>

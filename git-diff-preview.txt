@@ -1,0 +1,175 @@
+diff --git a/includes/config.php b/includes/config.php
+index e1edee2..644f9b8 100644
+--- a/includes/config.php
++++ b/includes/config.php
+@@ -16,8 +16,7 @@ define('DB_CHARSET', 'utf8mb4');
+ define('APP_NAME', 'Golden Night 2026');
+ define('APP_URL',  getenv('APP_URL') ?: 'https://goldennight2026.kesug.com');
+ define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');
+-define('TICKET_PRICE_INTERNAL', 25000);
+-define('TICKET_PRICE_EXTERNAL', 30000);
++define('TICKET_PRICE', 30000);
+ 
+ // Session config
+ if (session_status() === PHP_SESSION_NONE) {
+diff --git a/public/buy-ticket.php b/public/buy-ticket.php
+index 971c0bf..2c181e4 100644
+--- a/public/buy-ticket.php
++++ b/public/buy-ticket.php
+@@ -163,16 +163,10 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+     <h1>Secure Your Ticket</h1>
+     <p>Join us for an unforgettable evening. Limited seats G현 reserve yours now before they're gone.</p>
+ 
+-    <div class="price-card sel" id="card-internal" onclick="selectType('internal')">
+-      <div class="pc-dot" id="dot-internal"></div>
+-      <div class="pc-top"><div class="pc-type">Internal Student</div><div class="pc-amt">Rwf 25,000</div></div>
+-      <div class="pc-desc">Currently enrolled TVET / REB student of the school</div>
+-    </div>
+-
+-    <div class="price-card" id="card-external" onclick="selectType('external')">
+-      <div class="pc-dot" id="dot-external"></div>
+-      <div class="pc-top"><div class="pc-type">External Guest</div><div class="pc-amt">Rwf 30,000</div></div>
+-      <div class="pc-desc">Family members, alumni, and invited guests</div>
++    <div class="price-card sel" id="card-general">
++      <div class="pc-dot" id="dot-general"></div>
++      <div class="pc-top"><div class="pc-type">General Admission</div><div class="pc-amt">Rwf 30,000</div></div>
++      <div class="pc-desc">One entrance fee for everyone G현 no separate internal/external pricing.</div>
+     </div>
+ 
+     <div class="event-info">
+@@ -208,13 +202,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+       </div>
+     </div>
+ 
+-    <div class="fg">
+-      <label class="fl">Student Type *</label>
+-      <select id="studentType" class="fi" onchange="onTypeChange()">
+-        <option value="internal">Internal Student G현 Rwf 25,000</option>
+-        <option value="external">External Guest G현 Rwf 30,000</option>
+-      </select>
+-    </div>
++    <input type="hidden" id="studentType" value="general" />
+ 
+     <!-- PAYMENT SECTION -->
+     <div class="pay-section">
+@@ -222,7 +210,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+ 
+       <div class="total-box">
+         <span class="total-lbl">Amount Due</span>
+-        <span class="total-val" id="totalAmt">Rwf 25,000</span>
++        <span class="total-val" id="totalAmt">Rwf 30,000</span>
+       </div>
+ 
+       <!-- MTN MoMo Push -->
+@@ -232,7 +220,7 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+           <div class="momo-label">MTN MoMo Pay</div>
+         </div>
+         <div class="momo-info">
+-          Paying to: <strong>Kenny</strong> &nbsp;-+&nbsp; Code: <span class="momo-num">11111</span><br>
++          Paying to: <strong><?= htmlspecialchars($momoName, ENT_QUOTES) ?></strong> &nbsp;-+&nbsp; Code: <span class="momo-num"><?= htmlspecialchars($momoCode, ENT_QUOTES) ?></span><br>
+           Enter your MoMo number below and click <strong>"Send MoMo Request"</strong>.<br>
+           You will receive a prompt on your phone to approve the payment.
+         </div>
+@@ -300,10 +288,11 @@ $momoName = getenv('MOMO_PAYEE_NAME') ?: 'Kenny';
+ 
+ <script>
+ // ---- STATE ----
+-let selType = 'internal';
+ let momoRequestSent = false;
++let momoRequested = false;
+ let momoPushSucceeded = false;
+ let ticketData = null;
++const TICKET_PRICE = 30000;
+ 
+ // MTN MoMo merchant code and payee name are configurable via environment variables
+ const MOMO_CODE = '<?= htmlspecialchars($momoCode, ENT_QUOTES) ?>';
+@@ -318,16 +307,8 @@ function selectType(t) {
+   updateTotal();
+ }
+ 
+-function onTypeChange() {
+-  selType = document.getElementById('studentType').value;
+-  document.querySelectorAll('.price-card').forEach(c => c.classList.remove('sel'));
+-  document.getElementById('card-' + selType)?.classList.add('sel');
+-  updateTotal();
+-}
+-
+ function updateTotal() {
+-  const amt = selType === 'internal' ? 25000 : 30000;
+-  document.getElementById('totalAmt').textContent = 'Rwf ' + amt.toLocaleString();
++  document.getElementById('totalAmt').textContent = 'Rwf ' + TICKET_PRICE.toLocaleString();
+ }
+ 
+ // ---- FILE UPLOAD ----
+@@ -340,7 +321,7 @@ function onFile(input) {
+ async function sendMoMoRequest() {
+   const phone = document.getElementById('momoPhone').value.trim().replace(/\s/g,'');
+   const name  = document.getElementById('fullName').value.trim();
+-  const amt   = selType === 'internal' ? 25000 : 30000;
++  const amt   = TICKET_PRICE;
+   const btn   = document.getElementById('momoBtn');
+   const txt   = document.getElementById('momoBtnText');
+   const status= document.getElementById('payStatus');
+@@ -385,6 +366,7 @@ async function sendMoMoRequest() {
+       status.textContent = 'G｀ Request sent! Check your phone and approve the payment of Rwf ' + amt.toLocaleString();
+       txt.textContent = 'Gｔ Request Sent';
+       momoRequestSent = true;
++      momoRequested = true;
+       momoPushSucceeded = true;
+     } else {
+       throw new Error(data.message || 'Request failed');
+@@ -400,6 +382,7 @@ async function sendMoMoRequest() {
+       </div>
+       <div>
+         Or use the MTN MoMo app and pay to code <strong style="color:var(--momo)">${MOMO_CODE}</strong> for Rwf <strong>${amt.toLocaleString()}</strong>.
++        <div style="margin-top:6px;font-size:0.9rem;color:var(--text-dim);">Payee: <strong style="color:var(--momo)">${MOMO_NAME}</strong></div>
+       </div>
+       <div style="margin-top:12px;color:var(--text-dim);font-size:0.9rem;">Upload the payment screenshot below to complete the registration.</div>
+     `;
+@@ -418,7 +401,7 @@ async function submitTicket() {
+   const name  = document.getElementById('fullName').value.trim();
+   const cls   = document.getElementById('classSchool').value.trim();
+   const phone = document.getElementById('phone').value.trim();
+-  const type  = document.getElementById('studentType').value;
++  const type  = 'general';
+   const file  = document.getElementById('paymentProof').files[0];
+ 
+   errBox.className = 'err-box';
+diff --git a/public/momo_request.php b/public/momo_request.php
+index f5722f2..4e724fe 100644
+--- a/public/momo_request.php
++++ b/public/momo_request.php
+@@ -19,6 +19,19 @@ define('MOMO_BASE_URL', getenv('MOMO_BASE_URL') ?: 'https://sandbox.momodevelope
+ define('MOMO_CURRENCY', getenv('MOMO_CURRENCY') ?: 'EUR');
+ define('MOMO_CALLBACK', getenv('MOMO_CALLBACK') ?: APP_URL . '/public/momo_callback.php');
+ 
++if (isset($_GET['debug_env'])) {
++    echo json_encode([
++        'MOMO_SUB_KEY' => MOMO_SUB_KEY,
++        'MOMO_API_USER' => MOMO_API_USER,
++        'MOMO_API_KEY' => MOMO_API_KEY,
++        'MOMO_BASE_URL' => MOMO_BASE_URL,
++        'MOMO_ENV' => MOMO_ENV,
++        'MOMO_CALLBACK' => MOMO_CALLBACK,
++        'APP_URL' => APP_URL,
++    ]);
++    exit;
++}
++
+ if (!MOMO_SUB_KEY || !MOMO_API_USER || !MOMO_API_KEY) {
+     echo json_encode(['success' => false, 'message' => 'MTN MoMo credentials are not configured.']);
+     exit;
+diff --git a/public/ticket_api.php b/public/ticket_api.php
+index 89fd897..7f0dca3 100644
+--- a/public/ticket_api.php
++++ b/public/ticket_api.php
+@@ -89,7 +89,7 @@ try {
+     $ticketId = generateTicketID();
+     
+     // Determine price
+-    $price = ($studentType === 'internal') ? TICKET_PRICE_INTERNAL : TICKET_PRICE_EXTERNAL;
++    $price = TICKET_PRICE;
+     
+     // Generate QR code URL (saved as reference)
+     $qrData = $ticketId; // Scan just returns the ticket ID
+
