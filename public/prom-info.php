@@ -391,7 +391,7 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Contact:</span>
-                <span class="info-detail-value"><?php echo htmlspecialchars($promVenuePhone); ?></span>
+                <span class="info-detail-value">+250 780153944</span>
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Dress Code:</span>

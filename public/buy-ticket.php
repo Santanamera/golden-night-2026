@@ -183,7 +183,8 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         ⏰ <strong>Schedule:</strong> 4:00 PM – 10:00 PM<br>
         🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=RAKKA+Hotel+Kigali+Rwanda" target="_blank" rel="noopener">Open in Google Maps</a><br>
         🎟️ Register now and complete payment later if needed<br>
-        📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
+        � <strong>Inquiry:</strong> +250 780153944<br>
+        �📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
       </p>
     </div>
   </div>
