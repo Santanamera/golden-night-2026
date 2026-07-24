@@ -336,6 +336,7 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
     </style>
 </head>
 <body>
+    <!-- DEPLOY-VERIFY-2026-07-24 -->
     <nav class="navbar">
         <div class="nav-brand">Golden Night 2026</div>
         <ul class="nav-menu">
@@ -361,6 +362,7 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
                 <a href="buy-ticket.php">🎟️ Register Now</a>
                 <a href="complete-payment.php" class="secondary">💳 Pay Later</a>
             </div>
+            <p style="margin-top:16px; color:#f0d060; font-weight:600;">Secure your place today — registration stays open and you can complete payment later.</p>
         </div>
 
         <div class="info-header">
