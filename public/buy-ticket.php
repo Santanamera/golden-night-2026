@@ -52,6 +52,8 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
     /* RIGHT — Form */
     .form-panel{background:var(--black-soft);border:1px solid rgba(212,175,55,0.15);padding:38px;position:relative;overflow:hidden;}
+    .welcome-note{background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.3);padding:14px 16px;margin-bottom:18px;font-family:'Montserrat',sans-serif;font-size:0.78rem;line-height:1.7;color:var(--text-dim);border-radius:8px;}
+    .welcome-note strong{color:var(--text);display:block;margin-bottom:4px;}
     .form-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
     .form-title{font-family:'Cinzel',serif;font-size:1.2rem;color:var(--gold);letter-spacing:3px;margin-bottom:28px;text-align:center;}
 
@@ -190,6 +192,11 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
   <div class="form-panel">
     <h2 class="form-title">Registration Form</h2>
 
+    <div class="welcome-note">
+      <strong>Register now, pay later.</strong>
+      Secure your spot today — no payment proof is required to complete registration. You can finish payment whenever you're ready.
+    </div>
+
     <div class="err-box" id="errBox"></div>
 
     <div class="fg">
@@ -268,7 +275,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     </div>
 
     <button class="submit-btn" id="submitBtn" onclick="submitTicket()">
-      ✦ &nbsp; Complete Registration
+      ✦ &nbsp; Register Now
     </button>
   </div>
 
@@ -426,9 +433,6 @@ async function submitTicket() {
   if (!name)  return showErr('Please enter your full name.');
   if (!index) return showErr('Please enter your index number.');
   if (!phone) return showErr('Please enter your phone number.');
-  if (!momoPushSucceeded && !file) {
-    return showErr('Please send a MoMo request (and wait for approval) or upload a payment screenshot.');
-  }
   if (file && file.size > 5 * 1024 * 1024) return showErr('File too large. Max 5MB.');
 
   btn.disabled = true;
@@ -453,12 +457,12 @@ async function submitTicket() {
     } else {
       showErr(data.message || 'Registration failed. Please try again.');
       btn.disabled = false;
-      btn.textContent = '✦   Complete Registration';
+      btn.textContent = '✦   Register Now';
     }
   } catch {
     showErr('Network error. Please check your connection and try again.');
     btn.disabled = false;
-    btn.textContent = '✦   Complete Registration';
+    btn.textContent = '✦   Register Now';
   }
 }
 

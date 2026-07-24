@@ -21,6 +21,21 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
     <title>Prom Information - <?php echo htmlspecialchars($promName); ?></title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
+        body {
+            background: linear-gradient(180deg, #0a0a0a 0%, #161616 100%);
+            color: #f5ecd8;
+        }
+
+        .navbar {
+            background: rgba(10, 10, 10, 0.96);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.22);
+        }
+
+        .navbar .nav-brand,
+        .navbar .nav-menu a {
+            color: #f5ecd8;
+        }
+
         .info-container {
             max-width: 1100px;
             margin: 0 auto;
@@ -86,14 +101,15 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
         
         .info-section {
             margin-bottom: 40px;
-            background: #f9f9f9;
+            background: #151515;
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 14px;
             border-left: 5px solid #D4AF37;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
         }
         
         .info-section h2 {
-            color: #1a1a1a;
+            color: #ffffff;
             margin-top: 0;
             margin-bottom: 20px;
             font-size: 1.8em;
@@ -108,8 +124,8 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
         
         .info-section p {
             margin: 10px 0;
-            line-height: 1.6;
-            color: #333;
+            line-height: 1.7;
+            color: #e8ddbf;
         }
         
         .info-detail {
@@ -125,12 +141,12 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
         
         .info-detail-label {
             font-weight: 600;
-            color: #1a1a1a;
+            color: #f0d060;
             min-width: 150px;
         }
         
         .info-detail-value {
-            color: #555;
+            color: #e8ddbf;
             text-align: right;
         }
         
@@ -250,22 +266,22 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
         }
 
         .activity-card {
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 8px;
+            background: #1c1c1c;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
             padding: 18px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         .activity-card h3 {
-            color: #1a1a1a;
+            color: #f0d060;
             margin-bottom: 8px;
             font-size: 1.05em;
         }
 
         .activity-card p {
             margin: 0;
-            color: #555;
+            color: #e8ddbf;
             line-height: 1.6;
         }
         
@@ -282,9 +298,9 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
             display: inline-block;
             padding: 12px 30px;
             background: #D4AF37;
-            color: white;
+            color: #111;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 999px;
             transition: all 0.3s ease;
             font-weight: 600;
         }
@@ -340,6 +356,10 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 (0) 728 123 456';
                 <span>🎶 Live Entertainment</span>
                 <span>👑 Royal Crowning</span>
                 <span>📸 Premium Memories</span>
+            </div>
+            <div class="button-group" style="justify-content:flex-start; margin-top:20px;">
+                <a href="buy-ticket.php">🎟️ Register Now</a>
+                <a href="complete-payment.php" class="secondary">💳 Pay Later</a>
             </div>
         </div>
 
