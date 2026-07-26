@@ -1,8 +1,12 @@
 <?php
 require_once '../includes/config.php';
 
+$momoCode = trim((string) (getenv('MOMO_PAYEE_CODE') ?: '')); 
+$momoName = trim((string) (getenv('MOMO_PAYEE_NAME') ?: '')); 
+$isMomoRecipientConfigured = $momoCode !== '' && $momoName !== '';
+
 $db = getDB();
-$settings = getSetting($db, ['prom_name', 'tickets_available']);
+$settings = getSetting(['prom_name', 'tickets_available']);
 $promName = $settings['prom_name'] ?? 'Golden Night 2026';
 
 $ticketId = null;
@@ -91,17 +95,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
                             $paymentProofPath = 'assets/uploads/tickets/' . $fileName;
                             
-                            // Update ticket to confirmed
+                            // Save proof for admin review without auto-confirming payment
                             $updateStmt = $db->prepare("
                                 UPDATE tickets 
-                                SET payment_status = 'confirmed', 
-                                    payment_proof = ?,
-                                    amount_paid = COALESCE(amount_paid, 30000)
+                                SET payment_status = 'pending', 
+                                    payment_proof = ?
                                 WHERE ticket_id = ?
                             ");
                             $updateStmt->execute([$paymentProofPath, $ticketId]);
                             
-                            $message = 'Payment successful! Your ticket has been confirmed. You can now scan your QR code at the prom.';
+                            $message = 'Payment proof uploaded. Your ticket will be reviewed and confirmed by an administrator shortly.';
                             $messageType = 'success';
                             
                             // Refresh ticket data
@@ -402,17 +405,18 @@ if (isset($_GET['ticket_id']) && !$ticket) {
                 </div>
 
                 <div class="payment-amount">
-                    Amount Due: GHS 30,000
+                    Amount Due: Rwf <?php echo number_format((int)($ticket['amount_paid'] ?? TICKET_PRICE_SINGLE), 0, '.', ','); ?>
                 </div>
 
                 <div class="form-group">
                     <label for="payment_method">Payment Method</label>
                     <div class="alert info">
                         <strong>💰 Pay via MTN MoMo:</strong><br>
-                        Send GHS 30,000 to <strong>+250 726 123 456</strong><br>
+                        Send Rwf <?php echo number_format((int)($ticket['amount_paid'] ?? TICKET_PRICE_SINGLE), 0, '.', ','); ?> to <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : '+250 726 123 456' ?></strong><br>
+                        Code: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'Enter the code shown on the registration page' ?></strong><br>
                         Reference: <strong><?php echo htmlspecialchars($ticket['ticket_id']); ?></strong><br>
                         <br>
-                        Then upload your payment receipt/screenshot below.
+                        Then upload your payment receipt or screenshot below to confirm your spot.
                     </div>
                 </div>
 

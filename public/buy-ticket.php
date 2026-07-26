@@ -170,10 +170,15 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     <h1>Secure Your Ticket</h1>
     <p>Join us for an unforgettable evening. Limited seats — reserve yours now before they're gone.</p>
 
-    <div class="price-card sel" id="card-general">
-      <div class="pc-dot" id="dot-general"></div>
-      <div class="pc-top"><div class="pc-type">General Admission</div><div class="pc-amt">Rwf 30,000</div></div>
-      <div class="pc-desc">One entrance fee for everyone — no separate internal/external pricing.</div>
+    <div class="price-card sel" id="card-single" onclick="selectPackage('single')">
+      <div class="pc-dot" id="dot-single"></div>
+      <div class="pc-top"><div class="pc-type">Single Ticket</div><div class="pc-amt">Rwf 30,000</div></div>
+      <div class="pc-desc">One person admission for Rwf 30,000.</div>
+    </div>
+    <div class="price-card" id="card-couple" onclick="selectPackage('couple')">
+      <div class="pc-dot" id="dot-couple"></div>
+      <div class="pc-top"><div class="pc-type">Couple Ticket</div><div class="pc-amt">Rwf 50,000</div></div>
+      <div class="pc-desc">Two people admission for Rwf 50,000.</div>
     </div>
 
     <div class="event-info">
@@ -182,9 +187,9 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         📍 <strong>Venue:</strong> RAKKA Hotel, Kigali<br>
         ⏰ <strong>Schedule:</strong> 4:00 PM – 10:00 PM<br>
         🗺️ <strong>Location:</strong> <a href="https://www.google.com/maps/search/?api=1&query=RAKKA+Hotel+Kigali+Rwanda" target="_blank" rel="noopener">Open in Google Maps</a><br>
-        🎟️ Register now and complete payment later if needed<br>
-        � <strong>Inquiry:</strong> +250 780153944<br>
-        �📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
+        🎟️ Reserve your ticket now to hold your place — payment must still be completed afterwards.<br>
+        📞 <strong>Inquiry:</strong> +250 780153944<br>
+        📱 <strong>MTN MoMo destination:</strong> <?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?> (Code: <?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?>)
       </p>
     </div>
   </div>
@@ -194,8 +199,8 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     <h2 class="form-title">Registration Form</h2>
 
     <div class="welcome-note">
-      <strong>Register now, pay later.</strong>
-      Secure your spot today — no payment proof is required to complete registration. You can finish payment whenever you're ready.
+      <strong>Reserve your ticket now. Confirm payment within 24 hours.</strong>
+      Your spot is held after registration, but you must still pay by MoMo or upload payment proof soon after. This is not a credit service.
     </div>
 
     <div class="err-box" id="errBox"></div>
@@ -217,6 +222,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     </div>
 
     <input type="hidden" id="studentType" value="general" />
+    <input type="hidden" id="ticketPackage" value="single" />
 
     <!-- PAYMENT SECTION -->
     <div class="pay-section">
@@ -225,6 +231,14 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
       <div class="total-box">
         <span class="total-lbl">Amount Due</span>
         <span class="total-val" id="totalAmt">Rwf 30,000</span>
+      </div>
+
+      <div class="pay-status info">
+        <strong>How this works:</strong><br>
+        1) Register now to reserve your ticket.<br>
+        2) If MoMo prompt works, approve payment on your phone immediately.<br>
+        3) If MoMo prompt is unavailable, pay manually to the listed MTN code and upload proof below.<br>
+        4) Admin will confirm your payment, then your ticket becomes fully active.
       </div>
 
       <!-- MTN MoMo Push -->
@@ -236,7 +250,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         <div class="momo-info">
           <strong>Primary payment method:</strong> MTN MoMo phone prompt.<br>
           Paying to: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?></strong> &nbsp;·&nbsp; Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?></span><br>
-          Enter your MoMo number and click <strong>"Send MoMo Request"</strong>. Approve on your phone.
+          Enter your MoMo number and click <strong>"Send MoMo Request"</strong>. Approve the payment on your phone. If the prompt cannot be sent, use the manual proof upload below after paying.
         </div>
 
         <?php if (!$isMomoPromptConfigured): ?>
@@ -266,6 +280,9 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
       </div>
 
       <!-- Manual Upload -->
+      <div class="manual-note" style="margin-bottom:12px;font-size:0.85rem;color:var(--text-dim);line-height:1.6;">
+        Upload proof only if you paid manually or if the MoMo prompt did not complete. Accepted: JPG, PNG, GIF, PDF (max 5MB).
+      </div>
       <label class="fl">Payment Screenshot / Proof</label>
       <label class="upload-area" id="uploadArea">
         <input type="file" id="paymentProof" accept="image/*,application/pdf" onchange="onFile(this)"/>
@@ -276,7 +293,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     </div>
 
     <button class="submit-btn" id="submitBtn" onclick="submitTicket()">
-      ✦ &nbsp; Register Now
+      ✦ &nbsp; Reserve Ticket
     </button>
   </div>
 
@@ -286,10 +303,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 <div class="success-overlay" id="successOverlay">
   <div class="s-icon">🎉</div>
   <h2 class="s-title">You're In!</h2>
-  <p class="s-msg">Your ticket for Golden Night 2026 has been registered. Show this QR code at the entrance on the night.</p>
-
-  <div class="ticket-card">
-    <div class="tc-brand">GOLDEN NIGHT 2026</div>
+  <p class="s-msg">Your ticket for Golden Night 2026 has been reserved. If payment is still pending, complete it using your ticket ID at the payment confirmation page.</p>
     <div class="tc-sub">Official Entry Ticket — 14th August 2026 • RAKKA Hotel • 4:00 PM – 10:00 PM</div>
     <div class="tc-divider"></div>
     <div class="tc-name" id="sName"></div>
@@ -302,6 +316,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
   <div class="s-actions">
     <button class="btn-dl" onclick="printTicket()">🖨️ Print / Save Ticket</button>
+    <a href="complete-payment.php" class="btn-home">✓ Complete Payment</a>
     <a href="../index.html" class="btn-home">← Back to Home</a>
   </div>
 </div>
@@ -313,7 +328,17 @@ let momoPushSucceeded = false;
 let momoRefId = null;
 let pollTimer = null;
 let ticketData = null;
-const TICKET_PRICE = 30000;
+const TICKET_PRICE_SINGLE = 30000;
+    const TICKET_PRICE_COUPLE = 50000;
+    let selectedPackage = 'single';
+
+function getSelectedAmount() {
+  return selectedPackage === 'couple' ? TICKET_PRICE_COUPLE : TICKET_PRICE_SINGLE;
+}
+
+function formatPrice(amount) {
+  return 'Rwf ' + amount.toLocaleString();
+}
 
 const MOMO_CODE = '<?= htmlspecialchars($momoCode, ENT_QUOTES) ?>';
 const MOMO_NAME = '<?= htmlspecialchars($momoName, ENT_QUOTES) ?>';
@@ -323,6 +348,17 @@ const MOMO_CONFIGURED = <?= $isMomoPromptConfigured ? 'true' : 'false' ?>;
 function onFile(input) {
   const f = input.files[0];
   if (f) document.getElementById('fileName').textContent = '✓ ' + f.name;
+}
+
+function selectPackage(pkg) {
+  selectedPackage = pkg;
+  document.getElementById('ticketPackage').value = pkg;
+  document.getElementById('card-single').classList.toggle('sel', pkg === 'single');
+  document.getElementById('card-couple').classList.toggle('sel', pkg === 'couple');
+  document.getElementById('dot-single').classList.toggle('sel', pkg === 'single');
+  document.getElementById('dot-couple').classList.toggle('sel', pkg === 'couple');
+  const amount = pkg === 'couple' ? TICKET_PRICE_COUPLE : TICKET_PRICE_SINGLE;
+  document.getElementById('totalAmt').textContent = 'Rwf ' + amount.toLocaleString();
 }
 
 // ---- MOMO PUSH REQUEST ----
@@ -351,10 +387,11 @@ async function sendMoMoRequest() {
   status.textContent = '⏳ Sending payment prompt to ' + phone + '…';
 
   try {
+    const amount = getSelectedAmount();
     const res  = await fetch('momo_request.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: clean, amount: TICKET_PRICE, name, reason: 'Golden Night 2026 Prom Ticket' })
+      body: JSON.stringify({ phone: clean, amount, name, reason: 'Golden Night 2026 Prom Ticket' })
     });
     const data = await res.json();
 
@@ -370,13 +407,14 @@ async function sendMoMoRequest() {
     }
   } catch (e) {
     status.className = 'pay-status fail';
+    const amount = getSelectedAmount();
     status.innerHTML = `
       <strong>📱 MoMo prompt could not be sent.</strong><br>
       Use manual payment instead — dial:<br>
       <span style="font-family:'Courier New',monospace;font-size:1.3rem;color:var(--momo);letter-spacing:3px;">
-        *182*8*1*${MOMO_CODE}*${TICKET_PRICE}#
+        *182*8*1*${MOMO_CODE}*${amount}#
       </span><br>
-      <small style="color:var(--text-dim);">Or pay Rwf ${TICKET_PRICE.toLocaleString()} to code
+      <small style="color:var(--text-dim);">Or pay ${formatPrice(amount)} to code
         <strong style="color:var(--momo)">${MOMO_CODE}</strong> (${MOMO_NAME}) via MoMo app.</small><br>
       Then upload your screenshot below.
     `;
@@ -445,6 +483,7 @@ async function submitTicket() {
   fd.append('index_number',   classSchool);
   fd.append('phone',          phone);
   fd.append('student_type',   'general');
+  fd.append('ticket_package', document.getElementById('ticketPackage').value);
   fd.append('momo_requested', momoRequested ? '1' : '0');
   if (momoRefId) fd.append('momo_reference', momoRefId);
   if (file) fd.append('payment_proof', file);

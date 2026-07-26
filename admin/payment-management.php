@@ -1,11 +1,6 @@
 <?php
 require_once '../includes/config.php';
-
-// Check if admin is logged in
-if (!isset($_SESSION['admin_id'])) {
-    header('Location: login.php');
-    exit;
-}
+requireAdmin();
 
 $db = getDB();
 $message = null;
@@ -343,7 +338,7 @@ $totalRevenue = $revenueStmt->fetch()['total'] ?? 0;
                 </div>
                 <div class="stat-card">
                     <h3>Total Revenue</h3>
-                    <div class="value">GHS <?php echo number_format($totalRevenue, 0); ?></div>
+                    <div class="value">Rwf <?php echo number_format($totalRevenue, 0); ?></div>
                     <div class="subtext">From confirmed payments</div>
                 </div>
             </div>

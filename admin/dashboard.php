@@ -257,7 +257,7 @@ requireAdmin();
         <div>
           <div class="th"><div class="ttl">Revenue</div></div>
           <div class="rv"><div class="rl">Confirmed Tickets</div><div class="rvl" id="ri">0</div></div>
-          <div class="rv"><div class="rl">Revenue (Rwf 30,000 each)</div><div class="rvl" id="re">Rwf 0</div></div>
+          <div class="rv"><div class="rl">Revenue (confirmed tickets)</div><div class="rvl" id="re">Rwf 0</div></div>
           <div class="rv hi"><div class="rl">Grand Total</div><div class="rvl" id="rt">Rwf 0</div></div>
         </div>
       </div>
@@ -360,11 +360,15 @@ requireAdmin();
 
 <script>
 // ---- STATE ----
-let tickets=[], cands=[], tFilter='all', cFilter='all';
+let tickets = [];
+let cands = [];
+let votes = [];
+let tFilter = 'all';
+let cFilter = 'all';
 
 // No demo data — all data comes from the real database
-const DEMO_T=[];
-const DEMO_C=[];
+const DEMO_T = [];
+const DEMO_C = [];
 
 // ---- INIT ----
 document.addEventListener('DOMContentLoaded',()=>{
@@ -547,6 +551,10 @@ async function doScan(){
   inp.value='';
   try{
     const r=await fetch('../public/scan_api.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticket_id:id})});
+    if (r.status === 401) {
+      redirectToLogin();
+      return;
+    }
     showScan(await r.json());
   }catch{
     const d=tickets.find(t=>t.ticket_id===id);
@@ -571,8 +579,15 @@ function showScan(data){
 // ---- EXPORT ----
 function exportCSV(t){
   let csv='',fn='';
-  if(t==='tickets'){fn='golden-night-tickets.csv';csv='Ticket ID,Name,Class,Phone,Type,Payment,Entry,Amount\n';tickets.forEach(x=>{csv+=`${x.ticket_id},"${x.full_name}","${x.class_school}",${x.phone},${x.student_type},${x.payment_status},${x.ticket_status},${x.amount_paid}\n`;});}
-  else{fn='golden-night-votes.csv';csv='Ticket ID,King Vote,Queen Vote,Time\n';}
+  if(t==='tickets'){
+    fn='golden-night-tickets.csv';
+    csv='Ticket ID,Name,Class,Phone,Type,Payment,Entry,Amount\n';
+    tickets.forEach(x=>{csv+=`${x.ticket_id},"${x.full_name}","${x.class_school}",${x.phone},${x.student_type},${x.payment_status},${x.ticket_status},${x.amount_paid}\n`;});
+  } else {
+    fn='golden-night-votes.csv';
+    csv='Ticket ID,King Vote,Queen Vote,Time\n';
+    votes.forEach(x=>{csv+=`${x.ticket_id},"${x.king_name||''}","${x.queen_name||''}",${x.voted_at}\n`;});
+  }
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=fn;a.click();
   toast('Exported: '+fn,'ok');
 }

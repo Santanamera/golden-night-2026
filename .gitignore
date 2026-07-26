@@ -23,7 +23,9 @@ assets/uploads/candidates/*
 .DS_Store
 Thumbs.db
 
-# PHP environment
+database/*.sqlite
+
+env files
 .env
 config.local.php
 

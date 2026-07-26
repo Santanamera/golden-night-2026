@@ -366,10 +366,14 @@
     }
 
     .venue-card {
-      background: var(--black-mid);
-      border: 1px solid rgba(212,175,55,0.12);
+      background: linear-gradient(180deg, rgba(17,17,16,0.98), rgba(10,10,10,0.95));
+      border: 1px solid rgba(212,175,55,0.18);
       overflow: hidden;
       position: relative;
+      border-radius: 24px;
+      box-shadow: 0 28px 70px rgba(0,0,0,0.25);
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
     }
 
     .venue-card::before {
@@ -385,28 +389,49 @@
 
     .venue-photo {
       width: 100%;
-      height: 320px;
+      min-height: 420px;
       object-fit: cover;
       display: block;
-      filter: saturate(0.95) contrast(1.05);
+      filter: saturate(1.05) contrast(1.1);
+      background: #111;
+    }
+
+    .venue-map {
+      border: 0;
+      width: 100%;
+      min-height: 420px;
+      display: block;
+      filter: grayscale(0.35) contrast(1.05);
+      aspect-ratio: 16 / 9;
     }
 
     .venue-copy {
-      padding: 24px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
     }
 
     .venue-copy h3 {
       font-family:'Cinzel',serif;
-      font-size:1.1rem;
+      font-size:1.3rem;
       color:var(--gold);
       letter-spacing:3px;
-      margin-bottom:10px;
+      margin-bottom:8px;
     }
 
     .venue-copy p {
       color:var(--text-dim);
       line-height:1.8;
       margin-bottom:12px;
+    }
+
+    .venue-caption {
+      color:var(--text-dim);
+      font-size:0.95rem;
+      line-height:1.7;
+      margin-top:4px;
     }
 
     .venue-note {
@@ -421,7 +446,7 @@
       border: 0;
       width: 100%;
       height: 100%;
-      min-height: 468px;
+      min-height: 420px;
       display: block;
       filter: grayscale(0.35) contrast(1.05);
     }
@@ -683,12 +708,12 @@
     <div class="info-card">
       <span class="info-icon">🎟️</span>
       <h3>Ticket Price</h3>
-      <p>General Admission: <strong style="color:var(--gold)">Rwf 30,000</strong><br/><span style="font-size:0.85rem;color:var(--text-dim)">Register now and complete payment later.</span></p>
+      <p>Single: <strong style="color:var(--gold)">Rwf 30,000</strong><br/>Couple: <strong style="color:var(--gold)">Rwf 50,000</strong><br/><span style="font-size:0.85rem;color:var(--text-dim)">Reserve your place now, then confirm payment soon after.</span></p>
     </div>
     <div class="info-card">
       <span class="info-icon">📱</span>
       <h3>Payment</h3>
-      <p>Reserve your ticket first, then pay at your convenience.<br/><span style="font-size:0.85rem;color:var(--text-dim)">MoMo prompt and manual proof options are available.</span></p>
+      <p>Reserve your ticket first, then pay with MTN MoMo or upload proof of manual payment.<br/><span style="font-size:0.85rem;color:var(--text-dim)">The system holds your spot while payment is verified.</span></p>
     </div>
   </div>
 </section>
@@ -700,12 +725,11 @@
   <h2 class="section-title">Venue Spotlight</h2>
   <div class="venue-wrap">
     <article class="venue-card">
-      <img class="venue-photo" src="assets/images/rakka-hotel.svg" alt="RAKKA Hotel venue preview for Golden Night 2026">
+      <img class="venue-photo" src="assets/images/party-night.svg" alt="Golden Night party celebration illustration">
       <div class="venue-copy">
-        <h3>RAKKA Hotel Atmosphere</h3>
-        <p>Golden Night 2026 is being styled around the elegance of RAKKA Hotel: polished, glamorous, and made for a memorable evening from the first welcome to the final dance.</p>
-        <p>Expect a refined setting with premium lighting, great energy, and a celebration that feels truly special from start to finish.</p>
-        <div class="venue-note">An unforgettable evening awaits at RAKKA Hotel.</div>
+        <h3>RAKKA Hotel, Kigali</h3>
+        <p>Step into a party-ready ballroom where lights, music, and celebration come together for one unforgettable evening.</p>
+        <div class="venue-caption">Party-ready venue: RAKKA Hotel • KN 4 Ave, Kigali • 14th August 2026</div>
       </div>
     </article>
 

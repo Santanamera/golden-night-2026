@@ -12,7 +12,9 @@ if (!empty($_SERVER['HTTP_HOST'])) {
 }
 define('APP_URL', getenv('APP_URL') ?: $defaultAppUrl);
 define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');
-define('TICKET_PRICE', 30000);
+define('TICKET_PRICE_SINGLE', 30000);
+define('TICKET_PRICE_COUPLE', 50000);
+define('TICKET_PRICE', TICKET_PRICE_SINGLE);
 
 define('DB_HOST', getenv('MYSQLHOST') ?: '');
 define('DB_USER', getenv('MYSQLUSER') ?: '');
@@ -47,6 +49,7 @@ function sqliteSchema(PDO $db): void {
         class_school TEXT DEFAULT NULL,
         phone TEXT DEFAULT NULL,
         student_type TEXT DEFAULT 'general',
+        ticket_package TEXT DEFAULT 'single',
         payment_proof TEXT DEFAULT NULL,
         payment_status TEXT DEFAULT 'pending',
         ticket_status TEXT DEFAULT 'unused',
@@ -123,9 +126,10 @@ function mysqlSchema(PDO $db): void {
     $db->exec("CREATE TABLE IF NOT EXISTS admins (
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(100) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
+        password VARCHAR(255) DEFAULT NULL,
         password_hash VARCHAR(255) DEFAULT NULL,
         full_name VARCHAR(150) DEFAULT NULL,
+        name VARCHAR(150) DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
@@ -142,6 +146,7 @@ function mysqlSchema(PDO $db): void {
         class_school VARCHAR(150) DEFAULT NULL,
         phone VARCHAR(50) DEFAULT NULL,
         student_type VARCHAR(20) DEFAULT 'general',
+        ticket_package VARCHAR(20) DEFAULT 'single',
         payment_proof TEXT NULL,
         payment_status VARCHAR(20) DEFAULT 'pending',
         ticket_status VARCHAR(20) DEFAULT 'unused',
@@ -193,13 +198,56 @@ function mysqlSchema(PDO $db): void {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+    $adminColumns = array_column($db->query("SHOW COLUMNS FROM admins")->fetchAll(PDO::FETCH_ASSOC), 'Field');
+    $columnsToAdd = [
+        'password' => "ALTER TABLE admins ADD COLUMN password VARCHAR(255) DEFAULT NULL",
+        'password_hash' => "ALTER TABLE admins ADD COLUMN password_hash VARCHAR(255) DEFAULT NULL",
+        'full_name' => "ALTER TABLE admins ADD COLUMN full_name VARCHAR(150) DEFAULT NULL",
+    ];
+
+    foreach ($columnsToAdd as $column => $sql) {
+        if (!in_array($column, $adminColumns, true)) {
+            try {
+                $db->exec($sql);
+            } catch (PDOException $e) {
+                if (strpos($e->getMessage(), 'Duplicate column name') === false) {
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    $adminColumns = array_column($db->query("SHOW COLUMNS FROM admins")->fetchAll(PDO::FETCH_ASSOC), 'Field');
+    if (in_array('name', $adminColumns, true) && in_array('full_name', $adminColumns, true)) {
+        $db->exec("UPDATE admins SET full_name = name WHERE full_name IS NULL AND name IS NOT NULL");
+    }
+
+    try {
+        $ticketColumn = $db->query("SHOW COLUMNS FROM tickets LIKE 'student_type'")->fetch(PDO::FETCH_ASSOC);
+        if ($ticketColumn) {
+            $ticketType = strtolower($ticketColumn['Type']);
+            if (strpos($ticketType, "'general'") === false) {
+                $db->exec("ALTER TABLE tickets MODIFY COLUMN student_type ENUM('internal','external','general') DEFAULT 'general'");
+            }
+        } else {
+            $db->exec("ALTER TABLE tickets ADD COLUMN student_type ENUM('internal','external','general') DEFAULT 'general'");
+        }
+
+        $ticketColumns = array_column($db->query("SHOW COLUMNS FROM tickets")->fetchAll(PDO::FETCH_ASSOC), 'Field');
+        if (!in_array('ticket_package', $ticketColumns, true)) {
+            $db->exec("ALTER TABLE tickets ADD COLUMN ticket_package VARCHAR(20) DEFAULT 'single'");
+        }
+    } catch (PDOException $e) {
+        error_log('MySQL ticket_type migration failed: ' . $e->getMessage());
+    }
+
     $defaultAdminPassword = trim((string) getenv('ADMIN_PORTAL_PASSWORD'));
     if ($defaultAdminPassword !== '') {
         $hash = password_hash($defaultAdminPassword, PASSWORD_BCRYPT);
-        $stmt = $db->prepare("INSERT INTO admins (username, password, password_hash, full_name)
-                              VALUES (?, ?, ?, ?)
-                              ON DUPLICATE KEY UPDATE full_name = VALUES(full_name)");
-        $stmt->execute(['admin', $hash, $hash, 'Admin']);
+        $stmt = $db->prepare("INSERT INTO admins (username, password_hash, full_name)
+                              VALUES (?, ?, ?)
+                              ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), full_name = VALUES(full_name)");
+        $stmt->execute(['admin', $hash, 'Admin']);
     }
 
     $settings = [
@@ -241,7 +289,11 @@ function getDB(): PDO {
             mysqlSchema($pdo);
             return $pdo;
         } catch (PDOException $e) {
-            // Fall through to SQLite.
+            error_log('Database connection failed: ' . $e->getMessage());
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
+            exit;
         }
     }
 

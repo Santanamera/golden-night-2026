@@ -10,7 +10,7 @@ $promDate = $settings['prom_date'] ?? 'June 28, 2026';
 $promTime = $settings['prom_time'] ?? '4:00 PM - 10:00 PM';
 $promVenue = $settings['prom_venue'] ?? 'RAKKA Hotel';
 $promVenueAddress = $settings['prom_venue_address'] ?? 'KN 4 Ave, Kigali, Rwanda';
-$promVenueDescription = $settings['prom_venue_description'] ?? 'Experience elegance at RAKKA Hotel.';
+$promVenueDescription = $settings['prom_venue_description'] ?? 'RAKKA Hotel is the confirmed prom venue for Golden Night 2026.';
 $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
 ?>
 <!DOCTYPE html>
@@ -89,23 +89,23 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
         
         .info-header h1 {
             font-size: 2.5em;
-            color: #1a1a1a;
+            color: #ffffff;
             margin-bottom: 10px;
         }
         
         .info-header .theme {
             font-size: 1.3em;
-            color: #666;
+            color: #cccccc;
             font-style: italic;
         }
         
         .info-section {
             margin-bottom: 40px;
-            background: #151515;
+            background: #111;
             padding: 30px;
             border-radius: 14px;
             border-left: 5px solid #D4AF37;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
         }
         
         .info-section h2 {
@@ -181,7 +181,7 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
         }
         
         .timeline-item .activity {
-            color: #333;
+            color: #e8ddbf;
             margin-top: 5px;
         }
         
@@ -250,17 +250,17 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
         }
 
         .feature-pill {
-            background: white;
-            border: 1px solid #eee;
+            background: #171717;
+            border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 10px;
             padding: 16px;
             text-align: center;
-            color: #555;
+            color: #e8ddbf;
             font-weight: 600;
         }
 
         .feature-pill strong {
-            color: #1a1a1a;
+            color: #D4AF37;
             display: block;
             margin-bottom: 4px;
         }
@@ -351,23 +351,22 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
     <div class="info-container">
         <div class="hero-banner">
             <h1><?php echo htmlspecialchars($promName); ?></h1>
-            <p>A glamorous evening designed to feel like a movie premiere, a celebration, and a once-in-a-lifetime memory — all rolled into one unforgettable night.</p>
+            <p>Prom night details for the graduating class at RAKKA Hotel, Kigali.</p>
             <div class="hero-badges">
-                <span>✨ Red Carpet Experience</span>
-                <span>🎶 Live Entertainment</span>
-                <span>👑 Royal Crowning</span>
-                <span>📸 Premium Memories</span>
+                <span>Formal Prom Night</span>
+                <span>Live Music</span>
+                <span>Prom King & Queen</span>
+                <span>Photo Moments</span>
             </div>
-            <div class="button-group" style="justify-content:flex-start; margin-top:20px;">
-                <a href="buy-ticket.php">🎟️ Register Now</a>
-                <a href="complete-payment.php" class="secondary">💳 Pay Later</a>
+            <div class="button-group" style="justify-content:flex-start; margin-top:20px; gap:12px;">
+                <a href="buy-ticket.php">Register Now</a>
+                <a href="audition.php" class="secondary">Apply for Royalty</a>
             </div>
-            <p style="margin-top:16px; color:#f0d060; font-weight:600;">Secure your place today — registration stays open and you can complete payment later.</p>
         </div>
 
         <div class="info-header">
             <h1><?php echo htmlspecialchars($promName); ?></h1>
-            <p class="theme">An Evening of Elegance & Celebration</p>
+            <p class="theme">Prom information, schedule, and activities.</p>
         </div>
 
         <!-- Event Details -->
@@ -391,286 +390,113 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Contact:</span>
-                <span class="info-detail-value">+250 780153944</span>
-            </div>
-            <div class="info-detail">
-                <span class="info-detail-label">Dress Code:</span>
-                <span class="info-detail-value">Formal Attire (Black Tie Recommended)</span>
+                <span class="info-detail-value"><?php echo htmlspecialchars($promVenuePhone); ?></span>
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Ticket Price:</span>
-                <span class="info-detail-value"><span class="highlight">Rwf 30,000</span></span>
+                <span class="info-detail-value"><span class="highlight">Single Rwf 30,000 / Couple Rwf 50,000</span></span>
             </div>
         </div>
 
-        <!-- What the Night Will Feel Like -->
         <div class="info-section">
-            <h2><span class="icon">🎉</span> What the Night Will Feel Like</h2>
-            <p>This prom is being shaped as more than a party — it is a full experience of elegance, music, surprise moments, and unforgettable memories.</p>
-            <div class="feature-strip">
-                <div class="feature-pill"><strong>VIP Feeling</strong>Luxury vibes from the moment you arrive</div>
-                <div class="feature-pill"><strong>Memorable Moments</strong>Every corner designed for photos and stories</div>
-                <div class="feature-pill"><strong>High Energy</strong>Dance, music, games, and celebration all night</div>
-                <div class="feature-pill"><strong>Grand Finale</strong>A crown-worthy ending for Prom King & Queen</div>
-            </div>
+            <h2><span class="icon">🎬</span> Event Activities</h2>
             <div class="activity-grid">
                 <div class="activity-card">
-                    <h3>📸 Red Carpet Entrance</h3>
-                    <p>Guests will step into a glamorous entrance with photo moments, media attention, and that true celebrity feeling.</p>
+                    <h3>📸 Red Carpet</h3>
+                    <p>Formal entrance with dedicated photo moments for attendees.</p>
                 </div>
                 <div class="activity-card">
-                    <h3>💃 Dance Sessions with Twists</h3>
-                    <p>Expect energetic dance moments, themed transitions, and unexpected surprises that keep the energy alive all night.</p>
+                    <h3>💃 Dance Floor</h3>
+                    <p>Music and dancing for the full evening program.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🎤 Live Music</h3>
+                    <p>DJ and student performances on the main stage.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>🏆 Crowning Ceremony</h3>
+                    <p>Prom King & Queen announcements and class awards.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section" style="padding-bottom:24px;">
+            <h2><span class="icon">🏨</span> Venue</h2>
+            <p style="margin-bottom:22px; color:#e8ddbf; line-height:1.8;">
+                <?php echo htmlspecialchars($promVenueDescription); ?>
+            </p>
+            <div style="display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+                <div style="background: #111; border:1px solid rgba(212,175,55,0.12); border-radius: 14px; padding:18px;">
+                    <strong style="color:#D4AF37; display:block; margin-bottom:10px;">Venue Highlights</strong>
+                    <ul style="margin:0; padding-left: 22px; color:#d9cfa7; line-height:1.8;">
+                        <li>Large ballroom with premium lighting</li>
+                        <li>Comfortable seating and dance floor</li>
+                        <li>Professional sound system</li>
+                        <li>Photo-ready decoration</li>
+                        <li>Easy access from Kigali city center</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2><span class="icon">🎉</span> Prom Activities</h2>
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <h3>🎥 Red Carpet Entrance</h3>
+                    <p>Pictures, media personalities, and a formal arrival experience.</p>
+                </div>
+                <div class="activity-card">
+                    <h3>💃 Dance Sessions</h3>
+                    <p>Multiple dance sessions with exciting twists all night long.</p>
                 </div>
                 <div class="activity-card">
                     <h3>🍽️ Food & Beverages</h3>
-                    <p>Delicious refreshments and a refined dining experience will make the evening feel both classy and celebratory.</p>
+                    <p>Enjoy a selection of food and drinks throughout the event.</p>
                 </div>
                 <div class="activity-card">
-                    <h3>🎤 Surprise Artist Performance</h3>
-                    <p>We are planning special performances that will bring an extra spark to the evening and create memorable highlights.</p>
+                    <h3>🎤 Surprise Artist</h3>
+                    <p>A special surprise artist performance to make the night unforgettable.</p>
                 </div>
                 <div class="activity-card">
-                    <h3>🎲 Interactive Games</h3>
-                    <p>Enjoy fun activities such as secret message games, card games, and other lively experiences between the major moments.</p>
+                    <h3>🕹️ Games</h3>
+                    <p>Secret Message, card games, and multiple interactive experiences.</p>
                 </div>
                 <div class="activity-card">
-                    <h3>🏆 Awards & Recognition</h3>
-                    <p>Multiple awards and special recognitions will be handed out to celebrate standout moments and contributions.</p>
+                    <h3>🏆 Awards Giveaway</h3>
+                    <p>Multiple awards and prizes will be handed out during the evening.</p>
                 </div>
                 <div class="activity-card">
-                    <h3>⚡ Dance & Rap Battles</h3>
-                    <p>Competitive and entertaining battle moments will add excitement, laughter, and unforgettable energy to the night.</p>
+                    <h3>🔥 Dance & Rap Battles</h3>
+                    <p>Competition rounds for dance and rap talent on stage.</p>
                 </div>
                 <div class="activity-card">
                     <h3>👑 Prom King & Queen</h3>
-                    <p>The night will end with the grand announcement and rewarding of Prom King and Queen, crowned in style.</p>
+                    <p>Announcement, crowning, and special rewards for the winners.</p>
                 </div>
                 <div class="activity-card">
-                    <h3>✨ Guest Media Personalities</h3>
-                    <p>We are bringing a special touch of glam with guest media personalities to make the evening feel like a true red-carpet experience.</p>
-                </div>
-                <div class="activity-card">
-                    <h3>🎁 Surprise Giveaways</h3>
-                    <p>Special prizes, tokens, and surprises will keep the energy high and make the celebration even more exciting.</p>
+                    <h3>✨ More Experiences</h3>
+                    <p>And so much more… every part of the night is full of surprises.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Venue Description -->
-        <div class="info-section" style="background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%); border-left: 5px solid #D4AF37;">
-            <h2><span class="icon">🏨</span> About Our Venue - RAKKA Hotel</h2>
-            <p style="font-size: 1.1em; line-height: 1.8; color: #333; margin-bottom: 15px;">
-                <?php echo htmlspecialchars($promVenueDescription); ?>
-            </p>
-            <div style="background: white; padding: 15px; border-radius: 5px; margin: 15px 0;">
-                <h4 style="color: #1a1a1a; margin-bottom: 10px;">✨ Venue Highlights</h4>
-                <ul style="margin: 0; padding-left: 30px; color: #555; line-height: 1.8;">
-                    <li>Grand ballroom with elegant décor and premium lighting</li>
-                    <li>State-of-the-art sound system for live entertainment</li>
-                    <li>Professional dining service with multi-course menu</li>
-                    <li>Dance floor with premium DJ equipment</li>
-                    <li>Professional photography and videography services</li>
-                    <li>Complimentary parking for all guests</li>
-                    <li>VIP lounge for special guests and chaperones</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- What to Expect -->
         <div class="info-section">
-            <h2><span class="icon">✨</span> What to Expect</h2>
-            <p>Join us for an unforgettable evening celebrating our final year together! This year's prom promises to be a spectacular event filled with:</p>
-            <ul style="margin: 15px 0; padding-left: 30px; color: #555; line-height: 1.8;">
-                <li><strong>Elegant Dining:</strong> A 3-course dinner featuring both local and international cuisine</li>
-                <li><strong>Live Entertainment:</strong> Professional DJ, live band performances, and special guest artists</li>
-                <li><strong>Crowning Ceremony:</strong> Coronation of Prom King and Queen as voted by attendees</li>
-                <li><strong>Photo Opportunities:</strong> Professional photography and dedicated photo booth areas</li>
-                <li><strong>Memorable Moments:</strong> First dance, recognition of class superlatives, and special awards</li>
-                <li><strong>Dancing & Celebration:</strong> Dance floor open all night with hits from past and present</li>
-            </ul>
+            <h2><span class="icon">📋</span> Quick Notes</h2>
+            <p>Please register your ticket on the <a href="buy-ticket.php" style="color: #D4AF37;">ticket page</a> and complete payment before the event.</p>
+            <p>If you want to be a candidate for Prom King or Queen, submit your application on the <a href="audition.php" style="color: #D4AF37;">audition page</a>.</p>
+            <p>Use your valid ticket ID to vote on the <a href="vote.php" style="color: #D4AF37;">voting page</a>.</p>
         </div>
 
-        <!-- Schedule / Timeline -->
-        <div class="info-section">
-            <h2><span class="icon">⏰</span> Event Schedule</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <span class="time">4:00 PM</span>
-                    <span class="activity">Doors Open - Welcome Reception & Cocktails</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">4:30 PM</span>
-                    <span class="activity">Guests Seated - Dinner Service Begins</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">5:45 PM</span>
-                    <span class="activity">Opening Remarks & Toast</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">6:00 PM</span>
-                    <span class="activity">Live Entertainment - Band Performance</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">6:45 PM</span>
-                    <span class="activity">Dance Floor Opens</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">7:30 PM</span>
-                    <span class="activity">Class Superlatives & Special Awards</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">8:00 PM</span>
-                    <span class="activity">Prom King & Queen Coronation Ceremony</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">8:15 PM</span>
-                    <span class="activity">First Dance & Continued Celebration</span>
-                </div>
-                <div class="timeline-item">
-                    <span class="time">10:00 PM</span>
-                    <span class="activity">Event Concludes</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- How It Works -->
-        <div class="info-section">
-            <h2><span class="icon">🎟️</span> How to Participate</h2>
-            
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #1a1a1a; margin-bottom: 10px;">1. Purchase Your Ticket</h3>
-                <p>Visit our <a href="buy-ticket.php" style="color: #D4AF37; text-decoration: none; font-weight: 600;">ticket portal</a> to purchase your prom ticket. Payment can be made via MTN MoMo. Limited tickets available!</p>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #1a1a1a; margin-bottom: 10px;">2. Run for King or Queen</h3>
-                <p>Interested in being crowned Prom Royalty? Submit your <a href="audition.php" style="color: #D4AF37; text-decoration: none; font-weight: 600;">audition application</a> as a candidate for Prom King or Queen. Voting opens shortly after applications close!</p>
-            </div>
-            
-            <div>
-                <h3 style="color: #1a1a1a; margin-bottom: 10px;">3. Vote for Your Favorites</h3>
-                <p>Have a ticket? Cast your vote for who you think should be crowned Prom King and Queen. <a href="vote.php" style="color: #D4AF37; text-decoration: none; font-weight: 600;">Visit the voting portal</a> and show your support!</p>
-            </div>
-        </div>
-
-        <!-- Important Information -->
-        <div class="info-section">
-            <h2><span class="icon">📋</span> Important Information</h2>
-            
-            <div class="info-box">
-                <strong>✓ Eligibility Requirements:</strong><br>
-                All participants must be current or recent alumni of the institution. Proof of enrollment may be required at the door.
-            </div>
-            
-            <div class="info-box">
-                <strong>✓ Dress Code Policy:</strong><br>
-                Formal attire is required. Gentlemen: Black/Dark suit or tuxedo with tie. Ladies: Formal gown or elegant dressy outfit. Accessorize tastefully. No casual wear, athletic wear, or jeans permitted.
-            </div>
-            
-            <div class="info-box">
-                <strong>✓ Plus-One Policy:</strong><br>
-                Each ticket admits one (1) person. Plus-ones must be guests from the school community. Advance notice required at ticket purchase.
-            </div>
-            
-            <div class="info-box">
-                <strong>✓ Arrival & Parking:</strong><br>
-                Doors open at 6:00 PM. Free complimentary parking is available onsite. Please arrive by 7:00 PM to be seated for dinner service.
-            </div>
-            
-            <div class="info-box">
-                <strong>✓ Photography & Videography:</strong><br>
-                Professional photographers will be present throughout the evening. You may request photos from the photographer. Please inform us in advance if you do not wish to be photographed.
-            </div>
-        </div>
-
-        <!-- Frequently Asked Questions -->
-        <div class="info-section">
-            <h2><span class="icon">❓</span> Frequently Asked Questions</h2>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>Can I buy my ticket on the day of the event?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    Tickets are sold exclusively online until the date of the event. Limited walk-in tickets may be available at the door, but online purchase is strongly recommended to guarantee your spot.
-                </div>
-            </div>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>What payment methods are accepted?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    We accept MTN MoMo payments for maximum convenience. Once you complete payment, you'll receive your ticket ID, QR code, and seat assignment instantly.
-                </div>
-            </div>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>Is there a refund policy?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    Once purchased, tickets are non-refundable. However, you may transfer your ticket to another eligible person by contacting the event organizers at least 48 hours before the event.
-                </div>
-            </div>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>How do I apply to be a Prom King/Queen candidate?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    Simply visit our <a href="audition.php" style="color: #D4AF37;">audition page</a>, fill out the application form, and submit your photo and bio. Applications are reviewed and approved within 24-48 hours. Approved candidates then become eligible for voting.
-                </div>
-            </div>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>Can I vote multiple times?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    No, each ticket ID can only be used to cast one vote. Your vote is recorded and verified to prevent duplicate voting. You can change your vote before voting closes.
-                </div>
-            </div>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>What if I have dietary restrictions?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    We'll accommodate common dietary needs (vegetarian, vegan, allergies). Please specify your dietary requirements when purchasing your ticket or contact the event team immediately.
-                </div>
-            </div>
-            
-            <div class="faq-item" onclick="this.classList.toggle('active')">
-                <div class="question">
-                    <span>Is there an age limit for attending?</span>
-                    <span>▼</span>
-                </div>
-                <div class="answer">
-                    Prom is reserved for eligible class members and their approved guests. All attendees must be 16 years or older. This is a sober, family-friendly event.
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to Action Buttons -->
         <div class="button-group">
-            <a href="buy-ticket.php">🎟️ Get Your Ticket Now</a>
-            <a href="complete-payment.php">💳 Complete Payment</a>
-            <a href="audition.php">✨ Apply as Candidate</a>
-            <a href="vote.php">🗳️ Vote Now</a>
-            <a href="../" class="secondary">← Back to Home</a>
+            <a href="buy-ticket.php">🎟️ Buy Ticket</a>
+            <a href="audition.php" class="secondary">✨ Apply as Candidate</a>
+            <a href="vote.php" class="secondary">🗳️ Vote Now</a>
         </div>
     </div>
 
-    <footer style="background: #1a1a1a; color: #D4AF37; text-align: center; padding: 20px; margin-top: 50px;">
-        <p><?php echo htmlspecialchars($promName); ?> 2026 | All Rights Reserved | <a href="#" style="color: #D4AF37;">Contact Us</a></p>
+    <footer style="background: #111; color: #D4AF37; text-align: center; padding: 22px; margin-top: 40px; border-top: 1px solid rgba(212,175,55,0.14);">
+        <p><?php echo htmlspecialchars($promName); ?> 2026 | RAKKA Hotel • Kigali | All Rights Reserved</p>
     </footer>
 
 </body>

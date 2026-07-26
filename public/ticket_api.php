@@ -120,8 +120,9 @@ try {
     // Generate unique ticket ID
     $ticketId = generateTicketID();
     
-    // Determine price
-    $price = TICKET_PRICE;
+    // Determine price based on selected package
+    $ticketPackage = ($_POST['ticket_package'] ?? 'single') === 'couple' ? 'couple' : 'single';
+    $price = $ticketPackage === 'couple' ? TICKET_PRICE_COUPLE : TICKET_PRICE_SINGLE;
     
     // Generate QR code URL (saved as reference)
     $qrData = $ticketId; // Scan just returns the ticket ID
@@ -129,30 +130,36 @@ try {
     
     // Assign seat number
     $seatNum = 'A' . str_pad($currentCount + 1, 3, '0', STR_PAD_LEFT);
+    $paymentStatus = $paymentProofPath ? 'confirmed' : 'pending';
     
     // Insert ticket (store momo_reference if provided)
     $stmt = $db->prepare("
-        INSERT INTO tickets (ticket_id, qr_code, full_name, class_school, phone, student_type,
+        INSERT INTO tickets (ticket_id, qr_code, full_name, class_school, phone, student_type, ticket_package,
                              payment_proof, payment_status, ticket_status, seat_number, amount_paid, momo_reference)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', 'unused', ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'unused', ?, ?, ?)
     ");
 
     $stmt->execute([
         $ticketId, $qrCodeUrl, $fullName, $classSchool, $phone,
-        $studentType, $paymentProofPath, $seatNum, $price,
+        $studentType, $ticketPackage, $paymentProofPath, $paymentStatus, $seatNum, $price,
         $momoReference ?: null
     ]);
     
+    $confirmationMessage = $paymentStatus === 'confirmed'
+        ? 'Ticket registered successfully! Payment confirmed.'
+        : 'Ticket registered! Complete payment later at ' . APP_URL . '/public/complete-payment.php using your ticket ID.';
+
     // Return success with ticket data
     jsonResponse([
         'success'  => true,
-        'message'  => $paymentProofPath ? 'Ticket registered successfully! Payment confirmed.' : 'Ticket registered! You can pay anytime. Visit https://web-production-1d8213.up.railway.app/public/complete-payment.php with your ticket ID to complete payment.',
+        'message'  => $confirmationMessage,
         'ticket'   => [
             'ticket_id'    => $ticketId,
             'full_name'    => $fullName,
             'class_school' => $classSchool,
             'phone'        => $phone,
             'student_type' => $studentType,
+            'ticket_package' => $ticketPackage,
             'seat_number'  => $seatNum,
             'amount_paid'  => $price,
             'qr_url'       => $qrCodeUrl,
@@ -162,6 +169,7 @@ try {
     ]);
 
 } catch (PDOException $e) {
+    error_log('ticket_api error: ' . $e->getMessage());
     // Delete uploaded file on error
     if ($paymentProofPath && file_exists($uploadDir . basename($paymentProofPath))) {
         unlink($uploadDir . basename($paymentProofPath));
@@ -169,3 +177,4 @@ try {
     jsonResponse(['success' => false, 'message' => 'Database error. Please try again.'], 500);
 }
 ?>
+
