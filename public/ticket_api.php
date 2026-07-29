@@ -130,7 +130,7 @@ try {
     
     // Assign seat number
     $seatNum = 'A' . str_pad($currentCount + 1, 3, '0', STR_PAD_LEFT);
-    $paymentStatus = $paymentProofPath ? 'confirmed' : 'pending';
+    $paymentStatus = 'pending';
     
     // Insert ticket (store momo_reference if provided)
     $stmt = $db->prepare("
@@ -163,7 +163,7 @@ try {
             'seat_number'  => $seatNum,
             'amount_paid'  => $price,
             'qr_url'       => $qrCodeUrl,
-            'payment_status' => $paymentProofPath ? 'confirmed' : 'pending',
+            'payment_status' => 'pending',
             'status'       => 'registered'
         ]
     ]);

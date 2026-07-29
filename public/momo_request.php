@@ -20,20 +20,6 @@ define('MOMO_BASE_URL', getenv('MOMO_BASE_URL') ?: 'https://sandbox.momodevelope
 define('MOMO_CURRENCY', getenv('MOMO_CURRENCY') ?: (MOMO_ENV === 'sandbox' ? 'EUR' : 'RWF'));
 define('MOMO_CALLBACK', getenv('MOMO_CALLBACK') ?: APP_URL . '/public/momo_callback.php');
 
-if (isset($_GET['debug_env'])) {
-    echo json_encode([
-        'MOMO_SUB_KEY' => MOMO_SUB_KEY,
-        'MOMO_API_USER' => MOMO_API_USER,
-        'MOMO_API_KEY' => MOMO_API_KEY,
-        'MOMO_BASE_URL' => MOMO_BASE_URL,
-        'MOMO_ENV' => MOMO_ENV,
-        'MOMO_CURRENCY' => MOMO_CURRENCY,
-        'MOMO_CALLBACK' => MOMO_CALLBACK,
-        'APP_URL' => APP_URL,
-    ]);
-    exit;
-}
-
 if (!MOMO_SUB_KEY || !MOMO_API_USER || !MOMO_API_KEY) {
     echo json_encode(['success' => false, 'message' => 'MTN MoMo credentials are not configured.']);
     exit;

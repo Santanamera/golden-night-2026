@@ -1,0 +1,13 @@
+# Ignore local SQLite database file so Docker builds don't bake in app data
+database/golden_night.sqlite
+
+# Ignore OS and editor artifacts
+.git
+node_modules
+*.log
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+.env
+config.local.php

@@ -475,7 +475,7 @@ if (isset($_GET['ticket_id']) && !$ticket) {
                 <strong>ℹ️ How it works:</strong><br>
                 1. Enter your ticket ID to check your registration<br>
                 2. Upload your MoMo payment receipt<br>
-                3. Your payment will be confirmed instantly
+                3. Your payment will be reviewed by an administrator and confirmed if approved
             </div>
 
             <form method="POST">

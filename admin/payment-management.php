@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         if (!empty($ticketId)) {
             $stmt = $db->prepare("UPDATE tickets SET payment_status = 'rejected' WHERE ticket_id = ?");
             $stmt->execute([$ticketId]);
-            $message = 'Payment rejected. Ticket reverted to pending.';
-            $messageType = 'info';
+            $message = 'Payment rejected.';
+            $messageType = 'error';
         }
     }
 }

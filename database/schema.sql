@@ -4,7 +4,8 @@
 CREATE TABLE IF NOT EXISTS `admins` (
   `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `username` VARCHAR(100) NOT NULL UNIQUE,
-  `password_hash` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(255) DEFAULT NULL,
+  `password_hash` VARCHAR(255) DEFAULT NULL,
   `name` VARCHAR(150) DEFAULT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -21,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   `full_name` VARCHAR(200) NOT NULL,
   `class_school` VARCHAR(200) DEFAULT NULL,
   `phone` VARCHAR(50) DEFAULT NULL,
-  `student_type` ENUM('internal','external') DEFAULT 'internal',
+  `student_type` ENUM('internal','external','general') DEFAULT 'general',
   `payment_proof` VARCHAR(255) DEFAULT NULL,
   `payment_status` ENUM('pending','confirmed','rejected') DEFAULT 'pending',
   `ticket_status` ENUM('unused','used','cancelled') DEFAULT 'unused',

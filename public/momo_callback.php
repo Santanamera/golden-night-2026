@@ -33,7 +33,7 @@ try {
     $db = getDB();
     if ($status === 'successful') {
         $db->prepare("UPDATE momo_requests SET status='completed' WHERE reference=?")->execute([$ref]);
-        $db->prepare("UPDATE tickets SET payment_status='confirmed' WHERE momo_reference=?")->execute([$ref]);
+        $db->prepare("UPDATE tickets SET payment_status='pending' WHERE momo_reference=? AND payment_status != 'confirmed'")->execute([$ref]);
     } elseif (in_array($status, ['failed', 'rejected', 'timeout'])) {
         $db->prepare("UPDATE momo_requests SET status='failed' WHERE reference=?")->execute([$ref]);
     }

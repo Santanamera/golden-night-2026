@@ -90,7 +90,7 @@ if ($status === 'successful') {
         $db = getDB();
         $db->prepare("UPDATE momo_requests SET status='completed' WHERE reference=? AND status!='completed'")
            ->execute([$refId]);
-        $db->prepare("UPDATE tickets SET payment_status='confirmed' WHERE momo_reference=? AND payment_status!='confirmed'")
+        $db->prepare("UPDATE tickets SET payment_status='pending' WHERE momo_reference=? AND payment_status != 'confirmed'")
            ->execute([$refId]);
     } catch (Exception $e) { /* silent */ }
 }
