@@ -153,7 +153,7 @@
 </div>
 
 <script>
-let selectedCategory = '';
+let selectedCategory = 'king';
 
 function selectCategory(cat) {
   selectedCategory = cat;
@@ -161,6 +161,10 @@ function selectCategory(cat) {
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('btn-' + cat).classList.add('selected');
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  selectCategory('king');
+});
 
 function previewPhoto(input) {
   const file = input.files[0];

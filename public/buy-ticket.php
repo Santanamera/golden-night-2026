@@ -237,8 +237,8 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         <strong>How this works:</strong><br>
         1) Register now to reserve your ticket.<br>
         2) If MoMo prompt works, approve payment on your phone immediately.<br>
-        3) If MoMo prompt is unavailable, pay manually to the listed MTN code and upload proof below.<br>
-        4) Admin will confirm your payment, then your ticket becomes fully active.
+        3) If the MoMo prompt is unavailable, pay manually to the listed MTN code and upload proof below.<br>
+        4) Admin will review proof and confirm your payment before your ticket is final.
       </div>
 
       <!-- MTN MoMo Push -->
@@ -250,7 +250,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         <div class="momo-info">
           <strong>Primary payment method:</strong> MTN MoMo phone prompt.<br>
           Paying to: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?></strong> &nbsp;·&nbsp; Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?></span><br>
-          Enter your MoMo number and click <strong>"Send MoMo Request"</strong>. Approve the payment on your phone. If the prompt cannot be sent, use the manual proof upload below after paying.
+          Enter your MTN number and click <strong>"Send MoMo Request"</strong>. Approve the payment on your phone. If the prompt cannot be sent, use manual payment and upload proof below.
         </div>
 
         <?php if (!$isMomoPromptConfigured): ?>
@@ -270,6 +270,12 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
           <span>📱</span>
           <span id="momoBtnText"><?= $isMomoPromptConfigured ? 'Send MoMo Request' : 'MoMo Prompt Unavailable' ?></span>
         </button>
+
+        <?php if (!$isMomoPromptConfigured): ?>
+        <div class="pay-status info" style="margin-top: 16px;">
+          If MoMo prompt is not available, complete payment manually to the number above and upload proof below. Your ticket will remain pending until admin reviews it.
+        </div>
+        <?php endif; ?>
       </div>
 
       <!-- OR divider -->
@@ -312,11 +318,12 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     <div class="tc-id" id="sId"></div>
     <div class="tc-scan">Scan to enter</div>
     <div class="tc-pending">⏳ Awaiting payment confirmation from admin</div>
+    <div class="tc-pending" style="margin-top:12px; font-size:0.82rem; color:#FFC107;">Use the button below to complete payment or upload proof if payment is already made.</div>
   </div>
 
   <div class="s-actions">
     <button class="btn-dl" onclick="printTicket()">🖨️ Print / Save Ticket</button>
-    <a href="complete-payment.php" class="btn-home">✓ Complete Payment</a>
+    <a id="completeLink" href="complete-payment.php" class="btn-home">✓ Complete Payment</a>
     <a href="../index.html" class="btn-home">← Back to Home</a>
   </div>
 </div>
@@ -514,6 +521,10 @@ function showErr(msg) {
   e.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+  selectPackage('single');
+});
+
 function showSuccess(t) {
   if (pollTimer) clearInterval(pollTimer);
   const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(t.ticket_id)}&bgcolor=111108&color=D4AF37&margin=10`;
@@ -521,6 +532,7 @@ function showSuccess(t) {
   document.getElementById('sId').textContent   = t.ticket_id;
   document.getElementById('sName').textContent = t.full_name;
   document.getElementById('sClass').textContent = t.class_school;
+  document.getElementById('completeLink').href = 'complete-payment.php?ticket_id=' + encodeURIComponent(t.ticket_id);
   document.getElementById('successOverlay').classList.add('show');
 }
 

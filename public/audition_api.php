@@ -39,7 +39,13 @@ if (!isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
 $file = $_FILES['photo'];
 $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
-if (!in_array($file['type'], $allowedTypes)) {
+$mimeType = $file['type'] ?? '';
+if (function_exists('finfo_open') && is_uploaded_file($file['tmp_name'])) {
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']) ?: $mimeType;
+}
+
+if (!in_array($mimeType, $allowedTypes, true)) {
     jsonResponse(['success' => false, 'message' => 'Photo must be JPG, PNG, GIF, or WebP.']);
 }
 

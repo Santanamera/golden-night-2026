@@ -372,9 +372,15 @@ if (isset($_GET['ticket_id']) && !$ticket) {
             </div>
         <?php endif; ?>
 
+        <?php if ($ticket && $ticket['payment_status'] === 'rejected'): ?>
+            <div class="alert error">
+                <strong>Payment proof rejected.</strong> Please upload a new receipt or screenshot and wait for admin review.
+            </div>
+        <?php endif; ?>
+
         <?php if ($ticket && $ticket['payment_status'] !== 'confirmed'): ?>
             <!-- Show ticket details and payment form -->
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="complete_payment">
                 <input type="hidden" name="ticket_id" value="<?php echo htmlspecialchars($ticket['ticket_id']); ?>">
 
@@ -402,6 +408,18 @@ if (isset($_GET['ticket_id']) && !$ticket) {
                             <?php echo ucfirst(str_replace('_', ' ', $ticket['payment_status'])); ?>
                         </span>
                     </div>
+                    <?php if ($ticket['payment_proof'] && $ticket['payment_status'] === 'pending'): ?>
+                    <div class="ticket-detail" style="margin-top:10px;">
+                        <span class="ticket-detail-label">Review Status:</span>
+                        <span class="ticket-detail-value" style="color: #FFC107;">Proof submitted, pending admin review</span>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($ticket['payment_status'] === 'rejected'): ?>
+                    <div class="ticket-detail" style="margin-top:10px;">
+                        <span class="ticket-detail-label">Review Status:</span>
+                        <span class="ticket-detail-value" style="color: #ff4444;">Rejected — upload a new proof or contact admin</span>
+                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="payment-amount">
@@ -473,9 +491,9 @@ if (isset($_GET['ticket_id']) && !$ticket) {
             <!-- Show lookup form -->
             <div class="alert info">
                 <strong>ℹ️ How it works:</strong><br>
-                1. Enter your ticket ID to check your registration<br>
-                2. Upload your MoMo payment receipt<br>
-                3. Your payment will be reviewed by an administrator and confirmed if approved
+                1. Enter your ticket ID to find your registration.<br>
+                2. Upload a receipt or screenshot after you pay by MoMo.<br>
+                3. An administrator will verify the proof and confirm your payment.
             </div>
 
             <form method="POST">
