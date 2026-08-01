@@ -35,6 +35,8 @@ switch ($action) {
         $stats['confirmed']     = $db->query("SELECT COUNT(*) FROM tickets WHERE payment_status = 'confirmed'")->fetchColumn();
         $stats['used']          = $db->query("SELECT COUNT(*) FROM tickets WHERE ticket_status = 'used'")->fetchColumn();
         $stats['pending_payments'] = $db->query("SELECT COUNT(*) FROM tickets WHERE payment_status = 'pending'")->fetchColumn();
+        $stats['rejected_payments'] = $db->query("SELECT COUNT(*) FROM tickets WHERE payment_status = 'rejected'")->fetchColumn();
+        $stats['review_queue'] = $db->query("SELECT COUNT(*) FROM tickets WHERE payment_status IN ('pending', 'rejected')")->fetchColumn();
         $stats['revenue']       = $db->query("SELECT COALESCE(SUM(amount_paid),0) FROM tickets WHERE payment_status = 'confirmed'")->fetchColumn();
         $stats['votes']         = $db->query("SELECT COUNT(*) FROM votes")->fetchColumn();
         $stats['candidates']    = $db->query("SELECT COUNT(*) FROM candidates WHERE status = 'approved'")->fetchColumn();
@@ -62,6 +64,7 @@ switch ($action) {
             $params = array_merge($params, ["%$search%", "%$search%", "%$search%"]);
         }
         if ($filter === 'pending') { $sql .= " AND payment_status = 'pending'"; }
+        if ($filter === 'rejected') { $sql .= " AND payment_status = 'rejected'"; }
         if ($filter === 'confirmed') { $sql .= " AND payment_status = 'confirmed'"; }
         if ($filter === 'used') { $sql .= " AND ticket_status = 'used'"; }
         

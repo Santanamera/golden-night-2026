@@ -27,13 +27,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// Get pending payments
+// Get tickets awaiting review
 $stmt = $db->query("
     SELECT * FROM tickets 
-    WHERE payment_status IN ('pending', 'pending_payment') 
-    ORDER BY created_at DESC
+    WHERE payment_status IN ('pending', 'rejected')
+    ORDER BY 
+        CASE payment_status WHEN 'rejected' THEN 0 ELSE 1 END,
+        created_at DESC
 ");
-$pendingTickets = $stmt->fetchAll();
+$reviewTickets = $stmt->fetchAll();
+
+// Keep pending and rejected separate for UI clarity
+$pendingTickets = array_values(array_filter($reviewTickets, fn($ticket) => ($ticket['payment_status'] ?? '') === 'pending'));
+$rejectedTickets = array_values(array_filter($reviewTickets, fn($ticket) => ($ticket['payment_status'] ?? '') === 'rejected'));
 
 // Get confirmed payments
 $stmt = $db->query("
@@ -50,8 +56,11 @@ $totalTickets = $totalStmt->fetch()['total'] ?? 0;
 $paidStmt = $db->query("SELECT COUNT(*) as total FROM tickets WHERE payment_status = 'confirmed'");
 $paidTickets = $paidStmt->fetch()['total'] ?? 0;
 
-$pendingStmt = $db->query("SELECT COUNT(*) as total FROM tickets WHERE payment_status IN ('pending', 'pending_payment')");
+$pendingStmt = $db->query("SELECT COUNT(*) as total FROM tickets WHERE payment_status = 'pending'");
 $pendingCount = $pendingStmt->fetch()['total'] ?? 0;
+
+$rejectedStmt = $db->query("SELECT COUNT(*) as total FROM tickets WHERE payment_status = 'rejected'");
+$rejectedCount = $rejectedStmt->fetch()['total'] ?? 0;
 
 $revenueStmt = $db->query("SELECT SUM(amount_paid) as total FROM tickets WHERE payment_status = 'confirmed'");
 $totalRevenue = $revenueStmt->fetch()['total'] ?? 0;
@@ -398,6 +407,56 @@ $totalRevenue = $revenueStmt->fetch()['total'] ?? 0;
                 <?php else: ?>
                     <div class="no-data">
                         ✓ All payments have been processed! No pending payments.
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Rejected Proof Section -->
+            <div class="section">
+                <h2>⚠ Rejected Proofs (<?php echo count($rejectedTickets); ?>)</h2>
+
+                <?php if (count($rejectedTickets) > 0): ?>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Full Name</th>
+                                    <th>Phone</th>
+                                    <th>School</th>
+                                    <th>Proof</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($rejectedTickets as $ticket): ?>
+                                    <tr>
+                                        <td><strong><?php echo htmlspecialchars($ticket['ticket_id']); ?></strong></td>
+                                        <td><?php echo htmlspecialchars($ticket['full_name']); ?></td>
+                                        <td><?php echo htmlspecialchars($ticket['phone']); ?></td>
+                                        <td><?php echo htmlspecialchars($ticket['class_school']); ?></td>
+                                        <td>
+                                            <?php if ($ticket['payment_proof']): ?>
+                                                <button class="btn-small btn-view" onclick="showPaymentProof('<?php echo htmlspecialchars($ticket['payment_proof']); ?>')">View Proof</button>
+                                            <?php else: ?>
+                                                <span style="color: #999;">No file</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <form method="POST" style="display: inline;">
+                                                <input type="hidden" name="action" value="approve">
+                                                <input type="hidden" name="ticket_id" value="<?php echo htmlspecialchars($ticket['ticket_id']); ?>">
+                                                <button type="submit" class="btn-small btn-approve" onclick="return confirm('Approve this rejected payment proof?')">✓ Approve</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <div class="no-data">
+                        No rejected payment proofs waiting for follow-up.
                     </div>
                 <?php endif; ?>
             </div>
