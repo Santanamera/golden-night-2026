@@ -5,6 +5,7 @@
 // ============================================
 
 define('APP_NAME', 'Golden Night 2026');
+define('APP_ENV', getenv('APP_ENV') ?: (getenv('RAILWAY_ENVIRONMENT') ?: 'development'));
 $defaultAppUrl = 'http://localhost/prom-system';
 if (!empty($_SERVER['HTTP_HOST'])) {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -282,7 +283,8 @@ function getDB(): PDO {
         PDO::ATTR_EMULATE_PREPARES => false,
     ];
 
-    if (DB_HOST !== '' && DB_USER !== '' && DB_NAME !== '') {
+    $hasMySqlConfig = DB_HOST !== '' && DB_USER !== '' && DB_NAME !== '';
+    if ($hasMySqlConfig) {
         try {
             $dsn = 'mysql:host=' . DB_HOST . ';port=' . DB_PORT . ';dbname=' . DB_NAME . ';charset=' . DB_CHARSET;
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
@@ -295,6 +297,15 @@ function getDB(): PDO {
             echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
             exit;
         }
+    }
+
+    if (APP_ENV === 'production') {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'error' => 'Production deployment requires MYSQLHOST, MYSQLUSER, and MYSQLDATABASE to be configured. SQLite fallback is disabled for production.'
+        ]);
+        exit;
     }
 
     $dbDir = dirname(DB_SQLITE_PATH);
