@@ -19,6 +19,8 @@ COPY . /app
 
 COPY --chown=www-data:www-data . /app
 
+COPY php.ini /usr/local/etc/php/conf.d/app.ini
+
 RUN mkdir -p /app/assets/uploads/{tickets,candidates,demo} /app/database && \
     chown -R www-data:www-data /app
 
