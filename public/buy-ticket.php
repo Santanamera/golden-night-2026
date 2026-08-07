@@ -236,64 +236,34 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
       <div class="pay-status info">
         <strong>How this works:</strong><br>
         1) Register now to reserve your ticket.<br>
-        2) If MoMo prompt works, approve payment on your phone immediately.<br>
-        3) If the MoMo prompt is unavailable, pay manually to the listed MTN code and upload proof below.<br>
+        2) Pay using the manual MTN USSD or MoMo method shown below.<br>
+        3) Upload your payment screenshot or receipt for admin review.<br>
         4) Admin will review proof and confirm your payment before your ticket is final.
       </div>
 
-      <!-- MTN MoMo Push -->
-      <div class="momo-box">
+      <div class="momo-box" style="background:rgba(212,175,55,0.08); border-color:rgba(212,175,55,0.35);">
         <div class="momo-logo">
-          <div class="momo-dot">M</div>
-          <div class="momo-label">MTN MoMo Pay</div>
+          <div class="momo-dot" style="background:var(--gold);">₦</div>
+          <div class="momo-label">Manual Payment</div>
         </div>
         <div class="momo-info">
-          <strong>Primary payment method:</strong> MTN MoMo phone prompt.<br>
-          Paying to: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'Not configured yet' ?></strong> &nbsp;·&nbsp; Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'N/A' ?></span><br>
-          Enter your MTN number and click <strong>"Send MoMo Request"</strong>. Approve the payment on your phone. If the prompt cannot be sent, use manual payment and upload proof below.
+          <strong>USSD / manual payment:</strong><br>
+          Pay <strong>Rwf 30,000</strong> or <strong>Rwf 50,000</strong> to the MTN account below, then upload proof.<br>
+          Recipient: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'To be confirmed' ?></strong><br>
+          Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'Pending setup' ?></span><br>
+          <span style="color:#FFC107;">MoMo prompt is temporarily disabled until MTN APIs are ready.</span>
         </div>
-
-        <?php if (!$isMomoPromptConfigured): ?>
-        <div class="pay-status info" id="payConfigNotice">
-          ⚠ MoMo prompt is temporarily unavailable. Fallback to manual payment proof upload while admin completes MoMo prompt configuration.
-        </div>
-        <?php endif; ?>
-
-        <label class="fl" style="color:var(--momo);">Your MTN MoMo Number *</label>
-        <div class="phone-row">
-          <input type="tel" id="momoPhone" class="phone-input" placeholder="e.g. 0791234567" maxlength="13"/>
-        </div>
-
-        <div class="pay-status" id="payStatus"></div>
-
-        <button class="momo-btn" id="momoBtn" onclick="sendMoMoRequest()" <?= $isMomoPromptConfigured ? '' : 'disabled' ?>>
-          <span>📱</span>
-          <span id="momoBtnText"><?= $isMomoPromptConfigured ? 'Send MoMo Request' : 'MoMo Prompt Unavailable' ?></span>
-        </button>
-
-        <?php if (!$isMomoPromptConfigured): ?>
-        <div class="pay-status info" style="margin-top: 16px;">
-          If MoMo prompt is not available, complete payment manually to the number above and upload proof below. Your ticket will remain pending until admin reviews it.
-        </div>
-        <?php endif; ?>
       </div>
 
-      <!-- OR divider -->
-      <div class="or-divider">
-        <div class="line"></div>
-        <span>fallback: upload proof manually</span>
-        <div class="line"></div>
-      </div>
-
-      <!-- Manual Upload -->
-      <div class="manual-note" style="margin-bottom:12px;font-size:0.85rem;color:var(--text-dim);line-height:1.6;">
-        Upload proof only if you paid manually or if the MoMo prompt did not complete. Accepted: JPG, PNG, GIF, PDF (max 5MB).
+      <div class="manual-note" style="margin-bottom:12px;font-size:0.9rem;color:var(--text);line-height:1.7;padding:14px 16px;background:rgba(212,175,55,0.06);border:1px solid rgba(212,175,55,0.2);border-radius:8px;">
+        <strong>Upload payment proof</strong><br>
+        Use this area to upload your screenshot, receipt, or proof of payment after paying manually. Accepted: JPG, PNG, GIF, PDF (max 8MB). Your ticket stays pending until admin confirms it.
       </div>
       <label class="fl">Payment Screenshot / Proof</label>
-      <label class="upload-area" id="uploadArea">
+      <label class="upload-area" id="uploadArea" style="border-width:2px; padding:28px; background:rgba(212,175,55,0.04);">
         <input type="file" id="paymentProof" accept="image/*,application/pdf" onchange="onFile(this)"/>
         <span class="upload-icon">📎</span>
-        <div class="upload-text">Click to upload screenshot<br><small>JPG, PNG, PDF · Max 5MB</small></div>
+        <div class="upload-text">Click to upload screenshot or receipt<br><small>JPG, PNG, PDF · Max 8MB</small></div>
         <div class="upload-name" id="fileName"></div>
       </label>
     </div>
