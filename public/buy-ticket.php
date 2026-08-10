@@ -228,10 +228,8 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     </div>
     <div class="price-card" id="card-couple" onclick="selectPackage('couple')">
       <div class="pc-dot" id="dot-couple"></div>
-      <div class="pc-top"><div class="pc-type">Couple Ticket</div><div class="pc-amt">Rwf 30,000</div></div>
-      <div class="pc-desc">Two people admission for Rwf 30,000.</div>
-    </div>
-
+      <div class="pc-top"><div class="pc-type">Couple Ticket</div><div class="pc-amt">Rwf 35,000</div></div>
+      <div class="pc-desc">Two people admission for Rwf 35,000.</div>
     <div class="event-info">
       <p>
         📅 <strong>Event date:</strong> Friday, 14th August 2026<br>
@@ -281,7 +279,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
       <div class="promo-strip">
         <span class="tag">PROMO</span>
-        <span class="price">Single: 20K • Couple: 30K</span><br/>
+        <span class="price">Single: 20K • Couple: 35K</span><br/>
         <span class="ussd">USSD: <strong>*182*8*1*1837625*</strong></span><br/>
         <span class="ussd">School Instagram: <a href="https://www.instagram.com/kigali_leading_tss?igsh=bnNidXgxZ3p5ZWs0&utm_source=qr" target="_blank" rel="noopener">@kigali_leading_tss</a></span>
       </div>
@@ -306,7 +304,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         </div>
         <div class="momo-info">
           <strong>USSD / manual payment:</strong><br>
-          Pay <strong>Rwf 20,000</strong> or <strong>Rwf 30,000</strong> through the MTN USSD code <strong>*182*8*1*1837625*</strong>, then upload proof.<br>
+          Pay <strong>Rwf 20,000</strong> or <strong>Rwf 35,000</strong> through the MTN USSD code <strong>*182*8*1*1837625*</strong>, then upload proof.<br>
           Recipient: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'To be confirmed' ?></strong><br>
           Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'Pending setup' ?></span><br>
           <span style="color:#FFC107;">MoMo prompt is temporarily disabled until MTN APIs are ready.</span>
@@ -364,7 +362,7 @@ let momoRefId = null;
 let pollTimer = null;
 let ticketData = null;
 const TICKET_PRICE_SINGLE = 20000;
-    const TICKET_PRICE_COUPLE = 30000;
+    const TICKET_PRICE_COUPLE = 35000;
     let selectedPackage = 'single';
 
 function getSelectedAmount() {
