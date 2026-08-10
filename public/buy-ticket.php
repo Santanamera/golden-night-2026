@@ -98,6 +98,57 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     .phone-input:focus{border-color:var(--momo);}
     .phone-input::placeholder{color:var(--text-dim);letter-spacing:0;}
 
+    .promo-strip {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(212,175,55,0.16), rgba(255,255,255,0.03));
+      border: 1px solid rgba(212,175,55,0.54);
+      font-family: 'Montserrat', sans-serif;
+      line-height: 1.68;
+    }
+
+    .promo-strip .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #201900;
+      font-weight: 800;
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      margin-right: 8px;
+    }
+
+    .promo-strip .price {
+      color: var(--gold-light);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .promo-strip .ussd {
+      display: inline-flex;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 0.77rem;
+    }
+
+    .promo-strip .ussd strong {
+      color: var(--gold-light);
+      font-family: 'Cinzel', serif;
+      font-size: 0.88rem;
+      letter-spacing: 2px;
+    }
+
+    .promo-strip a {
+      color: var(--gold-light);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(240,208,96,0.75);
+    }
+
+    .promo-strip a:hover { color: var(--gold); }
+
     /* Payment status */
     .pay-status{display:none;padding:12px 16px;margin-bottom:12px;font-family:'Montserrat',sans-serif;font-size:0.78rem;letter-spacing:1px;}
     .pay-status.pending{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);color:#FFC107;display:block;}
@@ -172,13 +223,13 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
 
     <div class="price-card sel" id="card-single" onclick="selectPackage('single')">
       <div class="pc-dot" id="dot-single"></div>
-      <div class="pc-top"><div class="pc-type">Single Ticket</div><div class="pc-amt">Rwf 30,000</div></div>
-      <div class="pc-desc">One person admission for Rwf 30,000.</div>
+      <div class="pc-top"><div class="pc-type">Single Ticket</div><div class="pc-amt">Rwf 20,000</div></div>
+      <div class="pc-desc">One person admission for Rwf 20,000.</div>
     </div>
     <div class="price-card" id="card-couple" onclick="selectPackage('couple')">
       <div class="pc-dot" id="dot-couple"></div>
-      <div class="pc-top"><div class="pc-type">Couple Ticket</div><div class="pc-amt">Rwf 50,000</div></div>
-      <div class="pc-desc">Two people admission for Rwf 50,000.</div>
+      <div class="pc-top"><div class="pc-type">Couple Ticket</div><div class="pc-amt">Rwf 30,000</div></div>
+      <div class="pc-desc">Two people admission for Rwf 30,000.</div>
     </div>
 
     <div class="event-info">
@@ -228,9 +279,16 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
     <div class="pay-section">
       <div class="pay-title">Payment</div>
 
+      <div class="promo-strip">
+        <span class="tag">PROMO</span>
+        <span class="price">Single: 20K • Couple: 30K</span><br/>
+        <span class="ussd">USSD: <strong>*182*8*1837625#</strong></span><br/>
+        <span class="ussd">School Instagram: <a href="https://www.instagram.com/kigali_leading_tss?igsh=bnNidXgxZ3p5ZWs0&utm_source=qr" target="_blank" rel="noopener">@kigali_leading_tss</a></span>
+      </div>
+
       <div class="total-box">
         <span class="total-lbl">Amount Due</span>
-        <span class="total-val" id="totalAmt">Rwf 30,000</span>
+        <span class="total-val" id="totalAmt">Rwf 20,000</span>
       </div>
 
       <div class="pay-status info">
@@ -248,7 +306,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         </div>
         <div class="momo-info">
           <strong>USSD / manual payment:</strong><br>
-          Pay <strong>Rwf 30,000</strong> or <strong>Rwf 50,000</strong> to the MTN account below, then upload proof.<br>
+          Pay <strong>Rwf 20,000</strong> or <strong>Rwf 30,000</strong> through the MTN USSD code <strong>*182*8*1837625#</strong>, then upload proof.<br>
           Recipient: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'To be confirmed' ?></strong><br>
           Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'Pending setup' ?></span><br>
           <span style="color:#FFC107;">MoMo prompt is temporarily disabled until MTN APIs are ready.</span>
@@ -305,8 +363,8 @@ let momoPushSucceeded = false;
 let momoRefId = null;
 let pollTimer = null;
 let ticketData = null;
-const TICKET_PRICE_SINGLE = 30000;
-    const TICKET_PRICE_COUPLE = 50000;
+const TICKET_PRICE_SINGLE = 20000;
+    const TICKET_PRICE_COUPLE = 30000;
     let selectedPackage = 'single';
 
 function getSelectedAmount() {

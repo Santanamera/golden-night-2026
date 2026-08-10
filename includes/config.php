@@ -13,8 +13,8 @@ if (!empty($_SERVER['HTTP_HOST'])) {
 }
 define('APP_URL', getenv('APP_URL') ?: $defaultAppUrl);
 define('UPLOAD_PATH', __DIR__ . '/../assets/uploads/');
-define('TICKET_PRICE_SINGLE', 30000);
-define('TICKET_PRICE_COUPLE', 50000);
+define('TICKET_PRICE_SINGLE', 20000);
+define('TICKET_PRICE_COUPLE', 30000);
 define('TICKET_PRICE', TICKET_PRICE_SINGLE);
 
 define('DB_HOST', getenv('MYSQLHOST') ?: '');
