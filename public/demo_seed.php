@@ -38,7 +38,7 @@ try {
     if (!$ticketRow) {
         $db->prepare(
             "INSERT INTO tickets (ticket_id, qr_code, full_name, class_school, phone, student_type, payment_proof, payment_status, ticket_status, seat_number, amount_paid, momo_reference)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', 'unused', ?, 30000, NULL)"
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'confirmed', 'unused', ?, 20000, NULL)"
         )->execute([$ticketId, 'demo-' . $ticketId, 'Demo Ticket Holder', 'Demo School', '0781234567', 'general', 'assets/uploads/demo/demo-ticket.png', 'A999']);
     }
 

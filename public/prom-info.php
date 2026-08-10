@@ -394,7 +394,7 @@ $promVenuePhone = $settings['prom_venue_phone'] ?? '+250 780153944';
             </div>
             <div class="info-detail">
                 <span class="info-detail-label">Ticket Price:</span>
-                <span class="info-detail-value"><span class="highlight">Single Rwf 30,000 / Couple Rwf 50,000</span></span>
+                <span class="info-detail-value"><span class="highlight">Single Rwf 20,000 / Couple Rwf 35,000</span></span>
             </div>
         </div>
 

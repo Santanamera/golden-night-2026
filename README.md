@@ -65,4 +65,4 @@ Students pay by dialing: `*182*8*1*[CODE]*[AMOUNT]#`
 
 - **Venue:** Iwacu Garden, Kicukiro, Kigali
 - **Date:** June 2026 (TBD)
-- **Prices:** Rwf 30,000 (single price for all attendees)
+- **Prices:** Single Rwf 20,000 / Couple Rwf 35,000
