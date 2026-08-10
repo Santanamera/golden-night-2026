@@ -282,7 +282,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
       <div class="promo-strip">
         <span class="tag">PROMO</span>
         <span class="price">Single: 20K • Couple: 30K</span><br/>
-        <span class="ussd">USSD: <strong>*182*8*1837625#</strong></span><br/>
+        <span class="ussd">USSD: <strong>*182*8*1*1837625*</strong></span><br/>
         <span class="ussd">School Instagram: <a href="https://www.instagram.com/kigali_leading_tss?igsh=bnNidXgxZ3p5ZWs0&utm_source=qr" target="_blank" rel="noopener">@kigali_leading_tss</a></span>
       </div>
 
@@ -306,7 +306,7 @@ $isMomoPromptConfigured = $isMomoRecipientConfigured && trim((string) getenv('MO
         </div>
         <div class="momo-info">
           <strong>USSD / manual payment:</strong><br>
-          Pay <strong>Rwf 20,000</strong> or <strong>Rwf 30,000</strong> through the MTN USSD code <strong>*182*8*1837625#</strong>, then upload proof.<br>
+          Pay <strong>Rwf 20,000</strong> or <strong>Rwf 30,000</strong> through the MTN USSD code <strong>*182*8*1*1837625*</strong>, then upload proof.<br>
           Recipient: <strong><?= $isMomoRecipientConfigured ? htmlspecialchars($momoName, ENT_QUOTES) : 'To be confirmed' ?></strong><br>
           Code: <span class="momo-num"><?= $isMomoRecipientConfigured ? htmlspecialchars($momoCode, ENT_QUOTES) : 'Pending setup' ?></span><br>
           <span style="color:#FFC107;">MoMo prompt is temporarily disabled until MTN APIs are ready.</span>
