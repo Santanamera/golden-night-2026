@@ -1,20 +1,19 @@
 <?php
 /**
- * Admin Reset Endpoint - Clears and reseeds candidate data
- * Requires admin authentication or reset token
+ * DEPRECATED: This endpoint is disabled to prevent accidental data loss
+ * Use admin_api.php with update_candidate action to manage candidates instead
  */
 
 require_once '../includes/config.php';
 
 header('Content-Type: application/json');
 
-// Check token or admin session
-$token = $_GET['token'] ?? $_POST['token'] ?? '';
-$resetToken = getenv('RESET_TOKEN') ?: 'admin-reset-key-2026';
-
-if ($token !== $resetToken && !isAdminLoggedIn()) {
-    jsonResponse(['success' => false, 'message' => 'Unauthorized'], 401);
-}
+// SAFETY: This endpoint has been disabled to protect against accidental data loss
+jsonResponse([
+    'success' => false,
+    'message' => 'This endpoint is disabled. Use the admin dashboard to manage candidates.',
+    'warning' => 'The reset endpoint previously caused data loss. Use admin_api.php instead.'
+], 403);
 
 try {
     $db = getDB();
