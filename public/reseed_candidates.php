@@ -33,6 +33,14 @@ try {
         mkdir($uploadDir, 0755, true);
     }
     
+    // Ensure directory is writable
+    if (!is_writable($uploadDir)) {
+        @chmod($uploadDir, 0755);
+        if (!is_writable($uploadDir)) {
+            throw new Exception("Upload directory is not writable: $uploadDir. Current perms: " . decoct(fileperms($uploadDir) & 0777));
+        }
+    }
+    
     // Create a 200x200 placeholder image
     $img = imagecreatetruecolor(200, 200);
     $bgColor = imagecolorallocate($img, 212, 175, 55); // Gold color
