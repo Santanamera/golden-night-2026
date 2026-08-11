@@ -266,7 +266,7 @@ function renderGrid(gridId, candidates, category) {
     <div class="candidate-card" id="card-${c.id}" onclick="selectCandidate(${c.id}, '${category}', '${c.full_name.replace(/'/g,"\\'")}')">
       <div class="vote-ring"></div>
       ${c.photo
-        ? `<img src="../${c.photo}" class="candidate-photo" alt="${c.full_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="candidate-photo-placeholder" style="display:none">${category === 'king' ? '👑' : '👸'}</div>`
+        ? `<img src="/${c.photo}" class="candidate-photo" alt="${c.full_name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="candidate-photo-placeholder" style="display:none">${category === 'king' ? '👑' : '👸'}</div>`
         : `<div class="candidate-photo-placeholder">${category === 'king' ? '👑' : '👸'}</div>`
       }
       <div class="candidate-info">

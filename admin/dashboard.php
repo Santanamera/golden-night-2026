@@ -595,7 +595,8 @@ function exportCSV(t){
 function mediaHref(path){
   if(!path) return '';
   if(/^https?:\/\//i.test(path)) return path;
-  return '../'+String(path).replace(/^\/+/, '');
+  const normalized = String(path).replace(/^\/+/, '');
+  return '/' + normalized;
 }
 
 function safeJs(v){
