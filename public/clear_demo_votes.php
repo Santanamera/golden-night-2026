@@ -17,9 +17,10 @@ if ($token !== $expectedToken && !isAdminLoggedIn()) {
 try {
     $db = getDB();
     
-    // Find and clear votes for demo ticket GN2026BBDCCE
-    $result = $db->prepare("DELETE FROM votes WHERE ticket_id IN (SELECT id FROM tickets WHERE ticket_number = ?)");
+    // Clear votes for demo ticket GN2026BBDCCE (votes.ticket_id stores the ticket number directly)
+    $result = $db->prepare("DELETE FROM votes WHERE ticket_id = ?");
     $result->execute(['GN2026BBDCCE']);
+    $deletedVotes = $result->rowCount();
     
     // Clear vote count in candidates
     $db->query("UPDATE candidates SET vote_count = 0");
@@ -27,7 +28,7 @@ try {
     jsonResponse([
         'success' => true,
         'message' => 'Demo votes cleared successfully',
-        'cleared_votes' => $result->rowCount()
+        'cleared_votes' => $deletedVotes
     ]);
     
 } catch (Throwable $e) {
