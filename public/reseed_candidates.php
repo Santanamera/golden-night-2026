@@ -27,13 +27,24 @@ try {
         jsonResponse(['success' => true, 'message' => "Already seeded ($existing approved candidates). Skipping.", 'count' => $existing]);
     }
     
-    // Create demo candidate photos (1x1 PNG placeholder)
+    // Create demo candidate photos - 200x200 visible placeholder
     $uploadDir = __DIR__ . '/../assets/uploads/candidates/';
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0755, true);
     }
     
-    $pngData = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQABAA4A7wBAQwAAAABJRU5ErkJggg==');
+    // Create a 200x200 placeholder image
+    $img = imagecreatetruecolor(200, 200);
+    $bgColor = imagecolorallocate($img, 212, 175, 55); // Gold color
+    $textColor = imagecolorallocate($img, 15, 15, 16); // Dark color
+    imagefill($img, 0, 0, $bgColor);
+    imagestring($img, 5, 45, 85, 'CANDIDATE', $textColor);
+    imagestring($img, 2, 60, 110, 'PHOTO', $textColor);
+    
+    ob_start();
+    imagepng($img);
+    $pngData = ob_get_clean();
+    imagedestroy($img);
     
     $candidates = [
         ['name' => 'Alain Uwizeye', 'category' => 'king', 'bio' => 'I am a passionate leader dedicated to bringing joy and unity to our prom night. Leadership and charisma define my candidacy.', 'class' => 'Senior A'],
