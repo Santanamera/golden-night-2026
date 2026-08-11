@@ -57,8 +57,15 @@ try {
         // Create placeholder photo file
         $photoFilename = 'cand_' . time() . '_' . bin2hex(random_bytes(4)) . '.png';
         $photoPath = $uploadDir . $photoFilename;
-        file_put_contents($photoPath, $pngData);
-        chmod($photoPath, 0644);
+        
+        $bytesWritten = file_put_contents($photoPath, $pngData);
+        if ($bytesWritten === false) {
+            throw new Exception("Failed to write image file: $photoPath. Check directory permissions.");
+        }
+        
+        if (!chmod($photoPath, 0644)) {
+            throw new Exception("Failed to chmod image file: $photoPath");
+        }
         
         $photoWebPath = 'assets/uploads/candidates/' . $photoFilename;
         
