@@ -4,8 +4,8 @@ FROM php:8.2-fpm-alpine
 ARG BUILD_DATE
 RUN echo "Build Date: ${BUILD_DATE}" && date
 
-# Force cache bust - rebuild timestamp
-ENV REBUILD_DATE="2026-08-14-v3"
+# Force cache bust - rebuild timestamp  
+ENV REBUILD_DATE="2026-08-14-v4-clean"
 
 WORKDIR /app
 
@@ -21,6 +21,9 @@ RUN apk add --no-cache \
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) pdo pdo_mysql mysqli fileinfo gd mbstring zip
+
+# Clean build - remove any old files first
+RUN rm -rf /app/* /app/.* 2>/dev/null || true
 
 COPY . /app
 
