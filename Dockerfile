@@ -1,6 +1,8 @@
 FROM php:8.2-fpm-alpine
 
-# Build timestamp: 2026-08-14 - Force fresh build
+# Force cache bust - rebuild timestamp
+ENV REBUILD_DATE="2026-08-14-v2"
+
 WORKDIR /app
 
 RUN apk add --no-cache \
