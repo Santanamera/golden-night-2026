@@ -1,11 +1,15 @@
 <?php
 // Initialize Railway MySQL database
 
-$host = 'thomas.proxy.rlwy.net';
-$port = 16108;
-$user = 'root';
-$password = 'xHpfnunkpjODigjaItdDksjLXWfzaIWi';
-$database = 'railway';
+$host = getenv('MYSQLHOST') ?: 'localhost';
+$port = getenv('MYSQLPORT') ?: 3306;
+$user = getenv('MYSQLUSER') ?: 'root';
+$password = getenv('MYSQLPASSWORD') ?: '';
+$database = getenv('MYSQLDATABASE') ?: 'railway';
+
+if ($password === '') {
+    die("Set MYSQLPASSWORD in your environment before running this script.\n");
+}
 
 try {
     $conn = new PDO(

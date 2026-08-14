@@ -368,6 +368,19 @@ function isAdminLoggedIn(): bool {
     return isset($_SESSION['admin_id']) && !empty($_SESSION['admin_id']);
 }
 
+function destructiveAdminActionsAllowed(): bool {
+    $value = getenv('ALLOW_DESTRUCTIVE_ADMIN_ACTIONS') ?: 'false';
+    return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+}
+
+function requireSafeAdminActions(): void {
+    if (destructiveAdminActionsAllowed()) {
+        return;
+    }
+
+    throw new RuntimeException('Destructive admin actions are disabled by default. This app blocks data wipe operations unless ALLOW_DESTRUCTIVE_ADMIN_ACTIONS=true is intentionally enabled in a controlled environment.');
+}
+
 function requireAdmin(): void {
     if (!isAdminLoggedIn()) {
         header('Location: login.php');

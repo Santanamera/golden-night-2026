@@ -21,6 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $body['action'] ?? $action;
 }
 
+$allowedActions = [
+    'stats',
+    'tickets',
+    'confirm_payment',
+    'reject_payment',
+    'candidates',
+    'update_candidate',
+    'votes',
+    'auditions',
+];
+
+if (!in_array($action, $allowedActions, true)) {
+    jsonResponse(['success' => false, 'message' => 'Action blocked by safety policy.'], 403);
+}
+
 $db = getDB();
 
 switch ($action) {
@@ -115,6 +130,8 @@ switch ($action) {
         if (!in_array($status, ['approved', 'rejected', 'pending'])) {
             jsonResponse(['success' => false, 'message' => 'Invalid status']);
         }
+
+        // Only allow status transitions. This app never deletes real candidate rows.
         if ($status === 'approved') {
             $stmt = $db->prepare("UPDATE candidates SET status = ?, approved_at = CURRENT_TIMESTAMP WHERE id = ?");
         } else {
