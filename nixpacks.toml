@@ -5,4 +5,4 @@ nixPkgs = []
 cmds = []
 
 [start]
-cmd = "php -S 0.0.0.0:${PORT:-8080} -t /var/www/html"
+cmd = "php -S 0.0.0.0:${PORT:-8080} -t /app"
