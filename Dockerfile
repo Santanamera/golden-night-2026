@@ -1,7 +1,11 @@
 FROM php:8.2-fpm-alpine
 
+# Build timestamp to force cache bust and verify fresh deploy
+ARG BUILD_DATE
+RUN echo "Build Date: ${BUILD_DATE}" && date
+
 # Force cache bust - rebuild timestamp
-ENV REBUILD_DATE="2026-08-14-v2"
+ENV REBUILD_DATE="2026-08-14-v3"
 
 WORKDIR /app
 
@@ -25,7 +29,8 @@ COPY --chown=www-data:www-data . /app
 COPY php.ini /usr/local/etc/php/conf.d/app.ini
 
 RUN mkdir -p /app/assets/uploads/{tickets,candidates,demo} /app/database && \
-    chown -R www-data:www-data /app
+    chown -R www-data:www-data /app && \
+    grep -q "poem" /app/index.html || (echo "ERROR: Poetic content not found in index.html!" && exit 1)
 
 COPY docker-nginx.conf /etc/nginx/http.d/default.conf
 
