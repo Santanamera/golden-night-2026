@@ -6,7 +6,7 @@ require_once '../includes/config.php';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Golden Night — About</title>
+  <title>Golden Night — Contact</title>
   <style>
     :root { --bg: #090909; --panel: #12110d; --gold: #d4af37; --gold-soft: #f0d060; --text: #f4ebd1; --muted: #b8ab7d; --line: rgba(212, 175, 55, 0.28); }
     * { box-sizing: border-box; }
@@ -17,9 +17,10 @@ require_once '../includes/config.php';
     nav a:hover { color: var(--gold-soft); }
     .wrap { max-width: 900px; margin: 60px auto; padding: 0 40px; }
     h1 { font-size: 2.8rem; color: var(--gold); margin-bottom: 30px; letter-spacing: 2px; }
-    h2 { font-size: 1.8rem; color: var(--gold-soft); margin-top: 40px; margin-bottom: 20px; }
+    h2 { font-size: 1.6rem; color: var(--gold-soft); margin-top: 40px; margin-bottom: 20px; }
     p { font-size: 1.1rem; color: var(--muted); line-height: 1.8; margin: 20px 0; }
-    .note { background: rgba(212, 175, 55, 0.08); border-left: 3px solid var(--gold); padding: 20px; margin: 30px 0; font-style: italic; color: var(--text); }
+    .contact-block { background: rgba(212, 175, 55, 0.04); border-left: 3px solid var(--gold); padding: 20px; margin: 20px 0; }
+    .contact-block strong { color: var(--gold-soft); }
     footer { text-align: center; padding: 40px; border-top: 1px solid var(--line); margin-top: 60px; color: var(--muted); font-size: 0.95rem; }
     a { color: var(--gold-soft); text-decoration: none; }
     a:hover { color: var(--gold); }
@@ -36,26 +37,41 @@ require_once '../includes/config.php';
   </header>
 
   <main class="wrap">
-    <h1>About Golden Night</h1>
+    <h1>Get In Touch</h1>
     
-    <p>Golden Night was planned as an elegant celebration bringing together our community for an unforgettable evening of music, glamour, and joy.</p>
+    <p>For inquiries about Golden Night or to stay updated on future events, please reach out to us.</p>
     
-    <h2>The Vision</h2>
-    <p>We envisioned an event at the prestigious RAKKA Hotel in Kigali, scheduled for August 14th, 2026. The night was to feature formal attire, live music, voting for royalty, and a memorable celebration of our school community.</p>
+    <h2>Contact Information</h2>
     
-    <div class="note">
-      <strong>Event Status:</strong> Golden Night has been postponed. We remain committed to bringing this celebration to life at a future date, with the same elegance and care that defines our vision.
+    <div class="contact-block">
+      <strong>Organization:</strong><br>
+      Kigali Leading School - Student Activities
     </div>
     
-    <h2>What Was Planned</h2>
-    <p><strong>Date:</strong> Friday, August 14th, 2026 (postponed)</p>
-    <p><strong>Venue:</strong> RAKKA Hotel, Kigali, Rwanda</p>
-    <p><strong>Time:</strong> 4:00 PM – 10:00 PM</p>
-    <p><strong>Dress Code:</strong> Black Tie / Formal Attire</p>
-    <p><strong>Features:</strong> Music, dancing, royalty voting, candidate showcase, and formal celebration</p>
+    <div class="contact-block">
+      <strong>Email:</strong><br>
+      <a href="mailto:events@kigalileading.rw">events@kigalileading.rw</a>
+    </div>
     
-    <h2>Stay Connected</h2>
-    <p>For updates about the rescheduled Golden Night, please <a href="/public/contact.php">contact us</a> or follow us on social media.</p>
+    <div class="contact-block">
+      <strong>Phone:</strong><br>
+      <a href="tel:+250788123456">+250 788 123 456</a>
+    </div>
+    
+    <div class="contact-block">
+      <strong>Social Media:</strong><br>
+      <a href="https://www.instagram.com/kigali_leading_tss" target="_blank">Instagram</a> • <a href="https://www.facebook.com/kigalileading" target="_blank">Facebook</a>
+    </div>
+    
+    <h2>Office Hours</h2>
+    <p>Monday – Friday: 8:00 AM – 5:00 PM<br>
+    Saturday – Sunday: Closed</p>
+    
+    <h2>Mailing Address</h2>
+    <p>Kigali Leading School<br>
+    Student Activities Office<br>
+    KN 4 Ave, Kigali<br>
+    Rwanda</p>
     
     <p style="margin-top: 50px; text-align: center;">
       <a href="/">← Return Home</a>
