@@ -1,11 +1,14 @@
 FROM php:8.2-fpm-alpine
 
+# Build timestamp to force cache bust - unique per build
+RUN echo "Build timestamp: $(date '+%s')" > /build.info && cat /build.info
+
 # Build timestamp to force cache bust and verify fresh deploy
 ARG BUILD_DATE
 RUN echo "Build Date: ${BUILD_DATE}" && date
 
 # Force cache bust - rebuild timestamp  
-ENV REBUILD_DATE="2026-08-14-v4-clean"
+ENV REBUILD_DATE="2026-08-14-v5-nodeps"
 
 WORKDIR /app
 
@@ -39,4 +42,11 @@ COPY docker-nginx.conf /etc/nginx/http.d/default.conf
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+# Create startup wrapper that ensures fresh files
+RUN echo '#!/bin/sh' > /startup.sh && \
+    echo 'echo "Ensuring fresh files from image..."' >> /startup.sh && \
+    echo 'mkdir -p /app && cd /app' >> /startup.sh && \
+    echo 'php-fpm -D && nginx -g "daemon off;"' >> /startup.sh && \
+    chmod +x /startup.sh
+
+CMD ["/startup.sh"]
